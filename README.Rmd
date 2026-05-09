@@ -8,7 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/logo_new",
+  fig.path = "man/figures/README-",
   out.width = "100%",
   cache = FALSE
 )
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ```{r,echo=FALSE, warning=FALSE}
 library(knitr)
 ```
-# preDose <img align="right" src = "man/figures/predose_hex_only.png" width="135px">
+# preDose <img align="right" src = "man/figures/logo_new.png" width="135px">
 
 # preDose: An R-package for Robust External Evaluation of popPKPD Models. 
 
