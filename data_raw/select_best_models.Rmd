@@ -1,0 +1,113 @@
+---
+title: "Model Ranking and Selection Using select_best_models()"
+author: "Martin Umpierrez"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{select_best_models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+library(rmarkdown)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>" 
+)
+```
+
+```{r setup2}
+library(preDose)
+```
+
+## Introduction
+
+The `select_best_models()` function allows users to select the " best" or make a ranking of best models based on the metrics for all the models obtained in `combine_metrics()`. The function requires:
+- `Data` : A data frame coming from the `combine_metrics()` function.  
+- `metric` : A string (i.e "rBIAS") of the metric to be evaluated.   
+- `top_n`: An integer specifying the number of top models to select per OCC.    
+- `occ_eval` : A numeric or character value specifying the `OCC` to filter the models by. Default is `NULL`, which means no filtering by `OCC`.  
+- `rank_criteria` : A character string specifying how to rank the models:  
+`min` :  Select models with the lowest metric values (e.g., MAIPE).  
+`max` :  Select models whose metric values are higher (e.g., IF30).  
+`abs` :  Selects models with the smallest absolute metric values (eg rBIAS)  
+
+
+## Example Usage
+
+### 
+```{r generate_data}
+set.seed(123)
+generate_fake_metrics <- function(n_occasions = 3) {
+  data.frame(
+    OCC = rep(1:n_occasions),  # Simulates multiple occasions
+    rBIAS = rnorm(n_occasions, mean = 0, sd = 10), 
+    rBIAS_lower = rnorm(n_occasions, mean = -5, sd = 5), 
+    rBIAS_upper = rnorm(n_occasions, mean = 5, sd = 5), 
+    MAIPE = runif(n_occasions, min = 10, max = 50), 
+    IF20 = runif(n_occasions, min = 20, max = 80), 
+    IF30 = runif(n_occasions, min = 30, max = 90)
+  )
+}
+
+# Simulated results for two models
+simulation1 <- list(metrics_means = generate_fake_metrics())
+simulation2 <- list(metrics_means = generate_fake_metrics())
+simulation3 <- list(metrics_means = generate_fake_metrics())
+simulation4 <- list(metrics_means = generate_fake_metrics())
+
+# Create a combined list
+models_list <- list(
+  list(model_name = "Test_Model1", metrics_list = simulation1),
+  list(model_name = "Test_Model2", metrics_list = simulation2),
+  list(model_name = "Test_Model3", metrics_list = simulation3),
+  list(model_name = "Test_Model4", metrics_list = simulation4)
+
+)
+
+# Assuming combine_metrics() is implemented
+combined_results <- combine_metrics(models_list)
+```
+
+## Using `select_best_models()`
+
+### 1 Selecting top 2 models based on minimum MAIPE
+
+```{r best_two_models}
+best_two_models_MAIPE <- select_best_models(combined_results, 
+                                            metric="MAIPE",
+                                            top_n=2,
+                                            rank_criteria= "min")
+print(best_two_models_MAIPE)
+```
+
+### 2 Selecting top model for OCC= 2 based on maximum IF30.
+
+```{r best_model_occ2}
+best_model_OCC2 <- select_best_models(combined_results, 
+                                            metric="IF30",
+                                            top_n=1,
+                                            occ_eval = 2,
+                                            rank_criteria= "max")
+print(best_model_OCC2)
+```
+
+
+### 3 Select best model for rBIAStop model for OCC= 2 based on maximum IF30.
+
+```{r best_model_occ1}
+best_model_OCC1_rbias <- select_best_models(combined_results, 
+                                            metric="rBIAS",
+                                            top_n=1,
+                                            occ_eval = 1,
+                                            rank_criteria= "abs")
+print(best_model_OCC1_rbias)
+```
+
+
+## Conclusion
+
+The `select_best_models()` function provides an easy way to rank the models based on specific pharmacokinetic model metrics, allowing quick assessment of model performance across different metrics and occasions. 
+For more details, refer to the function documentation using `?select_best_models`.

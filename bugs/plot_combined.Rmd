@@ -1,0 +1,101 @@
+---
+title: "Visualizing Model Metrics with plot_combined()"
+author: "Martin Umpierrez"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{plot_combined}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+library(rmarkdown)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+   fig.width = 8,  # Ancho de los gráficos
+  fig.height = 6  # Alto de los gráficos
+)
+```
+
+```{r setup2}
+library(preDose)
+```
+
+## Introduction
+
+The `plot_combined()` function allows users to visualize multiple model performance metrics, such as:
+- Relative Bias (`rBIAS`)
+- MAIPE
+- IF20 and IF30 (Interval Forecasting)
+
+This vignette demonstrates how to use `plot_combined()` with metrics from various models.
+
+## Generating Example Data
+
+For demonstration, we generate fake model evaluation metrics:
+
+```{r generate_data}
+set.seed(123)
+generate_fake_metrics <- function(n_occasions = 3) {
+  data.frame(
+    OCC = rep(1:n_occasions),  # Simulates multiple occasions
+    rBIAS = rnorm(n_occasions, mean = 0, sd = 10), 
+    rBIAS_lower = rnorm(n_occasions, mean = -5, sd = 5), 
+    rBIAS_upper = rnorm(n_occasions, mean = 5, sd = 5), 
+    MAIPE = runif(n_occasions, min = 10, max = 50), 
+    IF20 = runif(n_occasions, min = 20, max = 80), 
+    IF30 = runif(n_occasions, min = 30, max = 90)
+  )
+}
+
+# Simulated results for two models
+simulation1 <- list(metrics_means = generate_fake_metrics())
+simulation2 <- list(metrics_means = generate_fake_metrics())
+
+# Create a combined list
+models_list <- list(
+  list(model_name = "Test_Model1", metrics_list = simulation1),
+  list(model_name = "Test_Model2", metrics_list = simulation2)
+)
+
+# Assuming combine_metrics() is implemented
+combined_results <- combine_metrics(models_list)
+```
+
+## Using `plot_combined()`
+
+### 1. Plot Relative Bias (`rBIAS`)
+
+```{r plot_bias}
+plot_combined(combined_results, type = "bias_barplot")
+```
+
+### 2. Plot MAIPE values
+
+```{r plot_maipe}
+plot_combined(combined_results, type = "MAIPE_barplot")
+```
+
+### 3. Plot IF20 (Interval Forecasting at 20%)
+
+```{r plot_if20}
+plot_combined(combined_results, type = "IF20_plot")
+```
+
+### 4. Plot IF30 (Interval Forecasting at 30%)
+
+```{r plot_if30}
+plot_combined(combined_results, type = "IF30_plot")
+```
+
+## Conclusion
+
+The `plot_combined()` function provides an easy way to visualize key pharmacokinetic model metrics, allowing quick assessment of model performance across different metrics and occasions. The flexibility in selecting different plot types makes it a powerful tool for Bayesian forecasting model evaluations.
+
+---
+
+For more details, refer to the function documentation using `?plot_combined`.
+

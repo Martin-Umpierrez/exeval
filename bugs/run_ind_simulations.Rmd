@@ -1,0 +1,64 @@
+---
+title: "Running Individual Simulations"
+author: "Martin Umpierrez"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{run_ind_simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(preDose)
+```
+
+## Introduction
+
+This vignette demonstrates how to use the `run_ind_simulations` function to simulate individual drug concentrations based on posterior estimations and treatment schedules.
+
+## Required Inputs
+
+The function requires two main inputs:
+- `individual_model`: A list generated from `actualize_model`, containing posterior estimations.
+- `tto_occ`: A list generated from `run_map_estimations`, containing treatment schedules.
+
+## Example Usage
+
+```{r example, eval=FALSE}
+# Load necessary data (assume precomputed objects)
+individual_model <- actualize_model()
+tto_occ <- run_map_estimations()
+
+# Run the individual simulations
+results <- run_ind_simulations(individual_model, tto_occ)
+
+# Accessing results
+sim_results <- results$simulation_results
+treatments <- results$ttoocc
+events <- results$events_tto
+```
+
+## Interpretation of Results
+
+- `simulation_results`: Contains simulated drug concentrations for each occasion and individual.
+- `ttoocc`: Stores treatment information organized by occasion.
+- `events_tto`: Lists treatment events for each occasion.
+
+## Additional Information
+
+For more details, see `?run_ind_simulations` in R.
+
+---
+
+To include this vignette in your package, rebuild the documentation:
+
+```r
+devtools::build_vignettes()

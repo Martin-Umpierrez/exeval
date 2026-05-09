@@ -1,0 +1,58 @@
+---
+title: "Computing Metrics by OCC"
+author: "Martin Umpierrez"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Computing Metrics by Occasion}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(preDose)
+```
+
+## Introduction
+
+This vignette demonstrates how to use the `metrics_occ` function to compute main prediction error metrics to assess the predictive performance of each popPK model grouped by occasion (OCC).
+
+## Function Overview
+
+The `metrics_occ` function processes simulation outputs from either `mapbayr` or `lixoftConnectors` and returns summary metrics for each occasion.
+
+### Required Inputs
+- `simulations`: A list from `run_ind_simulations()` (for `mapbayr`).
+- `sims`: A list of outputs from `lixoftConnectors`.
+- `tool`: A string indicating the tool used (`"mapbayr"` or `"lixoftConnectors"`).
+
+
+## Example Usage
+
+```{r example, eval=FALSE}
+# Load necessary data
+simulations <- run_ind_simulations()
+
+# Compute metrics using mapbayr
+results <- metrics_occ(simulations = simulations, tool = "mapbayr")
+
+# Accessing results
+metrics_summary <- results$metrics_means
+```
+
+## Interpretation of Results
+
+- `metrics`: Contains individual predictions, observations, and error metrics per occasion.
+- `metrics_means`: Provides summary statistics, including rBIAS, MAPE, rRMSE, IF20, and IF30.
+
+## Additional Information
+
+For more details, see `?metrics_occ` in R.
+

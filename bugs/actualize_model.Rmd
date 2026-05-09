@@ -1,0 +1,56 @@
+---
+title: "actualize_model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{actualize_model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(preDose)
+```
+
+## Introduction
+
+This vignette demonstrates how to use the `actualize_model` function to obtain each individual model to perform simulations in every Occasion (OCC)
+
+## Function Overview
+
+The `actualize_model` function processes the element from the function `run_MAP_estimation` containing MAP estiamtions and an evaluation type. Returns a single model for every ID in each Occasion
+
+### Required Inputs
+- `actualization_map`: A list from `run_MAP_estimations()` containing the posterior distribution
+- `evaluation_type`: A character vector with the type of evaluation. it must be the same used in `run_MAP_estimations()`. Options included:
+  - "Progressive"
+  - "Most_Recent_Progressive"
+  - "Cronologic_Ref"
+  - "Most_Recent_Ref"
+
+## Running the Function 
+
+```{r, eval=FALSE}
+# Load necessary data (assume precomputed objects)
+individual_models <- actualize_model(MAP_estimations,
+                                     evaluation_type="Progressive")
+```
+
+## Conclusion
+
+The `actualize_model` function provides a flexible framework for updating MAP estimations dynamically across occasions. This is particularly useful in population pharmacokinetics where models evolve based on new patient data.
+
+## Interpretation of Results
+
+- `ind_model`: A list containing the actualized individual model with the posterior distribution for each occasion and ID
+- `eval_type`: Contains a string with the evaluation type utilized
+
+## Additional Information
+
+For more details, see `?actualize_model` in R.

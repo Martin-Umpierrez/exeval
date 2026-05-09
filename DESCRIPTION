@@ -1,16 +1,44 @@
 Package: preDose
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: An R-Package to automatize the external evalaution process
+Version: 0.0.0.9000
 Authors@R: c(
-    person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
-  )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+             person(given = "Manuel",
+                    family = "Ibarra",
+                    role = c("aut")),
+             person(given = "Martin",
+                    family = "Umpierrez",
+                    role = c("aut", "cre"),
+                    email ="mumpierrez@fq.edu.uy"),
+              person(given = "Ignacio",
+                    family = "Alvarez Castro",
+                    role = c("aut")),
+              person(given = "Nicolas", 
+                    family = "Schmidt", 
+                    role = c("aut"), 
+                    email = "nschmidt@cienciassociales.edu.uy",
+                    comment = c(ORCID = "0000-0001-5083-5792")))
+Maintainer: Martin Umpierrez <mumpiererz@fq.edu.uy> 
+Description: This package allow the user to perform and external evaluation from and existing data set.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: 
+    mapbayr,
+    R (>= 3.5)
+Imports: 
+    dplyr,
+    ggplot2,
+    ggpubr,
+    magrittr,
+    mrgsolve (>= 1.0.8),
+    scales, 
+    stats, 
+    methods, 
+    rlang
+RoxygenNote: 7.3.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    tidyverse
+

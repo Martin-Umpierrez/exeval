@@ -1,0 +1,66 @@
+---
+title: "combine_metrics"
+author: "Martin Umpierrez"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{combine_metrics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(preDose)
+```
+
+
+## Introduction
+
+This vignette demonstrates how to implement the `combine_metrics` function to merge different metrics coming from different models when users want to compare them. 
+
+## Required Inputs
+
+The function requires one main inputs:
+- `models`: A list of list: Every List contains the name of a Model(i.e " Model_1" and the resulting metrics generated from `metrics_occ`
+
+
+## Example Usage
+
+```{r example, eval=TRUE}
+# Load necessary data (assume precomputed objects)
+set.seed(123)
+generate_fake_metrics <- function(n_occasions = 3) {
+  data.frame(
+    OCC = rep(1:n_occasions),  # Simula varias ocasiones
+    rBIAS = rnorm(n_occasions, mean = 0, sd = 10), 
+    rBIAS_lower = rnorm(n_occasions, mean = -5, sd = 5), 
+    rBIAS_upper = rnorm(n_occasions, mean = 5, sd = 5), 
+    MAIPE = runif(n_occasions, min = 10, max = 50), 
+    IF20 = runif(n_occasions, min = 20, max = 80), 
+    IF30 = runif(n_occasions, min = 30, max = 90)
+  )
+}
+
+# Fake Simulation of metrics to use the model
+results1 <- list(metrics_means = generate_fake_metrics())
+results2 <- list(metrics_means = generate_fake_metrics())
+
+# List of Models containing:  Name of Models and the metrics results
+models_list <- list(
+  list(model_name = "Test_Model1", metrics_list = results1),
+  list(model_name = "Test_Model2", metrics_list = results2)
+)
+
+# Use the combine_metrics() function
+combined_results <- combine_metrics(models_list)
+
+# Visualize the metrics in the same data.frame
+print(combined_results)
+
+```
