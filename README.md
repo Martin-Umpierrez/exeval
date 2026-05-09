@@ -3,7 +3,7 @@
 
 [![R-CMD-check](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml)
 
-# preDose <img align="right" src = "man/figures/predose_hex_only.png" width="135px">
+# preDose <img align="right" src = "man/figures/logo_new.png" width="135px">
 
 # preDose: An R-package for Robust External Evaluation of popPKPD Models.
 
@@ -156,18 +156,16 @@ dataset structure aligns with the required format for proper processing.
 data("tacrolimus_pk1_kidney", package = "preDose")  # Cargar dataset desde el paquete
 head(tacrolimus_pk1_kidney)  # Ver primeras filas
 #> # A tibble: 6 × 30
-#>      ID   OCC    DD   AMT  TIME   POD    DV  EVID   CMT   MDV    II    SS
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1     1     1   6    3000   168     7   0       1     1     1    12     1
-#> 2     1     1   6       0   168     7   9.4     0     2     0     0     0
-#> 3     1     2   6.5  3250   264    11   0       1     1     1    12     1
-#> 4     1     2   6.5     0   264    11   8.4     0     2     0     0     0
-#> 5     1     3   7.5  3750   360    15   0       1     1     1    12     1
-#> 6     1     3   7.5     0   360    15   8.4     0     2     0     0     0
-#> # ℹ 18 more variables: Creatinine <dbl>, SCR <dbl>, eGFR <dbl>, ClCrea <dbl>,
-#> #   AGE <dbl>, SEX <dbl>, WT <dbl>, HCT <dbl>, CYP3A5 <dbl>, EXPRESSION <dbl>,
-#> #   PDN_DOSE <dbl>, PDNXWT <dbl>, Heigth <dbl>, Height..m. <dbl>, BSA <dbl>,
-#> #   BMIcalc <dbl>, LBW <dbl>, DMELITU <dbl>
+#>      ID   OCC    DD   AMT  TIME   POD    DV  EVID   CMT   MDV    II    SS Creatinine   SCR  eGFR ClCrea   AGE   SEX    WT   HCT CYP3A5
+#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>      <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
+#> 1     1     1   6    3000   168     7   0       1     1     1    12     1       5.3   469.  9.16   9.80    49     0  48.4  29.9      3
+#> 2     1     1   6       0   168     7   9.4     0     2     0     0     0       5.3   469.  9.16   9.80    49     0  48.4  29.9      3
+#> 3     1     2   6.5  3250   264    11   0       1     1     1    12     1       4.17  369. 12.1   12.5     49     0  48.4  28.7      3
+#> 4     1     2   6.5     0   264    11   8.4     0     2     0     0     0       4.17  369. 12.1   12.5     49     0  48.4  28.7      3
+#> 5     1     3   7.5  3750   360    15   0       1     1     1    12     1       3.56  315. 14.5   15.1     49     0  50.2  26.9      3
+#> 6     1     3   7.5     0   360    15   8.4     0     2     0     0     0       3.56  315. 14.5   15.1     49     0  50.2  26.9      3
+#> # ℹ 9 more variables: EXPRESSION <dbl>, PDN_DOSE <dbl>, PDNXWT <dbl>, Heigth <dbl>, Height..m. <dbl>, BSA <dbl>, BMIcalc <dbl>, LBW <dbl>,
+#> #   DMELITU <dbl>
 ```
 
 #### 3) External model evaluation with `exeval_ppk()`
@@ -243,8 +241,8 @@ plot1 = metrics_plot(res.1,
 print(plot1)
 ```
 
-<img src="man/figures/README-plot1-1.png" alt="" width="100%" /> \#####
-4.2) Bias boxplot
+<img src="man/figures/README-plot1-1.png" width="100%" /> \##### 4.2)
+Bias boxplot
 
 ``` r
 
@@ -254,7 +252,7 @@ plot2 = metrics_plot(res.1,
 print(plot2)
 ```
 
-<img src="man/figures/README-plot2-1.png" alt="" width="100%" />
+<img src="man/figures/README-plot2-1.png" width="100%" />
 
 ##### 4.3) Relative Error Distribution by OCC
 
@@ -266,7 +264,7 @@ plot3 = metrics_plot(res.1,
 print(plot3)
 ```
 
-<img src="man/figures/README-plot3-1.png" alt="" width="100%" />
+<img src="man/figures/README-plot3-1.png" width="100%" />
 
 #### 5) Import Models and assess the predicitve performance
 
@@ -338,7 +336,7 @@ plot_comparrison <- plot_combined(combined_results,
 print(plot_comparrison)
 ```
 
-<img src="man/figures/README-plot_comparisson-1.png" alt="" width="100%" />
+<img src="man/figures/README-plot_comparisson-1.png" width="100%" />
 
 ###### 5.2.2) Select models according to a specific evaluation metric and threshold using select_best_models() function
 
