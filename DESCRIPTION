@@ -15,8 +15,7 @@ Authors@R: c(
                     role = c("aut")),
               person(given = "Nicolas", 
                     family = "Schmidt", 
-                    role = c("aut"), 
-                    email = "nschmidt@cienciassociales.edu.uy",
+                    role = c("aut"),
                     comment = c(ORCID = "0000-0001-5083-5792")))
 Maintainer: Martin Umpierrez <mumpiererz@fq.edu.uy> 
 Description: This package allow the user to perform and external evaluation from and existing data set.

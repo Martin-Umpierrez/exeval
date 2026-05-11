@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
+^LICENSE\.md$
+^README\.Rmd$
+^data_raw$
+^\.github$

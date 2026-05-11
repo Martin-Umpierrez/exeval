@@ -3,10 +3,11 @@
 .RData
 .Ruserdata
 README.cache/
-
 *.Rproj
 *.DS_Store
 *.vscode
 /doc/
 /Meta/
-.positai
+
+
+
