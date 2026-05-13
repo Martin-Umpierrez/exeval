@@ -27,10 +27,6 @@
 #'     \item "Cronologic_Ref": Uses all data up to a reference occasion.
 #'     \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 #'   }
-#' @param names_occ Character string. Name of the OCC column in the data. Defaults to "OCC".
-#' @param names_id Character string. Name of the ID column in the data. Defaults to "ID".
-#' @param names_time Character string. Name of the TIME column in the data. Defaults to "TIME".
-#' @param names_evid Character string. Name of the EVID column in the data. Defaults to "EVID".
 #' @param method Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".
 #' @param assessment Character string. Specifies the type of prediction to perform. Options are:
 #'   \itemize{
