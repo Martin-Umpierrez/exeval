@@ -31,23 +31,23 @@ function(posterior_model, treatment, start,
   return(sim_result)
 }
 
-metrics_occasion <-
-function(simresults) {
-  simresults$ID_mapping |>
-    dplyr::mutate(ID = as.numeric(ID), original_id_output = as.numeric(original_id_output)) |>
-    dplyr::right_join( simresults$res$Cc, by = join_by(ID == id)) |>
-    dplyr::select(-ID) |>
+#####metrics_occasion <-
+##function(simresults) {
+  ##simresults$ID_mapping |>
+    #dplyr::mutate(ID = as.numeric(ID), original_id_output = as.numeric(original_id_output)) |>
+    #dplyr::right_join( simresults$res$Cc, by = join_by(ID == id)) |>
+    #dplyr::select(-ID) |>
     # cbind(simresults$data) |>
-    dplyr::inner_join( simresults$data, by = join_by(original_id_output == ID, time) ) |>
-    dplyr::rename( ID = original_id_output ) |>
-    dplyr::select(ID, time, Cc, DV, OCC) |>
-    dplyr::mutate(DV = as.numeric(DV)) |>   # compute metrics
-    dplyr::mutate(
-      IPE = ((Cc- DV)/DV) *100,
-      APE= abs(((Cc- DV)/DV))*100,
-      RMSE = (((Cc-DV)^2)/((DV)^2))
-    )
-}
+    #dplyr::inner_join( simresults$data, by = join_by(original_id_output == ID, time) ) |>
+    #dplyr::rename( ID = original_id_output ) |>
+    #dplyr::select(ID, time, Cc, DV, OCC) |>
+    #dplyr::mutate(DV = as.numeric(DV)) |>   # compute metrics
+    #dplyr::mutate(
+      #IPE = ((Cc- DV)/DV) *100,
+      #APE= abs(((Cc- DV)/DV))*100,
+      #RMSE = (((Cc-DV)^2)/((DV)^2))
+    #)
+#######}
 verificar_OCC <- function(modelo) {
   # get model_code
   if (inherits(modelo, "mrgmod")) {
@@ -120,6 +120,20 @@ eval_metrics_ppk <- function(metrics,
     eval_type = eval_type,
     assessment = assessment,
     tool = tool
+  )
+}
+
+
+####Funcion para generar metricas falsas en un objeto#####
+generate_fake_metrics <- function(n_occasions = 3) {
+  data.frame(
+    OCC = rep(1:n_occasions),  # Simula varias ocasiones
+    rBIAS = rnorm(n_occasions, mean = 0, sd = 10),
+    rBIAS_lower = rnorm(n_occasions, mean = -5, sd = 5),
+    rBIAS_upper = rnorm(n_occasions, mean = 5, sd = 5),
+    MAIPE = runif(n_occasions, min = 10, max = 50),
+    IF20 = runif(n_occasions, min = 20, max = 80),
+    IF30 = runif(n_occasions, min = 30, max = 90)
   )
 }
 

@@ -43,7 +43,7 @@ ETA16 : 0 : IOV on Cl (OCC = 6)
 $PARAM @annotated @covariate
 LBW      : 60   : Baseline lea body weight (kg)
 CYP3A5      : 3  : Most Common metabolizer in Cauccasicans Patients
-HCT      : 33.5  : hematocrito
+HCT      : 33.5  : Hematocrit
 OCC     : -99  : Occasion, shall be passed by dataset imported
 
 $ODE

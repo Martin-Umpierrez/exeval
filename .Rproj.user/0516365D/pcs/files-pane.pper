@@ -1,9 +1,9 @@
 {
-    "path": "~/preDose/man/figures",
+    "path": "~/preDose/R",
     "sortOrder": [
         {
             "columnIndex": 4,
-            "ascending": true
+            "ascending": false
         },
         {
             "columnIndex": 2,

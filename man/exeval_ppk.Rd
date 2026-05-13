@@ -101,9 +101,10 @@ data("tacrolimus_pk1_kidney", package = "preDose")
 data("model_tacHAN2011", package = "preDose")
 
 dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
+mm <- get_model_code('Han_etal_2011')
 
 res <- exeval_ppk(model_name = "tacrolimus_HAN2011",
-                 model = model_tacHAN2011,
+                 model = mm,
                  data = dd,
                  evaluation_type= "Progressive",
                  assessment='Bayesian_forecasting' )
