@@ -32,10 +32,6 @@
 #'     \item "Cronologic_Ref": Uses all data up to a reference occasion.
 #'     \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 #'   }
-#' @param names_occ Character string. Name of the OCC column in the data. Defaults to "OCC".
-#' @param names_id Character string. Name of the ID column in the data. Defaults to "ID".
-#' @param names_time Character string. Name of the TIME column in the data. Defaults to "TIME".
-#' @param names_evid Character string. Name of the EVID column in the data. Defaults to "EVID".
 #' @param method Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".
 #'
 #' @return A list containing:
@@ -71,10 +67,6 @@ function(model, model_name= NULL,
                                 occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
                                 evaluation_type = c("Progressive", "Most_Recent_Progressive",
                                                     "Cronologic_Ref","Most_Recent_Ref"), ## Como se va a hacer la eval externa
-                                names_occ = "OCC",
-                                names_id = "ID",
-                                names_time = "TIME",
-                                names_evid = "EVID",
                                 method = c("L-BFGS-B", "newuoa")) {
 
   # check data has the required columns

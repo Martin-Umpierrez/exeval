@@ -16,10 +16,6 @@ run_MAP_estimations(
   occ_ref = NULL,
   evaluation_type = c("Progressive", "Most_Recent_Progressive", "Cronologic_Ref",
     "Most_Recent_Ref"),
-  names_occ = "OCC",
-  names_id = "ID",
-  names_time = "TIME",
-  names_evid = "EVID",
   method = c("L-BFGS-B", "newuoa")
 )
 }
@@ -56,14 +52,6 @@ Required only if \code{model} is provided as character model code.#'}
   \item "Cronologic_Ref": Uses all data up to a reference occasion.
   \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 }}
-
-\item{names_occ}{Character string. Name of the OCC column in the data. Defaults to "OCC".}
-
-\item{names_id}{Character string. Name of the ID column in the data. Defaults to "ID".}
-
-\item{names_time}{Character string. Name of the TIME column in the data. Defaults to "TIME".}
-
-\item{names_evid}{Character string. Name of the EVID column in the data. Defaults to "EVID".}
 
 \item{method}{Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".}
 }
