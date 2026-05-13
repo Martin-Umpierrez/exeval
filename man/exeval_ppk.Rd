@@ -17,10 +17,6 @@ exeval_ppk(
   occ_ref = NULL,
   evaluation_type = c("Progressive", "Most_Recent_Progressive", "Cronologic_Ref",
     "Most_Recent_Ref"),
-  names_occ = "OCC",
-  names_id = "ID",
-  names_time = "TIME",
-  names_evid = "EVID",
   method = c("L-BFGS-B", "newuoa"),
   assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
   verbose = FALSE
