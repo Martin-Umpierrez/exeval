@@ -81,7 +81,7 @@ exeval_ppk <-  function(model,
   ## Run estimation, simulation and predicton erro computation in every OCC
   est <- run_MAP_estimations(model, model_name, tool, check_compile,
                              data, num_occ, num_ids, sampling, occ_ref, evaluation_type,
-                             names_occ, names_id, names_time, names_evid, method
+                             method
                              )
   updt <- actualize_model(est, evaluation_type)
   sims <- run_ind_simulations(updt, est, assessment)
