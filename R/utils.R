@@ -48,7 +48,7 @@ function(posterior_model, treatment, start,
       #RMSE = (((Cc-DV)^2)/((DV)^2))
     #)
 #######}
-verificar_OCC <- function(modelo) {
+check_OCC_capture <- function(modelo) {
   # get model_code
   if (inherits(modelo, "mrgmod")) {
     codigo <- modelo@code
