@@ -4,7 +4,7 @@
 #' simulations generated using MAP Bayesian estimation with \pkg{mapbayr}.
 #'
 #' @param simulations An object of class \code{"mapbayr"} returned by
-#'   \code{\link{run_ind_simulations}}.
+#'   \code{\link{run_pk_simulations}}.
 #' @param assessment Character string specifying the type of prediction.
 #'   One of \code{"a_priori"}, \code{"Bayesian_forecasting"}, or
 #'   \code{"Complete"}.
@@ -25,7 +25,7 @@
 #' prediction error (MAIPE), and the percentages of predictions within
 #' 20\% and 30\% of the observations (IF20 and IF30).
 #'
-#' @seealso \code{\link{metrics_occ}}, \code{\link{run_ind_simulations}}
+#' @seealso \code{\link{metrics_occ}}, \code{\link{run_pk_simulations}}
 #'
 #' @method metrics_occ mapbayr
 #' @export

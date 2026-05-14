@@ -47,7 +47,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' results <- run_ind_simulations(
+#' results <- run_pk_simulations(
 #'   individual_model = individual_model,
 #'   tto_occ = tto_occ,
 #'   assessment = "Complete"
@@ -57,7 +57,7 @@
 #' @seealso [actualize_model()], [run_MAP_estimations()]
 #' @export
 #'
-run_ind_simulations <- function(individual_model,
+run_pk_simulations <- function(individual_model,
                                 tto_occ,
                                 assessment = c("a_priori","Bayesian_forecasting","Complete"),
                                 verbose= FALSE) {

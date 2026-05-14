@@ -84,7 +84,7 @@ exeval_ppk <-  function(model,
                              method
                              )
   updt <- actualize_model(est, evaluation_type)
-  sims <- run_ind_simulations(updt, est, assessment)
+  sims <- run_pk_simulations(updt, est, assessment)
 
   # Compute evaluation metrics
   metrics <- metrics_occ(sims, assessment=assessment,tool=tool )
