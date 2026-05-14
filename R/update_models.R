@@ -1,13 +1,15 @@
 
 #' Update MAP estimations across occasions for each IDs
 #'
-#' The `actualize_model` function updates MAP (Maximum A Posteriori) estimations
-#' across occasions based on a selected evaluation type. It processes posterior estimations
-#' using the specified strategy and returns the updated model for each ID on every single OCC
+#' The `update_map_models` function updates population pharmacokinetic models using MAP posterior estimations
+#' across occasions based on a selected evaluation type. Depending on the selected evaluation
+#' strategy, posterior information is propagated across occasions to generate
+#' individual models ready for simulation. The function returns individual models updated with posterior parameter estimates for each ID at each occasion.
 #'
-#' @param actualization_map A list containing the MAP estimations obtained in `run_MAP_estimations`
+#' @param map_results A list object containing the MAP estimations obtained in `run_MAP_estimations`
 #'   Must include an element named `map_estimations` which stores the posterior estimations
 #'   for each occasion.
+#'
 #' @param evaluation_type A character vector specifying the evaluation type to use for updating.
 #'   Options include:
 #'   - `"Progressive"`: Use posterior results progressively across all previous occasions.
@@ -16,22 +18,28 @@
 #'   - `"Most_Recent_Ref"`: Use the most recent chronological reference for updates.
 #'   Defaults to `"Progressive"`.
 #'
-#' @return A list with two elements:
-#'   - `ind_model`: A list containing posterior estimations (`a.posteriori`) for each occasion.
-#'   - `eval_type`: The evaluation type used for the process.
+#' @return A list containing:
+#' \describe{
+#'   \item{ind_model}{A list of updated individual posterior models for each
+#'   occasion and ID, ready for simulation.}
+#'   \item{eval_type}{The evaluation strategy used.}
+#' }
+#'
 #'
 #' @details
 #' This function evaluates posterior estimations iteratively based on the specified
 #' `evaluation_type`. It ensures compatibility with the evaluation type used during
-#' the creation of the input `actualization_map`.
+#' the creation of the input `map_results`.
 #'
 #' The function dynamically names the posterior estimation results, following the pattern
 #' `a.posteriori_occX_Y`, where `X` and `Y` represent the occasions used in the estimation.
 #'
+#' The output is intended to be used with [run_pk_simulations()]
+#'
 #' @examples
 #' \dontrun{
 #' # Example input data
-#' actualization_map <- list(
+#' map_results <- list(
 #'   eval_type = "Progressive",
 #'   map_estimations = list(
 #'     "map.estimation.occ_0_1" = NULL,
@@ -40,21 +48,20 @@
 #' )
 #'
 #' # Run the function
-#' result <- actualize_model(actualization_map, evaluation_type = "Progressive")
+#' result <- update_map_models(map_results, evaluation_type = "Progressive")
 #' print(result)
 #'}
 #' @importFrom magrittr %>%
 #' @importFrom mapbayr use_posterior
 #' @export
 
-actualize_model <-
-function(actualization_map,
-                            evaluation_type = c("Progressive",
+update_map_models <-
+function(map_results, evaluation_type = c("Progressive",
                                                 "Most_Recent_Progressive",
                                                 "Cronologic_Ref",
                                                 "Most_Recent_Ref")) {
 
-  if ( actualization_map$eval_type != evaluation_type) {
+  if ( map_results$eval_type != evaluation_type) {
     stop(" Select the same evaluation type used in run_map")
   }
 
@@ -64,11 +71,11 @@ function(actualization_map,
   # list for save estimations
   posterior_estimations <- list()
 
-  if(!"map_estimations" %in% names(actualization_map)) {
+  if(!"map_estimations" %in% names(map_results)) {
     stop("There is no element `map_estimation` in the entry ")
   }
 
-  map_estimations <- actualization_map$map_estimations
+  map_estimations <- map_results$map_estimations
   num_estimations <- length(map_estimations)
 
   # loop over estimations
