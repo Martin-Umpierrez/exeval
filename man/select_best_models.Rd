@@ -2,7 +2,7 @@
 % Please edit documentation in R/select_best_models.R
 \name{select_best_models}
 \alias{select_best_models}
-\title{seect_best_models}
+\title{Select_best_models}
 \usage{
 select_best_models(
   data,

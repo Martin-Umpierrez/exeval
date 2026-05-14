@@ -1,4 +1,4 @@
-#' seect_best_models
+#' Select_best_models
 #'
 #' Select Top Ranked Models
 #'
