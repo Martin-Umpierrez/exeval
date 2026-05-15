@@ -11,7 +11,7 @@ utils::globalVariables(c(
   "original_id_output", "posterior_model", "prop",
   "rBIAS", "rBIAS_lower", "rBIAS_upper",
   "time", "tramo", "yy" , "Prediction", "Prediction_Type",
-  "Plot_Time"))
+  "Plot_Time", "Abs_IPE", "Fit_Class"))
 
 
 individual_sim <-
