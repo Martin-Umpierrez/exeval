@@ -199,20 +199,20 @@ metrics_plot.EvalMetricsPPK <- function(x,
   else if(type== "error_plot") {
     mm_plot <- mm[[1]] %>%
       mutate(tramo = case_when(
-        abs(IPE) > 30 ~ "30+",
-        abs(IPE) > 20 & abs(IPE) <= 30 ~ "20+",
-        abs(IPE) > 10 & abs(IPE) <= 20 ~ "10+",
-        abs(IPE) <= 10 ~ "<10",
+        abs(IPE) > 50 ~ "50+",
+        abs(IPE) > 30 & abs(IPE) <= 50 ~ "30+",
+        abs(IPE) > 15 & abs(IPE) <= 30 ~ "15+",
+        abs(IPE) <= 15 ~ "<15",
         TRUE ~ "cucu"
       )) %>%
-      mutate(tramo = factor(tramo, levels = c("30+", "20+", "10+", "<10"))) %>%
+      mutate(tramo = factor(tramo, levels = c("50+", "30+", "15+", "<15"))) %>%
       count(OCC, tramo) %>%
       group_by(OCC) %>%
       mutate(prop = n / sum(n)) %>%
       ungroup()
 
     color_error <- c(
-      "30+" = "lightcoral",
+      "50+" = "lightcoral",
       "20+" = "wheat",
       "10+" = "darkseagreen",
       "<10" = "paleturquoise"
