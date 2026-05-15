@@ -124,7 +124,7 @@ eval_metrics_ppk <- function(metrics,
 }
 
 
-####Funcion para generar metricas falsas en un objeto#####
+#### Generate fake metrics for examples#####
 generate_fake_metrics <- function(n_occasions = 3) {
   data.frame(
     OCC = rep(1:n_occasions),  # Simula varias ocasiones
@@ -136,4 +136,60 @@ generate_fake_metrics <- function(n_occasions = 3) {
     IF30 = stats::runif(n_occasions, min = 30, max = 90)
   )
 }
+
+
+##### Extract observations and individual predictions ######
+extract_predictions <- function(simulations) {
+
+  assessment <- simulations$assessment
+
+  list.sim <- simulations$simulation_results
+  df_sim <- do.call(rbind, lapply(list.sim, function(x) slot(x, "data")))
+
+  if (assessment == "Bayesian_forecasting") {
+
+    df_sim <- df_sim %>%
+      dplyr::mutate(
+        Prediction = DV,
+        Prediction_Type = "Posterior"
+      )
+
+  } else if (assessment == "a_priori") {
+
+    df_sim <- df_sim %>%
+      dplyr::mutate(
+        Prediction = CP,
+        Prediction_Type = "Apriori"
+      )
+
+  } else if (assessment == "Complete") {
+
+    df_sim <- df_sim %>%
+      dplyr::mutate(
+        Prediction = ifelse(OCC == 1, CP, DV),
+        Prediction_Type = ifelse(OCC == 1, "Apriori", "Posterior")
+      )
+  }
+
+  df_sim <- df_sim %>%
+    dplyr::select(ID, OCC, TIME, Prediction, Prediction_Type) %>%
+    dplyr::filter(!is.na(Prediction))
+
+  df_obs <- do.call(rbind, simulations$ttoocc) %>%
+    dplyr::filter(EVID == 0) %>%
+    dplyr::select(ID, OCC, TIME, DV) %>%
+    dplyr::filter(!is.na(DV))
+
+  df_final <- dplyr::left_join(
+    df_sim,
+    df_obs,
+    by = c("ID", "OCC", "TIME")
+  ) %>%
+    dplyr::filter(!is.na(DV)) %>%
+    dplyr::distinct()
+
+  return(df_final)
+}
+
+
 
