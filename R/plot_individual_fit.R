@@ -119,7 +119,7 @@ plot_individual_fit <- function(simulations,
     ) +
 
     ggplot2::labs(
-      title = paste("Individual fit — ID:", id),
+      title = paste("Individual fit ID:", id),
       x = ifelse(relative_time, "Relative Time", "Time"),
       y = "Concentration",
       color = NULL

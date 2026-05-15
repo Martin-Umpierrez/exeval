@@ -10,13 +10,8 @@ utils::globalVariables(c(
   "TIME", "dummy1", "dummy2", "id", "occ_ref",
   "original_id_output", "posterior_model", "prop",
   "rBIAS", "rBIAS_lower", "rBIAS_upper",
-  "time", "tramo", "yy"
-))
-
-
-
-
-
+  "time", "tramo", "yy" , "Prediction", "Prediction_Type",
+  "Plot_Time"))
 
 
 individual_sim <-
