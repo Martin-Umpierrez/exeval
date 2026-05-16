@@ -92,9 +92,9 @@ exeval_ppk <-  function(model,
 
   argument = c('Num IDs', 'Observations','Max Num Occasion',
                'Num of Ref Occasion','Drug Name', 'Model Name', 'Evaluation', 'Assessment')
-  value    = c(length(unique(data[[num_ids]])),
+  value    = c(dplyr::n_distinct(data$ID),
                length(data %>% filter(EVID==0)),
-               max((unique(data[[num_occ]]))),
+               max(data$OCC, na.rm = TRUE),
                ifelse(is.null(occ_ref), "", occ_ref),
                ifelse(is.null(drug_name), "", drug_name),
                ifelse(is.null(model_name), "", model_name),
