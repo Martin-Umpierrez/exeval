@@ -168,7 +168,7 @@ export_evaluation_xlsx <- function(x,
   if (include_screen_fit) {
 
     screened <- screen_fit(
-      metrics = metrics_obj,
+      x = metrics_obj,
       occ = occ,
       fit_classes = fit_classes
     )
