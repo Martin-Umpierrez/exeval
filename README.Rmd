@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![R-CMD-check](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/Martin-Umpierrez/preDose/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Martin-Umpierrez/preDose/actions/workflows/R-CMD-check.yaml)
+
+
 
 ```{r,echo=FALSE, warning=FALSE}
 library(knitr)

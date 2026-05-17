@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![R-CMD-check](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Nicolas-Schmidt/preDose2/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/Martin-Umpierrez/preDose/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Martin-Umpierrez/preDose/actions/workflows/R-CMD-check.yaml)
 
 # preDose <img align="right" src = "man/figures/logo_new.png" width="135px">
 
@@ -156,16 +156,18 @@ dataset structure aligns with the required format for proper processing.
 data("tacrolimus_pk1_kidney", package = "preDose")  # Cargar dataset desde el paquete
 head(tacrolimus_pk1_kidney)  # Ver primeras filas
 #> # A tibble: 6 × 30
-#>      ID   OCC    DD   AMT  TIME   POD    DV  EVID   CMT   MDV    II    SS Creatinine   SCR  eGFR ClCrea   AGE   SEX    WT   HCT CYP3A5
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>      <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
-#> 1     1     1   6    3000   168     7   0       1     1     1    12     1       5.3   469.  9.16   9.80    49     0  48.4  29.9      3
-#> 2     1     1   6       0   168     7   9.4     0     2     0     0     0       5.3   469.  9.16   9.80    49     0  48.4  29.9      3
-#> 3     1     2   6.5  3250   264    11   0       1     1     1    12     1       4.17  369. 12.1   12.5     49     0  48.4  28.7      3
-#> 4     1     2   6.5     0   264    11   8.4     0     2     0     0     0       4.17  369. 12.1   12.5     49     0  48.4  28.7      3
-#> 5     1     3   7.5  3750   360    15   0       1     1     1    12     1       3.56  315. 14.5   15.1     49     0  50.2  26.9      3
-#> 6     1     3   7.5     0   360    15   8.4     0     2     0     0     0       3.56  315. 14.5   15.1     49     0  50.2  26.9      3
-#> # ℹ 9 more variables: EXPRESSION <dbl>, PDN_DOSE <dbl>, PDNXWT <dbl>, Heigth <dbl>, Height..m. <dbl>, BSA <dbl>, BMIcalc <dbl>, LBW <dbl>,
-#> #   DMELITU <dbl>
+#>      ID   OCC    DD   AMT  TIME   POD    DV  EVID   CMT   MDV    II    SS
+#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1     1     1   6    3000   168     7   0       1     1     1    12     1
+#> 2     1     1   6       0   168     7   9.4     0     2     0     0     0
+#> 3     1     2   6.5  3250   264    11   0       1     1     1    12     1
+#> 4     1     2   6.5     0   264    11   8.4     0     2     0     0     0
+#> 5     1     3   7.5  3750   360    15   0       1     1     1    12     1
+#> 6     1     3   7.5     0   360    15   8.4     0     2     0     0     0
+#> # ℹ 18 more variables: Creatinine <dbl>, SCR <dbl>, eGFR <dbl>, ClCrea <dbl>,
+#> #   AGE <dbl>, SEX <dbl>, WT <dbl>, HCT <dbl>, CYP3A5 <dbl>, EXPRESSION <dbl>,
+#> #   PDN_DOSE <dbl>, PDNXWT <dbl>, Heigth <dbl>, Height..m. <dbl>, BSA <dbl>,
+#> #   BMIcalc <dbl>, LBW <dbl>, DMELITU <dbl>
 ```
 
 #### 3) External model evaluation with `exeval_ppk()`
@@ -222,9 +224,9 @@ print(res.1)
 #>   <dbl> <dbl>       <dbl>       <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1     2 14.5        -7.96       37.0   31.5  38.5  23.1  69.2
 #> 2     3  5.86      -27.5        39.2   40.5  44.6  10    20  
-#> 3     4 17.0        -8.49       42.4   35.1  43.9  38.5  53.8
+#> 3     4 18.8        -8.45       46.0   37.0  47.2  38.5  53.8
 #> 4     5 -8.59      -21.0         3.87  16.7  18.6  70    90  
-#> 5     6 -8.72      -28.5        11.1   23.8  27.7  50    60  
+#> 5     6 -5.71      -27.1        15.6   26.1  28.9  40    60  
 #> ===================================
 ```
 
@@ -358,7 +360,7 @@ print(Best_fit)
 #>   <dbl> <dbl>       <dbl>       <dbl> <dbl> <dbl> <dbl> <dbl> <chr>   
 #> 1     2 14.5        -7.96       37.0   31.5  38.5  23.1  69.2 Han_etal
 #> 2     3  5.86      -27.5        39.2   40.5  44.6  10    20   Han_etal
-#> 3     4 17.0        -8.49       42.4   35.1  43.9  38.5  53.8 Han_etal
+#> 3     4 18.8        -8.45       46.0   37.0  47.2  38.5  53.8 Han_etal
 #> 4     5 -8.59      -21.0         3.87  16.7  18.6  70    90   Han_etal
-#> 5     6 -8.72      -28.5        11.1   23.8  27.7  50    60   Han_etal
+#> 5     6 -5.71      -27.1        15.6   26.1  28.9  40    60   Han_etal
 ```
