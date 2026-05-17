@@ -18,8 +18,8 @@
 #'   \item Very Poor: absolute IPE > 50%
 #' }
 #'
-#' @param metrics Output from [metrics_occ()] or a compatible data frame
-#'   containing at least `IPE` and `OCC`.
+#' @param x Output from [exeval_ppk()], [metrics_occ()], or a compatible
+#'   data frame containing at least `IPE` and `OCC`.
 #' @param occ Optional numeric occasion to filter.
 #'   If `NULL` (default), all occasions are included.
 #' @param type Character string indicating the type of plot to generate:
@@ -32,24 +32,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Fit classification bar plot
-#' plot_fit_distribution(metrics)
+#' res <- exeval_ppk(...)
 #'
-#' # Fit classification for a specific occasion
-#' plot_fit_distribution(
-#'   metrics,
-#'   occ = 2
-#' )
+#' # Fit classification
+#' plot_fit_distribution(res)
 #'
-#' # Histogram of absolute IPE
-#' plot_fit_distribution(
-#'   metrics,
-#'   type = "histogram"
-#' )
+#' # Specific occasion
+#' plot_fit_distribution(res, occ = 2)
 #'
-#' # Histogram of signed IPE
+#' # Histogram
+#' plot_fit_distribution(res, type = "histogram")
+#'
+#' # Signed histogram
 #' plot_fit_distribution(
-#'   metrics,
+#'   res,
 #'   type = "histogram",
 #'   signed = TRUE
 #' )
@@ -57,20 +53,29 @@
 #'
 #' @export
 
-plot_fit_distribution <- function(metrics,
+plot_fit_distribution <- function(x,
                                   occ = NULL,
                                   type = c("fit_class", "histogram"),
                                   signed = FALSE) {
 
   type <- match.arg(type)
 
-  if (inherits(metrics, "EvalMetricsPPK")) {
-    df <- metrics$metrics
-  } else if (is.data.frame(metrics)) {
-    df <- metrics
+  # --------------------------
+  # Accept full evaluation object
+  # --------------------------
+  if (inherits(x, "EvalPPK")) {
+    x <- x$metrics
+  }
+  # --------------------------
+  # Supported inputs
+  # --------------------------
+  if (inherits(x, "EvalMetricsPPK")) {
+    df <- x$metrics
+  } else if (is.data.frame(x)) {
+    df <- x
   } else {
     stop(
-      "'metrics' must be an EvalMetricsPPK object or a data.frame containing IPE."
+      "'x' must be an EvalPPK object, EvalMetricsPPK object, or a data.frame containing IPE."
     )
   }
 
@@ -82,7 +87,9 @@ plot_fit_distribution <- function(metrics,
       paste(required_cols, collapse = ", ")
     )
   }
-
+  # --------------------------
+  # Occasion filter
+  # --------------------------
   if (!is.null(occ)) {
     df <- df %>%
       dplyr::filter(OCC == occ)
@@ -97,6 +104,9 @@ plot_fit_distribution <- function(metrics,
       Abs_IPE = abs(IPE)
     )
 
+  # --------------------------
+  # Fit class plot
+  # --------------------------
   if (type == "fit_class") {
 
     df <- df %>%
@@ -138,7 +148,9 @@ plot_fit_distribution <- function(metrics,
       ggplot2::theme_bw()
 
   } else {
-
+    # --------------------------
+    # Histogram
+    # --------------------------
     if (signed) {
       x_var <- "IPE"
       x_lab <- "Individual Prediction Error (%)"

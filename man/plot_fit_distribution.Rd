@@ -5,15 +5,15 @@
 \title{Plot fit quality distribution}
 \usage{
 plot_fit_distribution(
-  metrics,
+  x,
   occ = NULL,
   type = c("fit_class", "histogram"),
   signed = FALSE
 )
 }
 \arguments{
-\item{metrics}{Output from [metrics_occ()] or a compatible data frame
-containing at least `IPE` and `OCC`.}
+\item{x}{Output from [exeval_ppk()], [metrics_occ()], or a compatible
+data frame containing at least `IPE` and `OCC`.}
 
 \item{occ}{Optional numeric occasion to filter.
 If `NULL` (default), all occasions are included.}
@@ -50,24 +50,20 @@ Fit quality categories are defined according to absolute IPE:
 }
 \examples{
 \dontrun{
-# Fit classification bar plot
-plot_fit_distribution(metrics)
+res <- exeval_ppk(...)
 
-# Fit classification for a specific occasion
-plot_fit_distribution(
-  metrics,
-  occ = 2
-)
+# Fit classification
+plot_fit_distribution(res)
 
-# Histogram of absolute IPE
-plot_fit_distribution(
-  metrics,
-  type = "histogram"
-)
+# Specific occasion
+plot_fit_distribution(res, occ = 2)
 
-# Histogram of signed IPE
+# Histogram
+plot_fit_distribution(res, type = "histogram")
+
+# Signed histogram
 plot_fit_distribution(
-  metrics,
+  res,
   type = "histogram",
   signed = TRUE
 )
