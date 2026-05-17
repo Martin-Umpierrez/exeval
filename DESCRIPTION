@@ -34,7 +34,8 @@ Imports:
     scales, 
     stats, 
     methods, 
-    rlang
+    rlang, 
+    openxlsx
 Suggests: 
     knitr,
     rmarkdown,

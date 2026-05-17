@@ -84,10 +84,6 @@ export_evaluation_xlsx <- function(x,
   metadata <- NULL
   metrics_means <- NULL
 
-  if (!requireNamespace("openxlsx", quietly = TRUE)) {
-    stop("Package 'openxlsx' is required.")
-  }
-
   # -----------------------------
   # EvalPPK
   # -----------------------------
