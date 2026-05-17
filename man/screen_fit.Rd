@@ -5,32 +5,37 @@
 \title{Screen individual fit quality}
 \usage{
 screen_fit(
-  metrics,
+  x,
   occ = NULL,
   fit_classes = c("Excellent", "Acceptable", "Poor", "Very Poor"),
   ids_only = FALSE
 )
 }
 \arguments{
-\item{metrics}{Output from [metrics_occ()] or a compatible data frame
-containing at least `ID`, `OCC`, `TIME`, and `IPE`.}
+\item{x}{Either:
+\itemize{
+  \item An object of class \code{EvalPPK}
+  \item An object of class \code{EvalMetricsPPK}
+  \item A data frame containing at least \code{ID}, \code{OCC},
+  \code{TIME}, and \code{IPE}
+}}
 
 \item{occ}{Optional numeric occasion to filter.
-If `NULL` (default), all occasions are included.}
+If \code{NULL} (default), all occasions are included.}
 
 \item{fit_classes}{Character vector indicating which fit categories to retain.
 Default includes all categories.}
 
-\item{ids_only}{Logical. If `TRUE`, returns only unique subject IDs matching
-the selected criteria.}
+\item{ids_only}{Logical. If \code{TRUE}, returns only unique subject IDs
+matching the selected criteria.}
 }
 \value{
-A data frame containing filtered observations with fit classification,
-  or a vector of IDs if `ids_only = TRUE`.
+A filtered data frame containing fit classification results,
+or a vector of IDs if \code{ids_only = TRUE}.
 }
 \description{
 Classifies individual prediction performance based on absolute individual
-prediction error (APE) and filters observations according to selected fit
+prediction error (IPE) and filters observations according to selected fit
 quality categories.
 }
 \details{
@@ -43,29 +48,40 @@ Fit categories are defined as:
 }
 
 This function operates at the observation level (ID/OCC/TIME), making it
-useful for identifying specific poorly or well fitted samples.
+useful for identifying specific poorly or well-fitted samples.
+
+Supported inputs include:
+\itemize{
+  \item Objects of class \code{EvalPPK}, typically returned by [exeval_ppk()]
+  \item Objects of class \code{EvalMetricsPPK}, typically returned by [metrics_occ()]
+  \item Compatible data frames containing observation-level metrics
+}
 }
 \examples{
 \dontrun{
-# Return all classified observations
-screen_fit(metrics)
+# Screen full evaluation object
+res <- exeval_ppk(...)
+screen_fit(res)
+
+# Screen metrics object
+screen_fit(res$metrics)
 
 # Return only poorly fitted observations
 screen_fit(
-  metrics,
+  res,
   fit_classes = c("Poor", "Very Poor")
 )
 
 # Return only very poorly fitted observations from OCC 1
 screen_fit(
-  metrics,
+  res,
   occ = 1,
   fit_classes = "Very Poor"
 )
 
 # Return only IDs with excellent fit
 screen_fit(
-  metrics,
+  res,
   fit_classes = "Excellent",
   ids_only = TRUE
 )
