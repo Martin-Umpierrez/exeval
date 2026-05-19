@@ -15,14 +15,28 @@ utils::globalVariables(c(
 
 
 individual_sim <-
-function(posterior_model, treatment, start,
-         end, ss_fixed = FALSE, ss_n = NULL, tad = FALSE) {
+function(posterior_model,
+         treatment,
+         start,
+         end,
+         delta= NULL,
+         ss_fixed = FALSE,
+         ss_n = NULL,
+         tad = FALSE) {
 
   posterior_model <- posterior_model %>%
     mrgsolve::data_set(treatment) %>%
-    mrgsolve::update(start = start, end = end)
+    mrgsolve::update(
+      start = start,
+      end = end)
+
+  if (!is.null(delta)) {
+    posterior_model <- posterior_model %>%
+      mrgsolve::update(delta = delta)
+  }
 
   sim_result <- mrgsolve::mrgsim(posterior_model)
+
   return(sim_result)
 }
 
