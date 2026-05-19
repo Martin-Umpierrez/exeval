@@ -15,8 +15,8 @@ exeval_ppk(
   num_ids = NULL,
   sampling = TRUE,
   occ_ref = NULL,
-  evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
-    "Cronologic_Ref", "Most_Recent_Ref"),
+  evaluation_type = c("sequential_updating", "stepwise_updating",
+    "sequential_reference_updating", "backward_reference_updating"),
   method = c("L-BFGS-B", "newuoa"),
   assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
   verbose = FALSE
@@ -53,10 +53,10 @@ Required only if \code{model} is provided as character model code.#'}
 \item{evaluation_type}{Character string. Specifies the evaluation type. Options are:
 \itemize{
   \item "sequential_updating": Uses all data up to each occasion.
-  \item "Most_Recent_sequential_updating": Uses only the most recent occasion.
-  \item "Cronologic_Ref": Uses all data up to a reference occasion.
-  \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
-}F}
+  \item "stepwise_updating": Uses only the most recent occasion.
+  \item "sequential_reference_updating": Uses all data up to a reference occasion.
+  \item "backward_reference_updating": Uses the most recent occasion relative to a reference.
+}}
 
 \item{method}{Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".}
 

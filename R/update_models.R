@@ -13,9 +13,9 @@
 #' @param evaluation_type A character vector specifying the evaluation type to use for updating.
 #'   Options include:
 #'   - `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
-#'   - `"Most_Recent_sequential_updating"`: Use only the most recent posterior for updating.
-#'   - `"Cronologic_Ref"`: Use a chronological reference for posterior updates.
-#'   - `"Most_Recent_Ref"`: Use the most recent chronological reference for updates.
+#'   - `"stepwise_updating"`: Use only the most recent posterior for updating.
+#'   - `"sequential_reference_updating"`: Use a chronological reference for posterior updates.
+#'   - `"backward_reference_updating"`: Use the most recent chronological reference for updates.
 #'   Defaults to `"sequential_updating"`.
 #'
 #' @return A list containing:
@@ -57,9 +57,9 @@
 
 update_map_models <-
 function(map_results, evaluation_type = c("sequential_updating",
-                                                "Most_Recent_sequential_updating",
-                                                "Cronologic_Ref",
-                                                "Most_Recent_Ref")) {
+                                                "stepwise_updating",
+                                                "sequential_reference_updating",
+                                                "backward_reference_updating")) {
 
   if ( map_results$eval_type != evaluation_type) {
     stop(" Select the same evaluation type used in run_map")
@@ -100,7 +100,7 @@ function(map_results, evaluation_type = c("sequential_updating",
     }
   }
 
-  else if (evaluation_type=="Most_Recent_sequential_updating") {
+  else if (evaluation_type=="stepwise_updating") {
     for (i in 1:(num_estimations)) {
 
       current_map_estimation <- map_estimations[[paste0("map.estimation.occ_", i)]]
@@ -119,7 +119,7 @@ function(map_results, evaluation_type = c("sequential_updating",
     }
   }
 
-  else if (evaluation_type=="Cronologic_Ref") {
+  else if (evaluation_type=="sequential_reference_updating") {
     for (i in 1:(num_estimations)) {
       previous_numbers <- paste0(1:i, collapse = "_")
       current_map_estimation <- map_estimations[[paste0("map.estimation.occ_0_",previous_numbers)]]
@@ -138,7 +138,7 @@ function(map_results, evaluation_type = c("sequential_updating",
     }
   }
 
-  else if (evaluation_type=="Most_Recent_Ref") {
+  else if (evaluation_type=="backward_reference_updating") {
     for (i in 1:(num_estimations)) {
 
       previous_numbers <- paste0((occ_ref-1):i, collapse = "_")

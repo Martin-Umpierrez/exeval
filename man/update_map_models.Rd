@@ -6,8 +6,8 @@
 \usage{
 update_map_models(
   map_results,
-  evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
-    "Cronologic_Ref", "Most_Recent_Ref")
+  evaluation_type = c("sequential_updating", "stepwise_updating",
+    "sequential_reference_updating", "backward_reference_updating")
 )
 }
 \arguments{
@@ -18,9 +18,9 @@ for each occasion.}
 \item{evaluation_type}{A character vector specifying the evaluation type to use for updating.
 Options include:
 - `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
-- `"Most_Recent_sequential_updating"`: Use only the most recent posterior for updating.
-- `"Cronologic_Ref"`: Use a chronological reference for posterior updates.
-- `"Most_Recent_Ref"`: Use the most recent chronological reference for updates.
+- `"stepwise_updating"`: Use only the most recent posterior for updating.
+- `"sequential_reference_updating"`: Use a chronological reference for posterior updates.
+- `"backward_reference_updating"`: Use the most recent chronological reference for updates.
 Defaults to `"sequential_updating"`.}
 }
 \value{

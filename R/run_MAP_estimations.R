@@ -28,9 +28,9 @@
 #' @param evaluation_type Character string. Specifies the evaluation type. Options are:
 #'   \itemize{
 #'     \item "sequential_updating": Uses all data up to each occasion.
-#'     \item "Most_Recent_sequential_updating": Uses only the most recent occasion.
-#'     \item "Cronologic_Ref": Uses all data up to a reference occasion.
-#'     \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
+#'     \item "stepwise_updating": Uses only the most recent occasion.
+#'     \item "sequential_reference_updating": Uses all data up to a reference occasion.
+#'     \item "backward_reference_updating": Uses the most recent occasion relative to a reference.
 #'   }
 #' @param method Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".
 #'
@@ -65,8 +65,8 @@ function(model, model_name= NULL,
                                 num_ids= NULL,
                                 sampling = TRUE,
                                 occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
-                                evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
-                                                    "Cronologic_Ref","Most_Recent_Ref"), ## Como se va a hacer la eval externa
+                                evaluation_type = c("sequential_updating", "stepwise_updating",
+                                                    "sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
                                 method = c("L-BFGS-B", "newuoa")) {
 
   # check data has the required columns
@@ -79,8 +79,8 @@ function(model, model_name= NULL,
   }
 
   if (!is.null(occ_ref) && (evaluation_type =="sequential_updating" || evaluation_type ==
-                            "Most_Recent_sequential_updating")) {
-    stop("occ_ref must be used wwith evaluation type Cronologic_Ref or Most_Recent_Ref")
+                            "stepwise_updating")) {
+    stop("occ_ref must be used wwith evaluation type sequential_reference_updating or backward_reference_updating")
   }
 
   if (tool == "mapbayr") {
@@ -153,14 +153,14 @@ function(model, model_name= NULL,
         list_df_basedata[[nombre_vector]] <- filtered_data|>dplyr::filter(OCC <= i)
       }
     }
-    else if (evaluation_type=="Most_Recent_sequential_updating")
+    else if (evaluation_type=="stepwise_updating")
     {
       for (i in 1:num_occ) {
         nombre_vector <- paste0("dfOCC", i)
         list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC == i)
       }
     }
-    else if (evaluation_type=="Cronologic_Ref")
+    else if (evaluation_type=="sequential_reference_updating")
     {
       for (i in 1:occ_ref) {
         nombre_vector <- paste0("dfOCC", i)
@@ -168,7 +168,7 @@ function(model, model_name= NULL,
       }
 
     }
-    else if (evaluation_type== "Most_Recent_Ref")
+    else if (evaluation_type== "backward_reference_updating")
       for (i in occ_ref:1) {
         nombre_vector <- paste0("dfOCC", i)
         list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC <= i)
@@ -284,7 +284,7 @@ function(model, model_name= NULL,
       }
     }
 
-    else if (evaluation_type== "Most_Recent_sequential_updating")  {
+    else if (evaluation_type== "stepwise_updating")  {
       for (j in 1:(num_occ - 1)) {
         map.result <- paste0("map.estimation.occ_", j)
         list_map[[map.result]] <- mapbayr::mapbayest(my_model,
@@ -292,7 +292,7 @@ function(model, model_name= NULL,
                                                      method = method)
       }
     }
-    else if (evaluation_type== "Cronologic_Ref")  {
+    else if (evaluation_type== "sequential_reference_updating")  {
       for (j in 1:(occ_ref - 1)) {
         previous_numbers <- paste0(1:j, collapse = "_")
         map.result <- paste0("map.estimation.occ_0_",previous_numbers)
@@ -301,7 +301,7 @@ function(model, model_name= NULL,
                                                      method = method)
       }
     }
-    else if (evaluation_type== "Most_Recent_Ref")  {
+    else if (evaluation_type== "backward_reference_updating")  {
       for (j in (occ_ref - 1):1) {
         previous_numbers <- paste0((occ_ref-1):j, collapse = "_")
         map.result <- paste0("map.estimation.occ_",previous_numbers)
