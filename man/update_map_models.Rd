@@ -6,8 +6,8 @@
 \usage{
 update_map_models(
   map_results,
-  evaluation_type = c("Progressive", "Most_Recent_Progressive", "Cronologic_Ref",
-    "Most_Recent_Ref")
+  evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
+    "Cronologic_Ref", "Most_Recent_Ref")
 )
 }
 \arguments{
@@ -17,11 +17,11 @@ for each occasion.}
 
 \item{evaluation_type}{A character vector specifying the evaluation type to use for updating.
 Options include:
-- `"Progressive"`: Use posterior results progressively across all previous occasions.
-- `"Most_Recent_Progressive"`: Use only the most recent posterior for updating.
+- `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
+- `"Most_Recent_sequential_updating"`: Use only the most recent posterior for updating.
 - `"Cronologic_Ref"`: Use a chronological reference for posterior updates.
 - `"Most_Recent_Ref"`: Use the most recent chronological reference for updates.
-Defaults to `"Progressive"`.}
+Defaults to `"sequential_updating"`.}
 }
 \value{
 A list containing:
@@ -51,7 +51,7 @@ The output is intended to be used with [run_pk_simulations()]
 \dontrun{
 # Example input data
 map_results <- list(
-  eval_type = "Progressive",
+  eval_type = "sequential_updating",
   map_estimations = list(
     "map.estimation.occ_0_1" = NULL,
     "map.estimation.occ_0_1_2" = list() # Replace with real MAP estimation object
@@ -59,7 +59,7 @@ map_results <- list(
 )
 
 # Run the function
-result <- update_map_models(map_results, evaluation_type = "Progressive")
+result <- update_map_models(map_results, evaluation_type = "sequential_updating")
 print(result)
 }
 }

@@ -14,8 +14,8 @@ run_MAP_estimations(
   num_ids = NULL,
   sampling = TRUE,
   occ_ref = NULL,
-  evaluation_type = c("Progressive", "Most_Recent_Progressive", "Cronologic_Ref",
-    "Most_Recent_Ref"),
+  evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
+    "Cronologic_Ref", "Most_Recent_Ref"),
   method = c("L-BFGS-B", "newuoa")
 )
 }
@@ -47,8 +47,8 @@ Required only if \code{model} is provided as character model code.#'}
 
 \item{evaluation_type}{Character string. Specifies the evaluation type. Options are:
 \itemize{
-  \item "Progressive": Uses all data up to each occasion.
-  \item "Most_Recent_Progressive": Uses only the most recent occasion.
+  \item "sequential_updating": Uses all data up to each occasion.
+  \item "Most_Recent_sequential_updating": Uses only the most recent occasion.
   \item "Cronologic_Ref": Uses all data up to a reference occasion.
   \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 }}
@@ -84,7 +84,7 @@ run_MAP_estimations(
   model_code = "example_code",
   tool = "mapbayr",
   data = example_data,
-  evaluation_type = "Progressive"
+  evaluation_type = "sequential_updating"
 )
 }
 }
