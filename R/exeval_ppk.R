@@ -22,8 +22,8 @@
 #' @param occ_ref Integer. Reference occasion for evaluation types that require a reference. Must be consistent with `evaluation_type`.
 #' @param evaluation_type Character string. Specifies the evaluation type. Options are:
 #'   \itemize{
-#'     \item "Progressive": Uses all data up to each occasion.
-#'     \item "Most_Recent_Progressive": Uses only the most recent occasion.
+#'     \item "sequential_updating": Uses all data up to each occasion.
+#'     \item "Most_Recent_sequential_updating": Uses only the most recent occasion.
 #'     \item "Cronologic_Ref": Uses all data up to a reference occasion.
 #'     \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 #'   }
@@ -57,7 +57,7 @@
 #' res <- exeval_ppk(model_name = "tacrolimus_HAN2011",
 #'                  model = mm,
 #'                  data = dd,
-#'                  evaluation_type= "Progressive",
+#'                  evaluation_type= "sequential_updating",
 #'                  assessment='Bayesian_forecasting' )
 #'
 #' res # Print the results
@@ -73,7 +73,7 @@ exeval_ppk <-  function(model,
                         num_ids= NULL,
                         sampling = TRUE,
                         occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
-                        evaluation_type = c("Progressive", "Most_Recent_Progressive","Cronologic_Ref","Most_Recent_Ref"), ## Como se va a hacer la eval externa
+                        evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating","Cronologic_Ref","Most_Recent_Ref"), ## Como se va a hacer la eval externa
                         method = c("L-BFGS-B", "newuoa"),
                         assessment = c("a_priori","Bayesian_forecasting", "Complete"),
                         verbose=FALSE) {

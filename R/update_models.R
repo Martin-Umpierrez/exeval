@@ -12,11 +12,11 @@
 #'
 #' @param evaluation_type A character vector specifying the evaluation type to use for updating.
 #'   Options include:
-#'   - `"Progressive"`: Use posterior results progressively across all previous occasions.
-#'   - `"Most_Recent_Progressive"`: Use only the most recent posterior for updating.
+#'   - `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
+#'   - `"Most_Recent_sequential_updating"`: Use only the most recent posterior for updating.
 #'   - `"Cronologic_Ref"`: Use a chronological reference for posterior updates.
 #'   - `"Most_Recent_Ref"`: Use the most recent chronological reference for updates.
-#'   Defaults to `"Progressive"`.
+#'   Defaults to `"sequential_updating"`.
 #'
 #' @return A list containing:
 #' \describe{
@@ -40,7 +40,7 @@
 #' \dontrun{
 #' # Example input data
 #' map_results <- list(
-#'   eval_type = "Progressive",
+#'   eval_type = "sequential_updating",
 #'   map_estimations = list(
 #'     "map.estimation.occ_0_1" = NULL,
 #'     "map.estimation.occ_0_1_2" = list() # Replace with real MAP estimation object
@@ -48,7 +48,7 @@
 #' )
 #'
 #' # Run the function
-#' result <- update_map_models(map_results, evaluation_type = "Progressive")
+#' result <- update_map_models(map_results, evaluation_type = "sequential_updating")
 #' print(result)
 #'}
 #' @importFrom magrittr %>%
@@ -56,8 +56,8 @@
 #' @export
 
 update_map_models <-
-function(map_results, evaluation_type = c("Progressive",
-                                                "Most_Recent_Progressive",
+function(map_results, evaluation_type = c("sequential_updating",
+                                                "Most_Recent_sequential_updating",
                                                 "Cronologic_Ref",
                                                 "Most_Recent_Ref")) {
 
@@ -79,7 +79,7 @@ function(map_results, evaluation_type = c("Progressive",
   num_estimations <- length(map_estimations)
 
   # loop over estimations
-  if(evaluation_type=="Progressive") {
+  if(evaluation_type=="sequential_updating") {
     for (i in 1:(num_estimations)) {
       # current estimation
       previous_numbers <- paste0(1:i, collapse = "_")
@@ -100,7 +100,7 @@ function(map_results, evaluation_type = c("Progressive",
     }
   }
 
-  else if (evaluation_type=="Most_Recent_Progressive") {
+  else if (evaluation_type=="Most_Recent_sequential_updating") {
     for (i in 1:(num_estimations)) {
 
       current_map_estimation <- map_estimations[[paste0("map.estimation.occ_", i)]]

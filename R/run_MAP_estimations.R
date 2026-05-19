@@ -27,8 +27,8 @@
 #' @param occ_ref Integer. Reference occasion for evaluation types that require a reference. Must be consistent with `evaluation_type`.
 #' @param evaluation_type Character string. Specifies the evaluation type. Options are:
 #'   \itemize{
-#'     \item "Progressive": Uses all data up to each occasion.
-#'     \item "Most_Recent_Progressive": Uses only the most recent occasion.
+#'     \item "sequential_updating": Uses all data up to each occasion.
+#'     \item "Most_Recent_sequential_updating": Uses only the most recent occasion.
 #'     \item "Cronologic_Ref": Uses all data up to a reference occasion.
 #'     \item "Most_Recent_Ref": Uses the most recent occasion relative to a reference.
 #'   }
@@ -53,7 +53,7 @@
 #'   model_code = "example_code",
 #'   tool = "mapbayr",
 #'   data = example_data,
-#'   evaluation_type = "Progressive"
+#'   evaluation_type = "sequential_updating"
 #' )
 #' }
 
@@ -65,7 +65,7 @@ function(model, model_name= NULL,
                                 num_ids= NULL,
                                 sampling = TRUE,
                                 occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
-                                evaluation_type = c("Progressive", "Most_Recent_Progressive",
+                                evaluation_type = c("sequential_updating", "Most_Recent_sequential_updating",
                                                     "Cronologic_Ref","Most_Recent_Ref"), ## Como se va a hacer la eval externa
                                 method = c("L-BFGS-B", "newuoa")) {
 
@@ -78,8 +78,8 @@ function(model, model_name= NULL,
     stop("occ_ref and num_occ must have the same value if both are specified.")
   }
 
-  if (!is.null(occ_ref) && (evaluation_type =="Progressive" || evaluation_type ==
-                            "Most_Recent_Progressive")) {
+  if (!is.null(occ_ref) && (evaluation_type =="sequential_updating" || evaluation_type ==
+                            "Most_Recent_sequential_updating")) {
     stop("occ_ref must be used wwith evaluation type Cronologic_Ref or Most_Recent_Ref")
   }
 
@@ -146,14 +146,14 @@ function(model, model_name= NULL,
 
     # construct data list to get the MAPs
     list_df_basedata <- list()
-    if(evaluation_type=="Progressive")
+    if(evaluation_type=="sequential_updating")
     {
       for (i in 1:num_occ) {
         nombre_vector <- paste0("dfOCC", i)
         list_df_basedata[[nombre_vector]] <- filtered_data|>dplyr::filter(OCC <= i)
       }
     }
-    else if (evaluation_type=="Most_Recent_Progressive")
+    else if (evaluation_type=="Most_Recent_sequential_updating")
     {
       for (i in 1:num_occ) {
         nombre_vector <- paste0("dfOCC", i)
@@ -274,7 +274,7 @@ function(model, model_name= NULL,
     # get map estimates for each data set
     list_map <- list()
 
-    if(evaluation_type=="Progressive") {
+    if(evaluation_type=="sequential_updating") {
       for (j in 1:(num_occ - 1)) {
         previous_numbers <- paste0(1:j, collapse = "_")
         map.result <- paste0("map.estimation.occ_0_",previous_numbers)
@@ -284,7 +284,7 @@ function(model, model_name= NULL,
       }
     }
 
-    else if (evaluation_type== "Most_Recent_Progressive")  {
+    else if (evaluation_type== "Most_Recent_sequential_updating")  {
       for (j in 1:(num_occ - 1)) {
         map.result <- paste0("map.estimation.occ_", j)
         list_map[[map.result]] <- mapbayr::mapbayest(my_model,
