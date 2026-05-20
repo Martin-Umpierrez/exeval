@@ -135,18 +135,10 @@ export_evaluation_pdf <- function(
     logo_path = NULL,
     include_plots = TRUE,
     include_metrics_plot = TRUE,
-    metrics_plot_types = c(
-      "bias_barplot",
-      "bias_pointrange",
-      "MAIPE_barplot",
-      "bias_boxplot",
-      "bias_violin",
-      "bias_dotplot",
-      "bias_density",
-      "IF20_plot",
-      "IF30_plot",
-      "IF_plot",
-      "error_plot"
+    metrics_plot_types = c("bias_barplot","bias_pointrange","MAIPE_barplot",
+                           "bias_boxplot","bias_violin", "bias_dotplot",
+                           "bias_density", "IF20_plot","IF30_plot","IF_plot",
+                           "error_plot"
     ),
     include_individual_plots = TRUE,
     n_individual_plots = 3,
@@ -543,9 +535,9 @@ export_evaluation_pdf <- function(
     df_fit <- df %>%
       dplyr::mutate(
         Fit_Class = dplyr::case_when(
-          abs(IPE) <= 15 ~ "Excellent",
-          abs(IPE) <= 30 ~ "Acceptable",
-          abs(IPE) <= 50 ~ "Poor",
+          Abs_IPE <= 15 ~ "Excellent",
+          Abs_IPE <= 30 ~ "Acceptable",
+          Abs_IPE <= 50 ~ "Poor",
           TRUE ~ "Very Poor"
         )
       )
@@ -565,7 +557,7 @@ export_evaluation_pdf <- function(
           Percent = 100 * n / sum(n)
         ),
       poor_fit_ids = df %>%
-        dplyr::filter(abs(IPE) >= 50) %>%
+        dplyr::filter((Abs_IPE) >= 50) %>%
         dplyr::count(ID, sort = TRUE)
     )
   }
@@ -674,7 +666,7 @@ export_evaluation_pdf <- function(
       )
 
       add_plot_page(
-        paste("Individual Fit — ID", id),
+        paste("Individual Fit ID", id),
         p
       )
     }

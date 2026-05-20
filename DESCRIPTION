@@ -41,7 +41,8 @@ Imports:
     methods, 
     rlang, 
     openxlsx,
-    tools
+    tools,
+    png
 Suggests: 
     knitr,
     rmarkdown,
