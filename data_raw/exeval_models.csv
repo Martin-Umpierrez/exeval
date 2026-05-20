@@ -1,0 +1,281 @@
+Label;Drug;Author;Year;Ref;Model
+TAC_Han2011;Tacrolimus;Han;2011;"Prediction of the tacrolimus population pharmacokinetic parameters according to CYP3A5 genotype and clinical factors using NONMEM in adult kidney transplant recipients.
+European Journal of Clinical Pharmacology, 69(1), 53–63.";""" $PROB
+# One Comparment Model with first order absorption- Ka is FIXED
+$GLOBAL
+#define CP (CENT/iV)
+$CMT  @annotated
+EV   : Extravascular compartment
+CENT : Central compartment#two compt model with first order absorption
+
+$PARAM @annotated 
+CL  :  24.13 : Clearance for CYP3A5*3*3
+V  :  716 : central volume
+KA  : 4.5 : absorption rate constant
+ETA1 : 0 : IIVCl (L/h)
+ETA2 : 0 : IIVV (L)
+
+$PARAM @annotated @covariate
+POD    : 0   : COV POST OPERATIVE DAY
+HCT      : 0  : COV HCH
+WT      : 0  : COV WT
+CYP3A5      : 0  : Polimorfismo CYP3A5
+OCC     : -99  : Occasion, shall be passed by dataset imported
+
+$ODE
+dxdt_EV = -iKA*EV;
+dxdt_CENT = iKA*EV  - iCL*CP;
+
+$MAIN
+##CYP3A5 effect on Cl##
+
+double HM = 1.186 ;  ####Rapid Metabolizer ####
+double IM = 1.13 ;  ####Intermediate Metabolizer ####
+double PM = 1 ;  ####Poor Metabolizer####
+
+if(CYP3A5==1) double CL_EFFECT = HM ;
+if(CYP3A5==2) CL_EFFECT = IM ;
+if(CYP3A5==3) CL_EFFECT = PM ;
+
+double CL_HCT1 = 1.3458 ; ##Effect of HCT< 33
+double CL_HCT2 = 1.124 ;  ##Effect of HCT >33
+
+if(HCT< 33) double CL_HCT = CL_HCT1 ;
+if(HCT >= 33) CL_HCT = CL_HCT2 ;
+
+double CL_POD = - 0.00762 ;
+
+double iCL =  CL *exp(ETA(1) + ETA1)* pow(POD, CL_POD) * CL_EFFECT * CL_HCT ;  
+double iV =  V *exp(ETA(2) + ETA2) * exp (0.355*WT/59.025) ;  
+double iKA =  KA ;    
+
+
+$OMEGA @name IIV 
+0.248 
+0.237
+
+$SIGMA  @name SIGMA @annotated
+ADD : 0 : ADD residual error
+PROP : 0.16 : Proportional residual error
+
+
+$TABLE
+double IPRED = CENT/iV;
+double DV = IPRED * (1 + PROP) ;
+
+$CAPTURE @annotated
+CP : Plasma concentration (mass/volume)
+iCL :  Clearance
+iV : :Central Volume
+iKA : KA: absorption rate constant
+EVID : EVENT ID
+DV : PREDICCION
+OCC: OCCASION
+
+               """
+TAC_Zuo2013;Tacrolimus;Zuo;2013;"Effects of CYP3A4 and CYP3A5 polymorphisms on tacrolimus pharmacokinetics in Chinese adult renal transplant recipients: a population pharmacokinetic analysis. Pharmacogenet Genomics. 2013 May;23(5):251-61. doi: 10.1097/FPC.0b013e32835fcbb6. PMID: 23459029.";""" $PROB
+# One Comparment Model with first order absorption-
+# CYP3A4*1G VARIABILITY
+*1*1-------- n=73 ---- 45 %
+*1*1G------- n=78----
+*1G*1G------ n=10----- Combined 55 %
+
+$GLOBAL
+#define CP (CENT/iV)
+$CMT  @annotated
+EV   : Extravascular compartment
+CENT : Central compartment
+
+
+$PARAM @annotated
+CL  :  26.6 : clearance (L/h)
+V  :  1020   : central volume (L)
+KA  : 3.09 : absorption rate constant (h-1)
+ETA1 : 0 : Cl (L/h)
+ETA2 : 0 : V (L/h)
+
+$PARAM @annotated @covariate
+HCT   : 0   : HEMATOCRITO ON CL
+EXPRESSION      : 0  : If a patients has one *1 (0=no, 1=yes)
+OCC     : -99  : Occasion, shall be passed by dataset imported
+
+$MAIN
+
+double HM = 1.1074 ;  ####High Metbolizer#### Considering CYP3A4 proportion
+double PM = 0.68315 ;  ####Poor Metabolizer#### Considering CYP3A4 proportion
+
+if(EXPRESSION== 1 )  double CL_EFFECT = HM  ;
+if(EXPRESSION== 0 )  CL_EFFECT = PM  ;
+
+double CL_HCT = - 0.451 ;  #### Hematocrit Effect on Clerance
+
+double iCL =  CL * exp(ETA1 + ETA(1)) * CL_EFFECT * pow((HCT/27.9), CL_HCT)  ;
+double iV =  V * exp(ETA2 + ETA(2)) ;
+double iKA =  KA ;
+
+$ODE
+dxdt_EV = -iKA*EV;
+dxdt_CENT = iKA*EV  - iCL*CP;
+
+
+$OMEGA @name IIV
+0.0569
+0.294
+
+$SIGMA  @name SIGMA @annotated
+ADD : 2.1609 : ADD residual error
+PROP : 0.0392 : Proportional residual error
+
+$TABLE
+double IPRED = CENT/iV;
+double DV = IPRED * (1 + PROP) + ADD ;
+
+$CAPTURE @annotated
+OCC : OCCASION
+CP : Plasma concentration (mass/volume)
+iCL :  Clearance
+iV : :Central Volume
+iKA : KA: absorption rate constant
+EVID : EVENT ID
+DV : PREDICCION
+OCC: OCCASION
+
+               """
+TAC_Umpierrez2026;Tacrolimus;Umpierrez;2026;Accelerating tacrolimus model-informed precision dosing in kidney transplant recipients: Model evaluation and refinement strategies;""" $PROB
+#two compt model with first order absorption
+$GLOBAL
+#define CP (CENT/iV2)
+#define CT (PERIPH/iV3)
+$CMT  @annotated
+EV   : Extravascular compartment
+CENT : Central compartment
+PERIPH : Peripheral compartment (mass)
+
+$PARAM @annotated
+CL  :  19.8 : clearance
+V2  :  330 : central volume
+Q  :  35.44: intercompartmental clearance
+V3  : 118  :peripheral volume
+KA  :  2.49: absorption rate constant
+ETA1 : 0 : IIV CL(L/h)
+ETA2 : 0 : IIV V2 (L)
+ETA3 :  0: IIV V3 (L/h)
+ETA4 : 0 : IIV Q (L/h)
+ETA5 : 0 : IOV on Ka (OCC = 1)
+ETA6 : 0 : IOV on Ka (OCC = 2)
+ETA7 : 0 : IOV on Ka (OCC = 3)
+ETA8 : 0 : IOV on Ka (OCC = 4)
+ETA9 : 0 : IOV on Ka (OCC = 5)
+ETA10 : 0 : IOV on kA (OCC = 6)
+ETA11 : 0 : IOV on Cl (OCC = 1)
+ETA12 : 0 : IOV on Cl (OCC = 2)
+ETA13 : 0 : IOV on Cl (OCC = 3)
+ETA14 : 0 : IOV on Cl (OCC = 4)
+ETA15 : 0 : IOV on Cl (OCC = 5)
+ETA16 : 0 : IOV on Cl (OCC = 6)
+
+
+$PARAM @annotated @covariate
+LBW      : 60   : Baseline lea body weight (kg)
+CYP3A5      : 3  : Most Common metabolizer in Cauccasicans Patients
+HCT      : 33.5  : Hematocrit
+OCC     : -99  : Occasion, shall be passed by dataset imported
+
+$ODE
+dxdt_EV = -iKA*EV;
+dxdt_CENT = iKA*EV  - iCL*CP - iQ*CP + iQ*CT;
+dxdt_PERIPH = iQ*CP  - iQ*CT;
+
+$MAIN
+
+double IOVKA = 0;
+if (OCC == 1) {
+  IOVKA = ETA(5) + ETA5;
+} else if (OCC == 2) {
+ IOVKA = ETA(6) + ETA6 ;
+} else if (OCC == 3) {
+ IOVKA = ETA(7) + ETA7 ;
+} else if (OCC == 4) {
+IOVKA = ETA(8) + ETA8 ;
+} else if (OCC == 5) {
+IOVKA = ETA(9) + ETA9 ;
+} else if (OCC == 6) {
+IOVKA = ETA(10) + ETA10 ;
+}
+
+double IOVCL = 0;
+if (OCC == 1) {
+  IOVCL = ETA(11) + ETA11;
+} else if (OCC == 2) {
+ IOVCL = ETA(12) + ETA12 ;
+} else if (OCC == 3) {
+ IOVCL = ETA(13) + ETA13 ;
+} else if (OCC == 4) {
+IOVCL = ETA(14) + ETA14 ;
+} else if (OCC == 5) {
+IOVCL = ETA(15) + ETA15 ;
+} else if (OCC == 6) {
+IOVCL = ETA(16) + ETA16 ;
+}
+
+##CYP3A5 effect on Cl##
+double HM = 2.45 ;  ####METABOLIZADOR ULTRA RAPIDO ####
+double IM = 1.87 ;  ####METABOLIZADOR INTERMEDIO ####
+double PM = 1 ;  ####METABOLIZADOR POBRE ####
+if(CYP3A5==1) double CL_EFFECT = HM ;
+if(CYP3A5==2) CL_EFFECT = IM ;
+if(CYP3A5==3) CL_EFFECT = PM ;
+
+double V_LBW    = 1;
+double CL_LBW = 0.75;
+double CL_HCT    = -1.0;
+
+double iCL =  CL * CL_EFFECT * pow((HCT/33.5), CL_HCT) * pow((LBW / 60), CL_LBW) * exp(ETA(1) + ETA1 + IOVCL) ;
+double iV2 =  V2 * pow((LBW / 60), V_LBW) * exp(ETA(2)+ ETA2);
+double iQ =  Q* exp(ETA(3)+ ETA3) * pow((LBW / 60), CL_LBW);
+double iV3 =  V3 * (ETA(4) + ETA4) * pow((LBW / 60), V_LBW);
+double iKA =  KA * exp(IOVKA) ;
+
+
+
+$OMEGA @name IIV
+0.1296
+1.41
+0.3364
+0.6724
+$OMEGA  @name IOV
+0.7396
+0.7396
+0.7396
+0.7396
+0.7396
+0.7396
+0.0676
+0.0676
+0.0676
+0.0676
+0.0676
+0.0676
+$SIGMA  @name SIGMA @annotated
+ADD : 0 : ADD residual error
+PROP : 0.04 : Proportional residual error
+
+
+$TABLE
+double IPRED = CENT/iV2;
+double DV = IPRED* (1+PROP) ;
+
+$CAPTURE @annotated
+CP : Plasma concentration (mass/volume)
+CT : Peripheral concentration (mass/volume)
+iCL :  Clearance
+iV2 : :Central Volume
+iKA : KA: absorption rate constant
+iQ  : intercompartmental clearance
+iV3 : peripheral volume
+IOVKA : IOV KA
+IOVCL : IOV CL
+OCC: OCCASION
+DV : PREDICCION
+
+                """

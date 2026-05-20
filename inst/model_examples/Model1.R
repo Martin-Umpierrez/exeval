@@ -6,7 +6,7 @@
 # 1) ETAn: 0 : IOV on CL (OCC = N) statement in the $PARAM
 # 2) ETAn :  Value in the Omega Block
 # 3) ETA(n) + ETAn in every single occasion
-'$PROB
+"$PROB
 #two compt model with first order absorption
 $GLOBAL
 #define CP (CENT/iV2)
@@ -17,11 +17,11 @@ CENT : Central compartment
 PERIPH : Peripheral compartment (mass)
 
 $PARAM @annotated
-CL  :  21 : clearance
+CL  :  19.8 : clearance
 V2  :  330 : central volume
 Q  :  35.44: intercompartmental clearance
 V3  : 118  :peripheral volume
-KA  :  2.48: absorption rate constant
+KA  :  2.49: absorption rate constant
 ETA1 : 0 : IIV CL(L/h)
 ETA2 : 0 : IIV V2 (L)
 ETA3 :  0: IIV V3 (L/h)
@@ -84,8 +84,8 @@ IOVCL = ETA(16) + ETA16 ;
 }
 
 ##CYP3A5 effect on Cl##
-double HM = 2 ;  ####METABOLIZADOR ULTRA RAPIDO ####
-double IM = 1.8 ;  ####METABOLIZADOR INTERMEDIO ####
+double HM = 2.45 ;  ####METABOLIZADOR ULTRA RAPIDO ####
+double IM = 1.87 ;  ####METABOLIZADOR INTERMEDIO ####
 double PM = 1 ;  ####METABOLIZADOR POBRE ####
 if(CYP3A5==1) double CL_EFFECT = HM ;
 if(CYP3A5==2) CL_EFFECT = IM ;
@@ -93,7 +93,7 @@ if(CYP3A5==3) CL_EFFECT = PM ;
 
 double V_LBW    = 1;
 double CL_LBW = 0.75;
-double CL_HCT    = -1;
+double CL_HCT    = -1.0;
 
 double iCL =  CL * CL_EFFECT * pow((HCT/33.5), CL_HCT) * pow((LBW / 60), CL_LBW) * exp(ETA(1) + ETA1 + IOVCL) ;
 double iV2 =  V2 * pow((LBW / 60), V_LBW) * exp(ETA(2)+ ETA2);
@@ -143,4 +143,4 @@ IOVCL : IOV CL
 OCC: OCCASION
 DV : PREDICCION
 
-                '
+                "
