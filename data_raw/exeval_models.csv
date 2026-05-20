@@ -1,6 +1,6 @@
-Label;Drug;Author;Year;Ref;Model
+Label;Drug;Author;Year;Ref;Model_code
 TAC_Han2011;Tacrolimus;Han;2011;"Prediction of the tacrolimus population pharmacokinetic parameters according to CYP3A5 genotype and clinical factors using NONMEM in adult kidney transplant recipients.
-European Journal of Clinical Pharmacology, 69(1), 53–63.";""" $PROB
+European Journal of Clinical Pharmacology";""" $PROB
 # One Comparment Model with first order absorption- Ka is FIXED
 $GLOBAL
 #define CP (CENT/iV)
@@ -73,7 +73,7 @@ DV : PREDICCION
 OCC: OCCASION
 
                """
-TAC_Zuo2013;Tacrolimus;Zuo;2013;"Effects of CYP3A4 and CYP3A5 polymorphisms on tacrolimus pharmacokinetics in Chinese adult renal transplant recipients: a population pharmacokinetic analysis. Pharmacogenet Genomics. 2013 May;23(5):251-61. doi: 10.1097/FPC.0b013e32835fcbb6. PMID: 23459029.";""" $PROB
+TAC_Zuo2013;Tacrolimus;Zuo;2013;Effects of CYP3A4 and CYP3A5 polymorphisms on tacrolimus pharmacokinetics in Chinese adult renal transplant recipients: a population pharmacokinetic analysis. Pharmacogenet Genomics. 2013;""" $PROB
 # One Comparment Model with first order absorption-
 # CYP3A4*1G VARIABILITY
 *1*1-------- n=73 ---- 45 %
