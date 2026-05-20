@@ -85,8 +85,8 @@ for each occasion using different evaluation strategies (see evaluation_type)
 }
 \examples{
 \dontrun{
-data("tacrolimus_pk1_kidney", package = "preDose")
-data("model_tacHAN2011", package = "preDose")
+data("tacrolimus_pk1_kidney", package = "exeval")
+data("model_tacHAN2011", package = "exeval")
 
 dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
 mm <- get_model_code('Han_etal_2011')

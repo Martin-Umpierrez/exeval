@@ -1,7 +1,7 @@
-#' Prepare input data for preDose
+#' Prepare input data for exeval
 #'
 #' Standardizes user-defined column names to the internal naming
-#' convention used in preDose.
+#' convention used in exeval.
 #'
 #' @param data A data frame containing the input dataset.
 #' @param name_id Character. Name of the column containing subject IDs.

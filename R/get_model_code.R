@@ -8,7 +8,7 @@ get_model_code <- function(name) {
   path <- system.file(
     "model_examples",
     paste0(name, ".R"),
-    package = "preDose"
+    package = "exeval"
   )
 
   if (path == "") {

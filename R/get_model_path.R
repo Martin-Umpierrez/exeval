@@ -11,7 +11,7 @@ function(name, ext = c("cpp", "R")) {
   path <- system.file(
     "model_examples",
     paste0(name, ".", ext),
-    package = "preDose"
+    package = "exeval"
   )
 
   if (path == "") {

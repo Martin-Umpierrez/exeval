@@ -5,7 +5,7 @@
 list_models <-
 function() {
 
-  path <- system.file("model_examples", package = "preDose")
+  path <- system.file("model_examples", package = "exeval")
 
   files <- list.files(path)
 

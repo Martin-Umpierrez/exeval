@@ -460,7 +460,7 @@ export_evaluation_pdf <- function(
     logo_path <- system.file(
       "figures",
       "logo_xeval.png",
-      package = "preDose"
+      package = "exeval"
     )
   }
 

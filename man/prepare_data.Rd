@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_data.R
 \name{prepare_data}
 \alias{prepare_data}
-\title{Prepare input data for preDose}
+\title{Prepare input data for exeval}
 \usage{
 prepare_data(
   data,
@@ -61,7 +61,7 @@ A data frame with standardized column names.
 }
 \description{
 Standardizes user-defined column names to the internal naming
-convention used in preDose.
+convention used in exeval.
 }
 \examples{
 df <- data.frame(
