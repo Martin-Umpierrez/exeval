@@ -90,11 +90,14 @@ exeval_ppk <-  function(model,
   metrics <- metrics_occ(sims, assessment=assessment,tool=tool )
 
 
-  argument = c('Num IDs', 'Observations','Max Num Occasion',
+  argument = c('Num IDs', 'Num of Observations Evaluated','Max Num Occasion',
                'Num of Ref Occasion','Drug Name', 'Model Name', 'Evaluation', 'Assessment')
   value    = c(dplyr::n_distinct(data$ID),
-               length(data %>% filter(EVID==0)),
-               max(data$OCC, na.rm = TRUE),
+               nrow(metrics$metrics),
+               ifelse(
+                 is.null(num_occ),
+                 max(data$OCC, na.rm = TRUE),
+                 num_occ),
                ifelse(is.null(occ_ref), "", occ_ref),
                ifelse(is.null(drug_name), "", drug_name),
                ifelse(is.null(model_name), "", model_name),
