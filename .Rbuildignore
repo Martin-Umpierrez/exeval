@@ -6,3 +6,7 @@
 ^README\.Rmd$
 ^data_raw$
 ^\.github$
+^README_cache$
+^.*\.tar\.gz$
+^check$
+^.*\.Rcheck$

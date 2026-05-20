@@ -649,7 +649,7 @@ export_evaluation_pdf <- function(
     nrow(summary_obj$poor_fit_ids) > 0
   ) {
 
-    ids_to_plot <- head(
+    ids_to_plot <- utils::head(
       summary_obj$poor_fit_ids$ID,
       n_individual_plots
     )
