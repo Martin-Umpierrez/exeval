@@ -1,6 +1,6 @@
 #' External evaluation for Population Pharmacokinetic (popPK) Models
 #'
-#' Performssss external evaluation of popPK models by conducting MAP estimations and individual simulations
+#' Performs external evaluation of popPK models by conducting MAP estimations and individual simulations
 #' for each occasion using different evaluation strategies (see evaluation_type)
 #'
 #' @param model Either:

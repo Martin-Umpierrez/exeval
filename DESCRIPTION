@@ -1,4 +1,4 @@
-Package: preDose
+Package: exeval
 Type: Package
 Title: An R-Package to automatize the external evalaution process
 Version: 0.0.0.9000
