@@ -18,9 +18,7 @@ Authors@R: c(
                     role = c("aut"),
                     comment = c(ORCID = "0000-0001-5083-5792")))
 Maintainer: Martin Umpierrez <mumpierrez@fq.edu.uy> 
-Description: Provides tools to automate external pharmacokinetic model
-    evaluation workflows, including Bayesian forecasting, predictive
-    performance metrics, diagnostic plotting, and automated reporting.
+Description: Provides tools to automate external pharmacokinetic model evaluation workflows, including Bayesian forecasting, predictive performance metrics, diagnostic plotting, and automated reporting.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
