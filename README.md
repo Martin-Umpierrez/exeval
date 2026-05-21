@@ -3,7 +3,7 @@
 
 [![R-CMD-check](https://github.com/Martin-Umpierrez/exeval/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Martin-Umpierrez/exeval/actions/workflows/R-CMD-check.yaml)
 
-# exeval <img align="right" src = "man/figures/exeval_logo.png" width="135px">
+# exeval <img align="right" src = "man/figures/exeval_logohex.png" width="135px">
 
 # exeval: An R-package for External Evaluation of popPKPD Models.
 
