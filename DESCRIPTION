@@ -1,6 +1,6 @@
 Package: exeval
 Type: Package
-Title: An R-Package to automatize the external evalaution process
+Title: An R-Package to performs the *external evaluation process* of a popPKPD model. The external evaluation is done using an independent dataset from which the original popPKPD model was developed.
 Version: 0.0.1
 Authors@R: c(
              person(given = "Manuel",

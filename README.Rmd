@@ -23,17 +23,13 @@ library(knitr)
 ```
 # exeval <img align="right" src = "man/figures/logo_new.png" width="135px">
 
-# exeval: An R-package for Robust External Evaluation of popPKPD Models. 
+# exeval: An R-package for External Evaluation of popPKPD Models. 
 
-exeval is a free and open source package that automatize the process of *external evaluation process* using an independent dataset from which the original popPKPD model was developed.
+`exeval` package performs the *external evaluation process* of a popPKPD model. The external evaluation is done using an independent dataset from which the original popPKPD model was developed.  Currently, model fit is based on  [mapbayr](https://github.com/FelicienLL/mapbayr) package. 
 
-Currently, the user can use the package  choose to use the package based on the  [mapbayr](https://github.com/FelicienLL/mapbayr) package
+External evaluation for a single model from can be done with:
 
-
-You can perform an external evaluation for a single model from :
-
-* a population PKPD model 
-(coded in [mrgsolve](https://github.com/metrumresearchgroup/mrgsolve),
+* a population PKPD model ([mrgsolve](https://github.com/metrumresearchgroup/mrgsolve) format),
 * a data set with concentrations (NONMEM format)
 
 ## Installation
