@@ -9,7 +9,6 @@ README.cache/
 /doc/
 /Meta/
 *.Rproj
-*.tar.gz
 check/
 *.Rcheck/
 

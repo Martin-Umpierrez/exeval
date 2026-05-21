@@ -24,9 +24,9 @@
 #' #   model_name = "TAC_Han2011",
 #' #   data = my_data
 #' # )
-load_model_code <- function(label) {
+load_model_code <- function(model_id) {
 
-  idx <- exeval_models$Label == label
+  idx <- exeval_models$Label == model_id
 
   if (!any(idx)) {
     stop(
