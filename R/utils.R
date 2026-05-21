@@ -202,4 +202,44 @@ extract_predictions <- function(simulations) {
 }
 
 
+get_model_path <-
+  function(name, ext = c("cpp", "R")) {
+    ext <- match.arg(ext)
+
+    path <- system.file(
+      "model_examples",
+      paste0(name, ".", ext),
+      package = "exeval"
+    )
+
+    if (path == "") {
+      stop("Model not found: ", name)
+    }
+
+    path
+  }
+
+
+get_model_code <- function(name) {
+
+  path <- system.file(
+    "model_examples",
+    paste0(name, ".R"),
+    package = "exeval"
+  )
+
+  if (path == "") {
+    stop("Model not found: ", name, call. = FALSE)
+  }
+
+  env <- new.env()
+  source(path, local = env)
+
+  if (!exists("model", env)) {
+    stop("Model file must create an object called `model`", call. = FALSE)
+  }
+
+  env$model
+}
+
 
