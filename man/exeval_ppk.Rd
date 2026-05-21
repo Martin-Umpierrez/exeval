@@ -127,6 +127,8 @@ absolute IPE. Default is 50.}
   \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
   \item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
   \item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
+  \item \code{"fit_class"}: bar plot showing observations within fit quality categories.
+  \item \code{"histogram"}: histogram of individual prediction error values.
 }}
 
 \item{signed}{Logical. Only used when `type = "histogram"`.

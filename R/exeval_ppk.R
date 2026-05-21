@@ -256,7 +256,7 @@ summary.EvalPPK <- function(object,
   metadata <- attr(object, "attributes")
 
   if (!is.null(occ)) {
-    df <- df %>%
+    df <- df  |> 
       dplyr::filter(OCC == occ)
   }
 
@@ -269,8 +269,8 @@ summary.EvalPPK <- function(object,
   # --------------------------------
   if (by_occ) {
 
-    global_metrics <- df %>%
-      dplyr::group_by(OCC) %>%
+    global_metrics <- df |>
+      dplyr::group_by(OCC) |>
       dplyr::summarise(
         rBIAS = mean(IPE, na.rm = TRUE),
         MAIPE = mean(APE, na.rm = TRUE),
@@ -282,7 +282,7 @@ summary.EvalPPK <- function(object,
 
   } else {
 
-    global_metrics <- df %>%
+    global_metrics <- df |>
       dplyr::summarise(
         rBIAS = mean(IPE, na.rm = TRUE),
         MAIPE = mean(APE, na.rm = TRUE),
@@ -295,7 +295,7 @@ summary.EvalPPK <- function(object,
   # --------------------------------
   # Fit classification
   # --------------------------------
-  df_fit <- df %>%
+  df_fit <- df |>
     dplyr::mutate(
       Fit_Class = dplyr::case_when(
         abs(IPE) <= 15 ~ "Excellent",
@@ -307,18 +307,18 @@ summary.EvalPPK <- function(object,
 
   if (by_occ) {
 
-    fit_distribution <- df_fit %>%
-      dplyr::count(OCC, Fit_Class) %>%
-      dplyr::group_by(OCC) %>%
+    fit_distribution <- df_fit |>
+      dplyr::count(OCC, Fit_Class) |>
+      dplyr::group_by(OCC) |>
       dplyr::mutate(
         Percent = round(100 * n / sum(n), 1)
-      ) %>%
+      ) |>
       dplyr::ungroup()
 
   } else {
 
-    fit_distribution <- df_fit %>%
-      dplyr::count(Fit_Class) %>%
+    fit_distribution <- df_fit |>
+      dplyr::count(Fit_Class) |>
       dplyr::mutate(
         Percent = round(100 * n / sum(n), 1)
       )
@@ -329,38 +329,38 @@ summary.EvalPPK <- function(object,
   # --------------------------------
   if (by_occ) {
 
-    poor_fit_ids <- df %>%
-      dplyr::filter(abs(IPE) >= poor_threshold) %>%
-      dplyr::group_by(OCC, ID) %>%
+    poor_fit_ids <- df |>
+      dplyr::filter(abs(IPE) >= poor_threshold) |>
+      dplyr::group_by(OCC, ID) |>
       dplyr::summarise(
         n_poor = dplyr::n(),
         mean_abs_IPE = round(mean(abs(IPE), na.rm = TRUE), 1),
         .groups = "drop"
-      ) %>%
+      ) |>
       dplyr::arrange(
         OCC,
         dplyr::desc(n_poor),
         dplyr::desc(mean_abs_IPE)
-      ) %>%
-      dplyr::group_by(OCC) %>%
-      dplyr::slice_head(n = top_n) %>%
+      ) |>
+      dplyr::group_by(OCC) |>
+      dplyr::slice_head(n = top_n) |>
       dplyr::ungroup()
 
   } else {
 
-    poor_fit_ids <- df %>%
-      dplyr::filter(abs(IPE) >= poor_threshold) %>%
-      dplyr::group_by(ID) %>%
+    poor_fit_ids <- df |>
+      dplyr::filter(abs(IPE) >= poor_threshold) |>
+      dplyr::group_by(ID) |>
       dplyr::summarise(
         n_poor = dplyr::n(),
         OCCs = paste(sort(unique(OCC)), collapse = ", "),
         mean_abs_IPE = round(mean(abs(IPE), na.rm = TRUE), 1),
         .groups = "drop"
-      ) %>%
+      ) |>
       dplyr::arrange(
         dplyr::desc(n_poor),
         dplyr::desc(mean_abs_IPE)
-      ) %>%
+      ) |>
       dplyr::slice_head(n = top_n)
   }
 
@@ -405,6 +405,8 @@ summary.EvalPPK <- function(object,
 #'     \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
 #'     \item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
 #'     \item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
+#'     \item \code{"fit_class"}: bar plot showing observations within fit quality categories.
+#'     \item \code{"histogram"}: histogram of individual prediction error values.
 #'   }
 #' @param occ Optional numeric occasion to filter.
 #'   If `NULL` (default), all occasions are included.
@@ -448,17 +450,76 @@ plot.EvalPPK <- function(x,
 
 
   if (type == 'fit_class') {
-    plot_fit_distribution(x = x,
-                          occ = occ,
-                          type = "fit_class",
-                          signed = signed)
+    # plot_fit_distribution(x = x,
+    #                       occ = occ,
+    #                       type = "fit_class",
+    #                       signed = signed)
+    fit_colors <- c(
+      "Excellent" = "paleturquoise",
+      "Acceptable" = "darkseagreen",
+      "Poor" = "wheat",
+      "Very Poor" = "lightcoral"
+    )
+    
+    pp <- mm[[1]] |>
+      dplyr::mutate( Abs_IPE = abs(IPE)) |> 
+      dplyr::mutate(
+        Fit_Class = dplyr::case_when(
+          Abs_IPE <= 15 ~ "Excellent",
+          Abs_IPE <= 30 ~ "Acceptable",
+          Abs_IPE <= 50 ~ "Poor",
+          Abs_IPE > 50 ~ "Very Poor"
+        ),
+        Fit_Class = factor(
+          Fit_Class,
+          levels = c("Very Poor", "Poor","Acceptable","Excellent")
+        )
+      ) |> 
+    ggplot2::ggplot(
+      ggplot2::aes(x = Fit_Class, fill=Fit_Class)) +
+      ggplot2::geom_bar() +
+      ggplot2::scale_fill_manual(values = fit_colors, drop = FALSE) +
+      ggplot2::labs(
+        title = ifelse(
+          is.null(occ),
+          "Fit quality distribution",
+          paste("Fit quality distribution - OCC", occ)
+        ),
+        x = "Fit Class",
+        y = "Number of Observations"
+      ) +
+      ggplot2::theme_bw()
   }
 
   if (type == 'fit_histogram') {
-    plot_fit_distribution(x = x,
-                          occ = occ,
-                          type = "fit_histogram",
-                          signed = signed)
+    # plot_fit_distribution(x = x,
+    #                       occ = occ,
+    #                       type = "fit_histogram",
+    #                       signed = signed)
+    
+    if (signed) {
+      x_var <- "IPE"
+      x_lab <- "Individual Prediction Error (%)"
+    } else {
+      x_var <- "Abs_IPE"
+      x_lab <- "Absolute Individual Prediction Error (%)"
+    }
+    
+    pp <- mm[[1]] |>
+      dplyr::mutate( Abs_IPE = abs(IPE)) |> 
+    ggplot2::ggplot(
+      ggplot2::aes(x = .data[[x_var]]) ) +
+      ggplot2::geom_histogram(bins = 30) +
+      ggplot2::labs(
+        title = ifelse(
+          is.null(occ),
+          "IPE distribution",
+          paste("IPE distribution - OCC", occ)
+        ),
+        x = x_lab,
+        y = "Number of Observations"
+      ) +
+      ggplot2::theme_bw()
   }
 
 
@@ -608,18 +669,18 @@ plot.EvalPPK <- function(x,
   }
 
   else if(type== "error_plot") {
-    mm_plot <- mm[[1]] %>%
+    mm_plot <- mm[[1]] |>
       mutate(tramo = case_when(
         abs(IPE) > 50 ~ "50+",
         abs(IPE) > 30 & abs(IPE) <= 50 ~ "30+",
         abs(IPE) > 15 & abs(IPE) <= 30 ~ "15+",
         abs(IPE) <= 15 ~ "<15",
         TRUE ~ "cucu"
-      )) %>%
-      mutate(tramo = factor(tramo, levels = c("50+", "30+", "15+", "<15"))) %>%
-      count(OCC, tramo) %>%
-      group_by(OCC) %>%
-      mutate(prop = n / sum(n)) %>%
+      )) |>
+      mutate(tramo = factor(tramo, levels = c("50+", "30+", "15+", "<15"))) |>
+      count(OCC, tramo) |>
+      group_by(OCC) |>
+      mutate(prop = n / sum(n)) |>
       ungroup()
 
     color_error <- c(
