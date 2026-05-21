@@ -113,6 +113,15 @@ metrics_occ <- function(simulations,
       filter(!is.na(DV)) |>
       distinct()
   }
+  
+   metrics <- metrics |> 
+    dplyr::mutate(
+      Fit_Class = dplyr::case_when(
+        abs(IPE) <= 15 ~ "Excellent",
+        abs(IPE) <= 30 ~ "Acceptable",
+        abs(IPE) <= 50 ~ "Poor",
+        abs(IPE) > 50 ~ "Very Poor")) |> 
+    dplyr::arrange(ID, OCC, TIME)
 
   if (!exists("metrics") || nrow(metrics) == 0) {
     stop("The 'metrics' object could not be generated. Please check the data and arguments.")
