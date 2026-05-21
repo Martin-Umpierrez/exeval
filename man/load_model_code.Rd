@@ -4,7 +4,7 @@
 \alias{load_model_code}
 \title{Load built-in model code}
 \usage{
-load_model_code(model_id)
+load_model_code(label)
 }
 \arguments{
 \item{model_id}{Character string with the model identifier.}
