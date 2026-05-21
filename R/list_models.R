@@ -1,13 +1,37 @@
-#' List available example PK models
+#' List available built-in PK models
 #'
+#' Displays the curated pharmacokinetic models available within the package.
+#'
+#' @param drug Optional drug name filter.
+#' @param author Optional author name filter.
+#'
+#' @return A data frame with available models metadata.
 #' @export
+#'
+#' @examples
+#' list_models()
+#' list_models(drug = "Tacrolimus")
+#' list_models(author = "Han")
+list_models <- function(drug = NULL, author = NULL) {
 
-list_models <-
-function() {
+  models <- exeval_models
 
-  path <- system.file("model_examples", package = "exeval")
+  if (!is.null(drug)) {
+    models <- dplyr::filter(models, Drug == drug)
+  }
 
-  files <- list.files(path)
+  if (!is.null(author)) {
+    models <- dplyr::filter(models, Author == author)
+  }
 
-  unique(gsub("\\.(R|cpp)$", "", files))
+  models %>%
+    dplyr::select(
+      Label,
+      Drug,
+      Author,
+      Year,
+      Ref
+    )
 }
+
+

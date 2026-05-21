@@ -2,10 +2,23 @@
 % Please edit documentation in R/list_models.R
 \name{list_models}
 \alias{list_models}
-\title{List available example PK models}
+\title{List available built-in PK models}
 \usage{
-list_models()
+list_models(drug = NULL, author = NULL)
+}
+\arguments{
+\item{drug}{Optional drug name filter.}
+
+\item{author}{Optional author name filter.}
+}
+\value{
+A data frame with available models metadata.
 }
 \description{
-List available example PK models
+Displays the curated pharmacokinetic models available within the package.
+}
+\examples{
+list_models()
+list_models(drug = "Tacrolimus")
+list_models(author = "Han")
 }
