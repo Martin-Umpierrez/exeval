@@ -45,20 +45,20 @@ metrics_occ <- function(simulations,
     list.simulation<- simulations[["simulation_results"]]
     combine <- lapply(list.simulation, function(x) slot(x, "data"))
     df_simulaciones <- do.call(rbind, combine)
-    df_simulaciones <- df_simulaciones %>% rename(Ind_Prediction = DV) %>%
-      select (ID, OCC, TIME, Ind_Prediction) %>% filter(Ind_Prediction>0)
+    df_simulaciones <- df_simulaciones |> rename(Ind_Prediction = DV) |>
+      select (ID, OCC, TIME, Ind_Prediction) |> filter(Ind_Prediction>0)
 
 
     listtratamientos <- simulations[["ttoocc"]]
-    df_ttos <- do.call(rbind,listtratamientos) %>% filter(EVID==0) %>%
+    df_ttos <- do.call(rbind,listtratamientos) |> filter(EVID==0) |>
       select(ID, OCC, TIME, DV)
 
     df_merged = left_join(df_simulaciones, df_ttos, by=c("ID", "OCC","TIME"))
-    metrics = df_merged %>% mutate(
+    metrics = df_merged |> mutate(
       IPE = ((Ind_Prediction- DV)/DV) *100,
       APE= abs(((Ind_Prediction-DV)/DV))*100,
       RMSE = (((Ind_Prediction-DV)^2)/((DV)^2))
-    ) %>% filter(!is.na(DV)) %>% distinct()
+    ) |> filter(!is.na(DV)) |> distinct()
 
   }
 
@@ -67,20 +67,20 @@ metrics_occ <- function(simulations,
     list.simulation = simulations[["simulation_results"]]
     combine= lapply(list.simulation, function(x) slot(x, "data"))
     df_simulaciones <- do.call(rbind, combine)
-    df_simulaciones = df_simulaciones %>% rename(Ind_Prediction = CP) %>%
-      select (ID, OCC, TIME, Ind_Prediction) %>% filter(Ind_Prediction>0)
+    df_simulaciones = df_simulaciones |> rename(Ind_Prediction = CP) |>
+      select (ID, OCC, TIME, Ind_Prediction) |> filter(Ind_Prediction>0)
 
     listtratamientos = simulations[["ttoocc"]]
-    df_ttos = do.call(rbind, listtratamientos) %>% filter(EVID==0) %>%
+    df_ttos = do.call(rbind, listtratamientos) |> filter(EVID==0) |>
       select(ID, OCC, TIME, DV)
 
     df_merged = left_join(df_simulaciones, df_ttos, by=c("ID", "OCC","TIME"))
 
-    metrics = df_merged %>% mutate(
+    metrics = df_merged |> mutate(
       IPE = ((Ind_Prediction- DV)/DV) *100,
       APE= abs(((Ind_Prediction-DV)/DV))*100,
       RMSE = (((Ind_Prediction-DV)^2)/((DV)^2))
-    ) %>% filter(!is.na(DV)) %>% distinct()
+    ) |> filter(!is.na(DV)) |> distinct()
   }
 
   # MAPbayr + "Complete": "a priori" + Bayesian Forecasting
@@ -90,27 +90,27 @@ metrics_occ <- function(simulations,
     df_simulaciones <- do.call(rbind, combine)
 
     # rename predictions
-    df_simulaciones <- df_simulaciones %>%
-      mutate(Ind_Prediction = ifelse(OCC == 1, CP, DV)) %>%  # CP para apriori (OCC1), DV para posteriores
-      select(ID, OCC, TIME, Ind_Prediction) %>%
+    df_simulaciones <- df_simulaciones |>
+      mutate(Ind_Prediction = ifelse(OCC == 1, CP, DV)) |>  # CP para apriori (OCC1), DV para posteriores
+      select(ID, OCC, TIME, Ind_Prediction) |>
       filter(Ind_Prediction > 0)
 
     # get tto for every OCC
     listtratamientos <- simulations[["ttoocc"]]
-    df_ttos <- do.call(rbind, listtratamientos) %>%
-      filter(EVID == 0) %>%
+    df_ttos <- do.call(rbind, listtratamientos) |>
+      filter(EVID == 0) |>
       select(ID, OCC, TIME, DV)
 
 
     df_merged <- left_join(df_simulaciones, df_ttos, by = c("ID", "OCC", "TIME"))
 
-    metrics <- df_merged %>%
+    metrics <- df_merged |>
       mutate(
         IPE = ((Ind_Prediction - DV) / DV) * 100,
         APE = abs((Ind_Prediction - DV) / DV) * 100,
         RMSE = ((Ind_Prediction - DV)^2) / ((DV)^2)
-      ) %>%
-      filter(!is.na(DV)) %>%
+      ) |>
+      filter(!is.na(DV)) |>
       distinct()
   }
 
@@ -118,8 +118,8 @@ metrics_occ <- function(simulations,
     stop("The 'metrics' object could not be generated. Please check the data and arguments.")
   }
 
-  metrics_means <- metrics %>%
-    group_by(OCC) %>%
+  metrics_means <- metrics |>
+    group_by(OCC) |>
     summarise(
       rBIAS= mean(IPE),
       rBIAS_lower = mean(IPE)-( qt(0.975, df = length(IPE) - 1) *(sd(IPE) / sqrt(length(IPE)))),
