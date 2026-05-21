@@ -685,9 +685,9 @@ plot.EvalPPK <- function(x,
 
     color_error <- c(
       "50+" = "lightcoral",
-      "20+" = "wheat",
-      "10+" = "darkseagreen",
-      "<10" = "paleturquoise"
+      "30+" = "wheat",
+      "15+" = "darkseagreen",
+      "<15" = "paleturquoise"
     )
 
     # final plot
