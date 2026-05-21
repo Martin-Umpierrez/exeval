@@ -27,9 +27,6 @@ Depends:
     R (>= 3.5)
 Imports: 
     dplyr,
-    grid,
-    gridExtra,
-    grDevices,
     ggplot2,
     ggpubr,
     magrittr,
@@ -37,10 +34,7 @@ Imports:
     scales, 
     stats, 
     methods, 
-    rlang, 
-    openxlsx,
-    tools,
-    png
+    rlang
 Suggests: 
     knitr,
     rmarkdown,
@@ -48,3 +42,4 @@ Suggests:
 Config/roxygen2/version: 8.0.0
 URL: https://github.com/Martin-Umpierrez/preDose
 BugReports: https://github.com/Martin-Umpierrez/preDose/issues
+RoxygenNote: 7.3.3

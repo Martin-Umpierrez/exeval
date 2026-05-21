@@ -37,13 +37,15 @@
 #' )
 #'combined_results <- combine_metrics(models_list)
 #' combined_results <- combine_metrics(models_list)
-#' plot_combined(combined_results, type = 'bias_barplot')
-plot_combined <-
-function(cmetrics, type = c('bias_barplot',
+#' combine_metric_plot(combined_results, type = 'bias_barplot')
+
+combine_metric_plot <-function(cmetrics,
+                               type = c('bias_barplot',
                                       'MAIPE_barplot',
                                       'IF20_plot',
                                       'IF30_plot')) {
     pplot <- NULL
+    cmetrics <- cmetrics$cmetrics
     if (type == 'bias_barplot') {
       n_occs <- length(unique(cmetrics$OCC))
       pplot <- cmetrics %>%

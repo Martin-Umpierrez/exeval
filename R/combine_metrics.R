@@ -8,7 +8,18 @@
 #' @param models A list of lists, where each inner list contains:
 #'   - `model_name`: A string representing the model's name. It will then be used
 #'   - `metrics_list`: A list containing the `metrics_means` data frame from [metrics_occ()].
-#' @return A data frame containing the combined metrics for all models, with an additional `Model` column.
+#'
+#' @param metric A character string specifying the metric to use for ranking.
+#' @param top_n An integer specifying the number of top models to select per OCC.
+#' @param occ_eval A numeric or character value specifying the `OCC` to filter the models by. Default is `NULL`, which means no filtering by `OCC`.
+#' @param rank_criteria A character string specifying how to rank the models:
+#'   - `'min'`: Select models with the lowest metric values (e.g., MAIPE).
+#'   - `'max'`: Select models whose metric values are higher (e.g., IF30).
+#'   - `'abs'`: Selects models with the smallest absolute metric values (eg rBIAS)
+#'
+#'
+#'
+#' @return A list containing the combined metrics for all models, with an additional `Model` column.
 #'
 #' @export
 #' @examples
@@ -36,8 +47,11 @@
 #'combined_results <- combine_metrics(models_list)
 #'print(combined_results)
 
-combine_metrics <-
-function(models) {
+combine_metrics <-function(models,
+                           metric ='MAIPE',
+                           top_n = 2,
+                           occ_eval = 2,
+                           rank_criteria = 'min') {
   combined_data <- NULL
 
   # Extract all the evaluation type in the models to be compared
@@ -64,5 +78,13 @@ function(models) {
     }
   }
 
-  return(combined_data)
+
+
+  top_models <- select_best_models(data          = combined_data,
+                                   metric        = metric,
+                                   top_n         = top_n,
+                                   occ_eval      = occ_eval,
+                                   rank_criteria = rank_criteria)
+
+  return(list(cmetrics = combined_data, topmodelspd = top_models))
 }

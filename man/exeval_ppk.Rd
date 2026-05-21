@@ -2,6 +2,10 @@
 % Please edit documentation in R/exeval_ppk.R
 \name{exeval_ppk}
 \alias{exeval_ppk}
+\alias{print.EvalPPK}
+\alias{print.summary.EvalPPK}
+\alias{summary.EvalPPK}
+\alias{plot.EvalPPK}
 \title{External evaluation for Population Pharmacokinetic (popPK) Models}
 \usage{
 exeval_ppk(
@@ -20,6 +24,29 @@ exeval_ppk(
   method = c("L-BFGS-B", "newuoa"),
   assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
   verbose = FALSE
+)
+
+\method{print}{EvalPPK}(x, ...)
+
+\method{print}{summary.EvalPPK}(x, ...)
+
+\method{summary}{EvalPPK}(
+  object,
+  occ = NULL,
+  by_occ = TRUE,
+  poor_threshold = 50,
+  top_n = 10,
+  ...
+)
+
+\method{plot}{EvalPPK}(
+  x,
+  type = c("bias_barplot", "bias_pointrange", "MAIPE_barplot", "bias_boxplot",
+    "bias_violin", "bias_dotplot", "bias_density", "IF20_plot", "IF30_plot", "IF_plot",
+    "error_plot", "fit_class", "fit_histogram"),
+  occ = NULL,
+  signed = FALSE,
+  ...
 )
 }
 \arguments{
@@ -69,6 +96,42 @@ Required only if \code{model} is provided as character model code.#'}
 
 \item{verbose}{Logical. If TRUE, messages are printed during execution.
 If FALSE (default), errors are stored as warnings accessible with `warnings()`}
+
+\item{x}{A list containing data frames with the required  metrics. Typically, `mm[[1]]` and `mm[[2]]` contain relevant data. Values comes from results from [metrics_occ()] function}
+
+\item{...}{Additional arguments}
+
+\item{object}{An object of class \code{EvalPPK}.}
+
+\item{occ}{Optional numeric occasion to filter.
+If `NULL` (default), all occasions are included.}
+
+\item{by_occ}{Logical. If \code{TRUE}, returns summaries stratified by OCC.
+Cannot be used together with \code{occ}.}
+
+\item{poor_threshold}{Numeric threshold defining poor fit based on
+absolute IPE. Default is 50.}
+
+\item{top_n}{Number of poorly fitted IDs to return. Default is 10.}
+
+\item{type}{A character string specifying the type of plot to generate. Options are:
+\itemize{
+  \item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
+  \item \code{"bias_pointrange"}: pointrange for rBIAS.
+  \item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
+  \item \code{"bias_boxplot"}: Box plot of IPE values.
+  \item \code{"bias_dotplot"}: Dotplot of rBIAS values. Variability on individual bias
+  \item \code{"bias_density"}: Density Plot for rBias throughout occasions .
+  \item \code{"bias_violin"}: Violin plot of IPE values.
+  \item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35%.
+  \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
+  \item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
+  \item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
+}}
+
+\item{signed}{Logical. Only used when `type = "histogram"`.
+If `TRUE`, the histogram is generated using signed IPE values.
+If `FALSE` (default), absolute IPE values are used.}
 }
 \value{
 A list containing:
@@ -78,10 +141,26 @@ A list containing:
   \item{simulation}{A list of simulation results for each occasion and individual.}
   \item{updates}{A list containing posterior estimations (`a.posteriori`) for each occasion.}
 }
+
+An object of class \code{summary.EvalPPK}.
+
+A ggplot object corresponding to the selected plot type.
 }
 \description{
 Performs external evaluation of popPK models by conducting MAP estimations and individual simulations
 for each occasion using different evaluation strategies (see evaluation_type)
+
+Generates a structured summary of an \code{EvalPPK} object, including
+metadata, global performance metrics, fit quality distribution,
+and poorly fitted IDs.
+
+Generate Different Type of Metrics Plots
+}
+\details{
+This function creates various types of metrics plots for evaluating popPK Models , such as rBias, MAIPE, and IF20/IF30 values.
+
+
+The function utilizes ggplot2 for visualization and `scale_fill_brewer(palette = "Dark2")` for consistent color schemes.
 }
 \examples{
 \dontrun{

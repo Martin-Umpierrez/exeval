@@ -2,23 +2,46 @@
 % Please edit documentation in R/metrics_occ.R
 \name{metrics_occ}
 \alias{metrics_occ}
-\title{Compute pharmacokinetic evaluation metrics by occasion}
+\title{Compute pharmacokinetic evaluation metrics by occasion (MAPbayr)}
 \usage{
-metrics_occ(simulations, assessment, tool, ...)
+metrics_occ(
+  simulations,
+  assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
+  tool = "mapbayr",
+  ...
+)
 }
 \arguments{
-\item{simulations}{An object containing individual simulations.}
+\item{simulations}{An object of class \code{"mapbayr"} returned by
+\code{\link{run_pk_simulations}}.}
 
-\item{assessment}{..}
+\item{assessment}{Character string specifying the type of prediction.
+One of \code{"a_priori"}, \code{"Bayesian_forecasting"}, or
+\code{"Complete"}.}
 
-\item{tool}{..}
+\item{tool}{Character string specifying the estimation tool.
+Currently only \code{"mapbayr"} is supported.}
 
-\item{...}{Additional arguments passed to specific methods.}
+\item{...}{Additional arguments (not used).}
 }
 \value{
-An object of class \code{EvalMetricsPPK}.
+An object of class \code{EvalMetricsPPK} containing:
+\itemize{
+  \item \code{metrics}: Individual-level prediction errors by ID and OCC.
+  \item \code{metrics_means}: Summary metrics by OCC.
+}
 }
 \description{
-Generic function to compute prediction error metrics by occasion (OCC).
-The method dispatched depends on the class of \code{x}.
+Computes prediction error metrics by occasion (OCC) for individual
+simulations generated using MAP Bayesian estimation with \pkg{mapbayr}.
+}
+\details{
+This method extracts individual predictions and observed concentrations
+from simulation outputs, merges them by ID, OCC and time, and computes
+relative bias (rBIAS), relative RMSE (rRMSE), mean absolute individual
+prediction error (MAIPE), and the percentages of predictions within
+20\% and 30\% of the observations (IF20 and IF30).
+}
+\seealso{
+\code{\link{metrics_occ}}, \code{\link{run_pk_simulations}}
 }
