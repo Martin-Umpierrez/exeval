@@ -8,7 +8,7 @@ README.cache/
 *.vscode
 /doc/
 /Meta/
-*.Rproj
+
 check/
 *.Rcheck/
 
