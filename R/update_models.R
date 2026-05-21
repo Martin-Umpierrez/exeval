@@ -1,4 +1,3 @@
-
 #' Update MAP estimations across occasions for each IDs
 #'
 #' The `update_map_models` function updates population pharmacokinetic models using MAP posterior estimations
@@ -49,9 +48,8 @@
 #'
 #' # Run the function
 #' result <- update_map_models(map_results, evaluation_type = "sequential_updating")
-#' print(result)
-#'}
-#' @importFrom magrittr %>%
+#' print(result) 
+#' }
 #' @importFrom mapbayr use_posterior
 #' @export
 
@@ -89,7 +87,7 @@ function(map_results, evaluation_type = c("sequential_updating",
       # check current_map_estimation not null
       if (!is.null(current_map_estimation)) {
         # use posterior for next OCC
-        posterior_result <- current_map_estimation %>% mapbayr::use_posterior()
+        posterior_result <- current_map_estimation |> mapbayr::use_posterior()
 
         # save result with dynamic name like a.posteriori_occ1_2, a.posteriori_occ2_3, etc.
         posterior_name <- paste0("a.posteriori_occ", i, "_", i + 1)
@@ -108,7 +106,7 @@ function(map_results, evaluation_type = c("sequential_updating",
       # check current_map_estimation is null
       if (!is.null(current_map_estimation)) {
         # use posterior for next OCC
-        posterior_result <- current_map_estimation %>% mapbayr::use_posterior()
+        posterior_result <- current_map_estimation |> mapbayr::use_posterior()
 
         # save result with dynamic name like a.posteriori_occ1_2, a.posteriori_occ2_3, etc.
         posterior_name <- paste0("a.posteriori_occ", i, "_", i + 1)
@@ -127,7 +125,7 @@ function(map_results, evaluation_type = c("sequential_updating",
       # check current_map_estimation is null
       if (!is.null(current_map_estimation)) {
         # use posterior for next OCC
-        posterior_result <- current_map_estimation %>% mapbayr::use_posterior()
+        posterior_result <- current_map_estimation |> mapbayr::use_posterior()
 
         # save result with dynamic name like a.posteriori_occ1_2, a.posteriori_occ2_3, etc.
         posterior_name <- paste0("a.posteriori_occ", i, "_", i + 1)
@@ -147,7 +145,7 @@ function(map_results, evaluation_type = c("sequential_updating",
       # check current_map_estimation is null
       if (!is.null(current_map_estimation)) {
         # use posterior for next OCC
-        posterior_result <- current_map_estimation %>% mapbayr::use_posterior()
+        posterior_result <- current_map_estimation |> mapbayr::use_posterior()
 
         # save result with dynamic name like a.posteriori_occ1_2, a.posteriori_occ2_3, etc.
         posterior_name <- paste0("a.posteriori_occ", i, "_", i + 1)

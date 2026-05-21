@@ -48,8 +48,8 @@ combine_metric_plot <-function(cmetrics,
     cmetrics <- cmetrics$cmetrics
     if (type == 'bias_barplot') {
       n_occs <- length(unique(cmetrics$OCC))
-      pplot <- cmetrics %>%
-        mutate(OCC = factor(OCC) ) %>%
+      pplot <- cmetrics |>
+        mutate(OCC = factor(OCC) ) |>
         ggplot(aes(x = Model, y = rBIAS, fill = Model)) +
       geom_col() +
         geom_errorbar(aes(ymin = rBIAS_lower, ymax = rBIAS_upper), width = 0.2) +
@@ -70,8 +70,8 @@ combine_metric_plot <-function(cmetrics,
         facet_wrap(~OCC, ncol = n_occs, labeller = labeller(OCC = function(x) paste0("OCC ", x)))
     } else if (type == 'MAIPE_barplot') {
       n_occs <- length(unique(cmetrics$OCC))
-      pplot <-   cmetrics %>% # rBIAS_boxplot
-        mutate(OCC = factor(OCC) ) %>%
+      pplot <-   cmetrics |> # rBIAS_boxplot
+        mutate(OCC = factor(OCC) ) |>
         ggplot (aes(x=Model, y=MAIPE, fill=Model)) +
         geom_col() +
         geom_hline(data = data.frame(yy = c(30)), aes(yintercept = yy), linetype = "dashed", color = 'firebrick') +
@@ -92,8 +92,8 @@ combine_metric_plot <-function(cmetrics,
     }
     else if (type ==  'IF30_plot') {
       n_occs <- length(unique(cmetrics$OCC))
-      pplot <- cmetrics %>%  #  IF20_plot
-        mutate(OCC = factor(OCC) ) %>%
+      pplot <- cmetrics |>  #  IF20_plot
+        mutate(OCC = factor(OCC) ) |>
         ggplot(aes(x=Model, y=IF30)) +
         geom_col(aes(fill=Model) ) +
         geom_hline( aes(yintercept= 50), linetype = "dashed", colour= 'firebrick') +
@@ -115,8 +115,8 @@ combine_metric_plot <-function(cmetrics,
 
     else if (type ==  'IF20_plot') {
       n_occs <- length(unique(cmetrics$OCC))
-      pplot <- cmetrics %>%  #  IF20_plot
-        mutate(OCC = factor(OCC) ) %>%
+      pplot <- cmetrics |>  #  IF20_plot
+        mutate(OCC = factor(OCC) ) |>
         ggplot(aes(x=Model, y=IF30))+
         geom_col( aes(fill=Model) )+
         geom_hline( aes(yintercept= 35), linetype = "dashed", colour= 'firebrick') +

@@ -68,7 +68,7 @@ combine_metrics <-function(models,
     metrics_list <- entry$metrics_list
 
     # add model name
-    metrics_data <- metrics_list$metrics_means %>% mutate(Model = model_name)
+    metrics_data <- metrics_list$metrics_means |> mutate(Model = model_name)
 
     # combined with data
     combined_data <- if (!is.null(combined_data)) {

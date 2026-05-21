@@ -26,14 +26,14 @@ function(posterior_model,
          ss_n = NULL,
          tad = FALSE) {
 
-  posterior_model <- posterior_model %>%
-    mrgsolve::data_set(treatment) %>%
+  posterior_model <- posterior_model |>
+    mrgsolve::data_set(treatment) |>
     mrgsolve::update(
       start = start,
       end = end)
 
   if (!is.null(delta)) {
-    posterior_model <- posterior_model %>%
+    posterior_model <- posterior_model |>
       mrgsolve::update(delta = delta)
   }
 
@@ -107,8 +107,8 @@ pop_sim <-
            ss_n = NULL,
            tad = FALSE) {
 
-    population_model <- posterior_model %>%
-      mrgsolve::data_set(treatment) %>%
+    population_model <- posterior_model |>
+      mrgsolve::data_set(treatment) |>
       mrgsolve::update(start = start, end = end)
 
     sim_result <- mrgsolve::mrgsim(posterior_model)
@@ -142,7 +142,7 @@ extract_predictions <- function(simulations) {
 
   if (assessment == "Bayesian_forecasting") {
 
-    df_sim <- df_sim %>%
+    df_sim <- df_sim |>
       dplyr::mutate(
         Prediction = DV,
         Prediction_Type = "Posterior"
@@ -150,7 +150,7 @@ extract_predictions <- function(simulations) {
 
   } else if (assessment == "a_priori") {
 
-    df_sim <- df_sim %>%
+    df_sim <- df_sim |>
       dplyr::mutate(
         Prediction = CP,
         Prediction_Type = "Apriori"
@@ -158,28 +158,28 @@ extract_predictions <- function(simulations) {
 
   } else if (assessment == "Complete") {
 
-    df_sim <- df_sim %>%
+    df_sim <- df_sim |>
       dplyr::mutate(
         Prediction = ifelse(OCC == 1, CP, DV),
         Prediction_Type = ifelse(OCC == 1, "Apriori", "Posterior")
       )
   }
 
-  df_sim <- df_sim %>%
-    dplyr::select(ID, OCC, TIME, Prediction, Prediction_Type) %>%
+  df_sim <- df_sim |>
+    dplyr::select(ID, OCC, TIME, Prediction, Prediction_Type) |>
     dplyr::filter(!is.na(Prediction))
 
-  df_obs <- do.call(rbind, simulations$ttoocc) %>%
-    dplyr::filter(EVID == 0) %>%
-    dplyr::select(ID, OCC, TIME, DV) %>%
+  df_obs <- do.call(rbind, simulations$ttoocc) |>
+    dplyr::filter(EVID == 0) |>
+    dplyr::select(ID, OCC, TIME, DV) |>
     dplyr::filter(!is.na(DV))
 
   df_final <- dplyr::left_join(
     df_sim,
     df_obs,
     by = c("ID", "OCC", "TIME")
-  ) %>%
-    dplyr::filter(!is.na(DV)) %>%
+  ) |>
+    dplyr::filter(!is.na(DV)) |>
     dplyr::distinct()
 
   return(df_final)
@@ -233,26 +233,26 @@ get_model_code <- function(name) {
 select_best_models <-
   function(data, metric, top_n = 3, occ_eval=NULL , rank_criteria = 'min') {
     if (is.null(occ_eval)){
-      ranked_models <- data %>%
-        dplyr::group_by(OCC) %>%
+      ranked_models <- data |>
+        dplyr::group_by(OCC) |>
         dplyr::arrange(
           if (rank_criteria == 'min') !!sym(metric)
           else if (rank_criteria == 'max') desc(!!sym(metric))
           else abs(!!sym(metric))
-        ) %>%
-        dplyr::slice_head(n = top_n) %>%
+        ) |>
+        dplyr::slice_head(n = top_n) |>
         dplyr::ungroup()
     }
     else {
-      ranked_models<- data %>%
-        dplyr::group_by(OCC) %>%
+      ranked_models<- data |>
+        dplyr::group_by(OCC) |>
         dplyr::arrange(
           if (rank_criteria == 'min') !!dplyr::sym(metric)
           else if (rank_criteria == 'max') dplyr::desc(!!sym(metric))
           else abs(!!dplyr::sym(metric))
-        ) %>%
-        dplyr::slice_head(n = top_n) %>%
-        dplyr::filter(OCC==occ_eval) %>%
+        ) |>
+        dplyr::slice_head(n = top_n) |>
+        dplyr::filter(OCC==occ_eval) |>
         dplyr::ungroup()
 
     }

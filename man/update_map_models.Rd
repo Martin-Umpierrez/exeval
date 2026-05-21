@@ -60,6 +60,6 @@ map_results <- list(
 
 # Run the function
 result <- update_map_models(map_results, evaluation_type = "sequential_updating")
-print(result)
+print(result) 
 }
 }

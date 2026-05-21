@@ -204,7 +204,7 @@ function(model, model_name= NULL,
       lista_ttos_occ <- list()
       for (ids in 1:num_ids_ttos) {
         vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
-        lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] %>%
+        lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
           filter(ID == ids)
       }
 
@@ -223,7 +223,7 @@ function(model, model_name= NULL,
           lista_ttos_occ <- list()
           for (ids in 1:num_ids_ttos) {
             vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
-            lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] %>%
+            lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
               filter(ID == ids)  ##### REMOVE OF EVID==1 to get all times for simulation
           }
 
@@ -240,7 +240,7 @@ function(model, model_name= NULL,
         lista_ttos_occ <- list()
         for (ids in 1:num_ids_ttos) {
           vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
-          lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] %>%
+          lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
             filter(ID == ids) ##### REMOVE OF EVID==1 to get all times for simulation
         }
 
@@ -264,7 +264,7 @@ function(model, model_name= NULL,
       lista_ttos_apriori_occ <- list()
       for (ids in 1:num_ids_ttos) {
         vector_eventos <- paste0("ev.tto.occ", occ_apriori, "_ID", ids)
-        lista_ttos_apriori_occ[[vector_eventos]] <- apriori_data %>%
+        lista_ttos_apriori_occ[[vector_eventos]] <- apriori_data |>
           filter(ID == ids)
       }
 

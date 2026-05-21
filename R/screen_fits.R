@@ -133,7 +133,7 @@ screen_fit <- function(x,
   # OCC filter
   # --------------------------------
   if (!is.null(occ)) {
-    df <- df %>%
+    df <- df |>
       dplyr::filter(OCC == occ)
   }
 
@@ -143,7 +143,7 @@ screen_fit <- function(x,
   # --------------------------------
   # Fit classification
   # --------------------------------
-  df <- df %>%
+  df <- df |>
     dplyr::mutate(
       Abs_IPE = abs(IPE),
       Fit_Class = dplyr::case_when(
@@ -152,8 +152,8 @@ screen_fit <- function(x,
         Abs_IPE <= 50 ~ "Poor",
         Abs_IPE > 50 ~ "Very Poor"
       )
-    ) %>%
-    dplyr::filter(Fit_Class %in% fit_classes) %>%
+    ) |>
+    dplyr::filter(Fit_Class %in% fit_classes) |>
     dplyr::arrange(ID, OCC, TIME)
   # --------------------------------
   # Empty result
