@@ -185,6 +185,9 @@ pharmacokinetic (popPK) or pharmacokinetic-pharmacodynamic (PKPD) models,
 including MAP estimation, posterior model updating, simulation, and
 prediction error metric calculation.
 
+Prints a formatted representation of an \code{EvalPPK} object, including
+dataset characteristics, evaluation settings, and performance metrics.
+
 Generates a structured summary of an \code{EvalPPK} object, including
 metadata, global performance metrics, fit quality distribution,
 and poorly fitted IDs.
@@ -226,4 +229,8 @@ res <- exeval_ppk(model_name = "tacrolimus_HAN2011",
 
 print(res) # Print the results
 }
+}
+\seealso{
+\code{\link[=run_MAP_estimations]{run_MAP_estimations()}}, \code{\link[=update_map_models]{update_map_models()}},
+\code{\link[=run_pk_simulations]{run_pk_simulations()}}, \code{\link[=metrics_occ]{metrics_occ()}}
 }

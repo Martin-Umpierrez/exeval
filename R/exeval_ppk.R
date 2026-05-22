@@ -185,11 +185,16 @@ exeval_ppk <-  function(model,
 
 
 
-#' print method for EvalPPK class
+#' S3 print method for \code{EvalPPK} objects
 #'
-#' @param x EvalPPK object
+#' Prints a formatted representation of an \code{EvalPPK} object, including
+#' dataset characteristics, evaluation settings, and performance metrics.
+#' 
+#' @param x An object of class \code{EvalPPK}.
 #' @param ... additional arguments (not used)
+#' 
 #' @rdname exeval_ppk
+#' 
 #' @export
 print.EvalPPK <- function(x, ...) {
   info <- attr(x, 'attributes')
