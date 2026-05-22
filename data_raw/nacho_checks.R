@@ -13,7 +13,7 @@ dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
 # "TAC_Han2011" is the label in exeval_models dataset, 
 # which is used to specify the model in exeval_ppk function.
 
-res <- exeval_ppk(model="TAC_Han2011",
+res.2 <- exeval_ppk(model="TAC_Han2011",
                   data = dd,
                   evaluation_type= "sequential_updating",
                   assessment='Bayesian_forecasting' )
