@@ -2,7 +2,7 @@
 % Please edit documentation in R/screen_fits.R
 \name{screen_fit}
 \alias{screen_fit}
-\title{Screen individual fit quality}
+\title{Screen fit quality at the observation level}
 \usage{
 screen_fit(
   x,
@@ -12,48 +12,50 @@ screen_fit(
 )
 }
 \arguments{
-\item{x}{Either:
+\item{x}{Input object to screen. Supported inputs include:
 \itemize{
-\item An object of class \code{EvalPPK}
-\item An object of class \code{EvalMetricsPPK}
-\item A data frame containing at least \code{ID}, \code{OCC},
+\item an object of class \code{EvalPPK}, typically returned by
+\code{\link[=exeval_ppk]{exeval_ppk()}}
+
+\item a data frame containing at least \code{ID}, \code{OCC},
 \code{TIME}, and \code{IPE}
 }}
 
-\item{occ}{Optional numeric occasion to filter.
-If \code{NULL} (default), all occasions are included.}
+\item{occ}{Optional numeric occasion (\code{OCC}) used to filter
+observations. If \code{NULL} (default), all occasions are included.}
 
-\item{fit_classes}{Character vector indicating which fit categories to retain.
-Default includes all categories.}
+\item{fit_classes}{Character vector specifying which fit quality
+categories to retain. Default includes all categories.}
 
-\item{ids_only}{Logical. If \code{TRUE}, returns only unique subject IDs
-matching the selected criteria.}
+\item{ids_only}{Logical. If \code{TRUE}, returns unique subject
+identifiers matching the selected criteria instead of observation-level
+records.}
 }
 \value{
 A filtered data frame containing fit classification results,
 or a vector of IDs if \code{ids_only = TRUE}.
 }
 \description{
-Classifies individual prediction performance based on absolute individual
-prediction error (IPE) and filters observations according to selected fit
+Classifies predictive performance based on absolute individual prediction
+error (\code{IPE}) and filters observations according to selected fit
 quality categories.
 }
 \details{
 Fit categories are defined as:
 \itemize{
-\item Excellent: absolute IPE <= 15\%
-\item Acceptable: absolute IPE > 15\% and <= 30\%
-\item Poor: absolute IPE > 30\% and <= 50\%
-\item Very Poor: absolute IPE > 50\%
+\item \code{Excellent}: absolute IPE <= 15\\%
+\item \code{Acceptable}: absolute IPE > 15\\% and <= 30\\%
+\item \code{Poor}: absolute IPE > 30\\% and <= 50\\%
+\item \code{Very Poor}: absolute IPE > 50\\%
 }
 
-This function operates at the observation level (ID/OCC/TIME), making it
-useful for identifying specific poorly or well-fitted samples.
+This function operates at the observation level (\code{ID/OCC/TIME}),
+making it useful for identifying specific poorly or well-fitted samples
+rather than aggregated summaries.
 
 Supported inputs include:
 \itemize{
 \item Objects of class \code{EvalPPK}, typically returned by \code{\link[=exeval_ppk]{exeval_ppk()}}
-\item Objects of class \code{EvalMetricsPPK}, typically returned by \code{\link[=metrics_occ]{metrics_occ()}}
 \item Compatible data frames containing observation-level metrics
 }
 }
@@ -63,8 +65,6 @@ Supported inputs include:
 res <- exeval_ppk(...)
 screen_fit(res)
 
-# Screen metrics object
-screen_fit(res$metrics)
 
 # Return only poorly fitted observations
 screen_fit(
@@ -87,4 +87,7 @@ screen_fit(
 )
 }
 
+}
+\seealso{
+\code{\link[=exeval_ppk]{exeval_ppk()}}, \code{\link[=summary.EvalPPK]{summary.EvalPPK()}}
 }

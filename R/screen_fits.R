@@ -1,52 +1,57 @@
-#' Screen individual fit quality
+#' Screen fit quality at the observation level
 #'
-#' Classifies individual prediction performance based on absolute individual
-#' prediction error (IPE) and filters observations according to selected fit
+#' Classifies predictive performance based on absolute individual prediction
+#' error (\code{IPE}) and filters observations according to selected fit
 #' quality categories.
 #'
 #' Fit categories are defined as:
 #' \itemize{
-#'   \item Excellent: absolute IPE <= 15%
-#'   \item Acceptable: absolute IPE > 15% and <= 30%
-#'   \item Poor: absolute IPE > 30% and <= 50%
-#'   \item Very Poor: absolute IPE > 50%
+#'   \item \code{Excellent}: absolute IPE <= 15\%
+#'   \item \code{Acceptable}: absolute IPE > 15\% and <= 30\%
+#'   \item \code{Poor}: absolute IPE > 30\% and <= 50\%
+#'   \item \code{Very Poor}: absolute IPE > 50\%
 #' }
 #'
-#' This function operates at the observation level (ID/OCC/TIME), making it
-#' useful for identifying specific poorly or well-fitted samples.
+#' This function operates at the observation level (\code{ID/OCC/TIME}),
+#' making it useful for identifying specific poorly or well-fitted samples
+#' rather than aggregated summaries.
 #'
 #' Supported inputs include:
 #' \itemize{
 #'   \item Objects of class \code{EvalPPK}, typically returned by [exeval_ppk()]
-#'   \item Objects of class \code{EvalMetricsPPK}, typically returned by [metrics_occ()]
 #'   \item Compatible data frames containing observation-level metrics
 #' }
 #'
-#' @param x Either:
+#' @param x Input object to screen. Supported inputs include:
 #' \itemize{
-#'   \item An object of class \code{EvalPPK}
-#'   \item An object of class \code{EvalMetricsPPK}
-#'   \item A data frame containing at least \code{ID}, \code{OCC},
+#'   \item an object of class \code{EvalPPK}, typically returned by
+#'   [exeval_ppk()]
+#'
+#'   \item a data frame containing at least \code{ID}, \code{OCC},
 #'   \code{TIME}, and \code{IPE}
 #' }
-#' @param occ Optional numeric occasion to filter.
-#' If \code{NULL} (default), all occasions are included.
-#' @param fit_classes Character vector indicating which fit categories to retain.
-#' Default includes all categories.
-#' @param ids_only Logical. If \code{TRUE}, returns only unique subject IDs
-#' matching the selected criteria.
+#' 
+#' @param occ Optional numeric occasion (\code{OCC}) used to filter
+#' observations. If \code{NULL} (default), all occasions are included.
+#' 
+#' @param fit_classes Character vector specifying which fit quality
+#' categories to retain. Default includes all categories.
+#' 
+#' @param ids_only Logical. If \code{TRUE}, returns unique subject
+#' identifiers matching the selected criteria instead of observation-level
+#' records.
 #'
 #' @return A filtered data frame containing fit classification results,
 #' or a vector of IDs if \code{ids_only = TRUE}.
-#'
+#' 
+#' @seealso [exeval_ppk()], [summary.EvalPPK()]
+#' 
 #' @examples
 #' \dontrun{
 #' # Screen full evaluation object
 #' res <- exeval_ppk(...)
 #' screen_fit(res)
 #'
-#' # Screen metrics object
-#' screen_fit(res$metrics)
 #'
 #' # Return only poorly fitted observations
 #' screen_fit(
@@ -85,20 +90,16 @@ screen_fit <- function(x,
   # Input dispatch
   # --------------------------------
   if (inherits(x, "EvalPPK")) {
-
+    
     df <- x$metrics$metrics
-
-  } else if (inherits(x, "EvalMetricsPPK")) {
-
-    df <- x$metrics
-
+    
   } else if (is.data.frame(x)) {
-
+    
     df <- x
-
+    
   } else {
     stop(
-      "'x' must be an EvalPPK, EvalMetricsPPK, or a data.frame containing IPE."
+      "'x' must be an EvalPPK object or a data.frame containing IPE."
     )
   }
 
