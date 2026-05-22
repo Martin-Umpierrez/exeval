@@ -445,7 +445,6 @@ plot.EvalPPK <- function(x,
 
   type <- match.arg(type)
   mm <- x$metrics
-
   pp <- NULL
 
 
@@ -461,30 +460,23 @@ plot.EvalPPK <- function(x,
       "Very Poor" = "lightcoral"
     )
     
+    titu <- NULL
+    if(is.null(occ) ) { 
+      occ <- unique(mm[[1]]$OCC) 
+      titu <- "Fit quality distribution"
+    } else { 
+      titu <- paste("Fit quality distribution - OCC", occ)
+        }
+    
     pp <- mm[[1]] |>
+      dplyr::filter(OCC %in% occ) |> 
       dplyr::mutate( Abs_IPE = abs(IPE)) |> 
-      dplyr::mutate(
-        Fit_Class = dplyr::case_when(
-          Abs_IPE <= 15 ~ "Excellent",
-          Abs_IPE <= 30 ~ "Acceptable",
-          Abs_IPE <= 50 ~ "Poor",
-          Abs_IPE > 50 ~ "Very Poor"
-        ),
-        Fit_Class = factor(
-          Fit_Class,
-          levels = c("Very Poor", "Poor","Acceptable","Excellent")
-        )
-      ) |> 
-    ggplot2::ggplot(
+      ggplot2::ggplot(
       ggplot2::aes(x = Fit_Class, fill=Fit_Class)) +
       ggplot2::geom_bar() +
       ggplot2::scale_fill_manual(values = fit_colors, drop = FALSE) +
       ggplot2::labs(
-        title = ifelse(
-          is.null(occ),
-          "Fit quality distribution",
-          paste("Fit quality distribution - OCC", occ)
-        ),
+        title = titu,
         x = "Fit Class",
         y = "Number of Observations"
       ) +
@@ -492,10 +484,14 @@ plot.EvalPPK <- function(x,
   }
 
   if (type == 'fit_histogram') {
-    # plot_fit_distribution(x = x,
-    #                       occ = occ,
-    #                       type = "fit_histogram",
-    #                       signed = signed)
+
+    titu <- NULL
+    if(is.null(occ) ) { 
+      occ <- unique(mm[[1]]$OCC) 
+      titu <- "IPE distribution"
+    } else { 
+      titu <- paste("IPE distribution - OCC", occ)
+    }
     
     if (signed) {
       x_var <- "IPE"
@@ -506,16 +502,13 @@ plot.EvalPPK <- function(x,
     }
     
     pp <- mm[[1]] |>
+      dplyr::filter(OCC %in% occ) |> 
       dplyr::mutate( Abs_IPE = abs(IPE)) |> 
     ggplot2::ggplot(
       ggplot2::aes(x = .data[[x_var]]) ) +
       ggplot2::geom_histogram(bins = 30) +
       ggplot2::labs(
-        title = ifelse(
-          is.null(occ),
-          "IPE distribution",
-          paste("IPE distribution - OCC", occ)
-        ),
+        title = titu, 
         x = x_lab,
         y = "Number of Observations"
       ) +

@@ -36,10 +36,17 @@ plot(res, type="IF20_plot")
 plot(res, type="IF30_plot")
 plot(res, type="IF_plot")
 plot(res, type="error_plot")
-plot(res, type="fit_class", occ=2)
+
+plot(res, type="fit_class", occ=5)
+plot(res, type="fit_class")
+
 plot(res, type="fit_histogram")
+plot(res, type="fit_histogram", occ=2)
 
 
+library(tidyverse)
+res$metrics$metrics |> count(OCC, Fit_Class) 
+  
 
 screen_fit(res, occ=2)
 
