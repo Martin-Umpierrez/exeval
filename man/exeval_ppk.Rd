@@ -129,13 +129,14 @@ execution.}
 \item{occ}{Optional numeric occasion to filter.
 If \code{NULL} (default), all occasions are included.}
 
-\item{by_occ}{Logical. If \code{TRUE}, returns summaries stratified by OCC.
-Cannot be used together with \code{occ}.}
+\item{by_occ}{Logical. If \code{TRUE}, summaries are stratified by
+occasion (\code{OCC}). Cannot be used together with \code{occ}.}
 
 \item{poor_threshold}{Numeric threshold defining poor fit based on
-absolute IPE. Default is 50.}
+absolute individual prediction error (\code{|IPE|}). Default is \code{50}.}
 
-\item{top_n}{Number of poorly fitted IDs to return. Default is 10.}
+\item{top_n}{Integer. Number of poorly fitted individuals to report.
+Default is \code{10}.}
 
 \item{type}{A character string specifying the type of plot to generate. Options are:
 \itemize{
@@ -175,7 +176,20 @@ An object of class \code{EvalPPK} containing:
 
 Additional workflow metadata are stored as object attributes.
 
-An object of class \code{summary.EvalPPK}.
+An object of class \code{summary.EvalPPK} containing:
+\describe{
+\item{metadata}{Evaluation metadata inherited from the original
+\code{EvalPPK} object.}
+
+\item{global_metrics}{Summary performance metrics across all observations
+or stratified by occasion.}
+
+\item{fit_distribution}{Distribution of fit quality categories based on
+absolute prediction error.}
+
+\item{poor_fit_ids}{Table of individuals exceeding the selected poor-fit
+threshold.}
+}
 
 A ggplot object corresponding to the selected plot type.
 }
@@ -188,9 +202,14 @@ prediction error metric calculation.
 Prints a formatted representation of an \code{EvalPPK} object, including
 dataset characteristics, evaluation settings, and performance metrics.
 
+Prints a formatted representation of a summary generated from an
+\code{EvalPPK} object, including metadata, applied summary settings,
+global performance metrics, fit distribution, and poorly fitted
+individuals.
+
 Generates a structured summary of an \code{EvalPPK} object, including
-metadata, global performance metrics, fit quality distribution,
-and poorly fitted IDs.
+global performance metrics, fit quality classification, and identification
+of poorly fitted individuals.
 
 Generate Different Type of Metrics Plots
 }
@@ -208,6 +227,9 @@ This function executes the complete external evaluation workflow:
 
 The returned object is an \code{EvalPPK} object containing all intermediate
 results and summary metadata.
+
+Summary outputs can be generated across all occasions, for a specific
+occasion, or stratified by occasion.
 
 This function creates various types of metrics plots for evaluating popPK Models , such as rBias, MAIPE, and IF20/IF30 values.
 

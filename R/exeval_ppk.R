@@ -223,6 +223,16 @@ print.EvalPPK <- function(x, ...) {
 }
 
 
+#' S3 print method for \code{summary.EvalPPK} objects
+#'
+#' Prints a formatted representation of a summary generated from an
+#' \code{EvalPPK} object, including metadata, applied summary settings,
+#' global performance metrics, fit distribution, and poorly fitted
+#' individuals.
+#'
+#' @param x An object of class \code{summary.EvalPPK}.
+#' @param ... Additional arguments passed to or from other methods.
+#'
 #' @rdname exeval_ppk
 #' @export
 
@@ -281,24 +291,47 @@ print.summary.EvalPPK <- function(x, ...) {
 
 
 
-#' Summarize external PK evaluation results
+#' Summarize external evaluation results
 #'
 #' Generates a structured summary of an \code{EvalPPK} object, including
-#' metadata, global performance metrics, fit quality distribution,
-#' and poorly fitted IDs.
+#' global performance metrics, fit quality classification, and identification
+#' of poorly fitted individuals.
+#'
+#' Summary outputs can be generated across all occasions, for a specific
+#' occasion, or stratified by occasion.
 #'
 #' @param object An object of class \code{EvalPPK}.
-#' @param occ Optional numeric occasion to summarize.
-#' If \code{NULL} (default), all occasions are included.
-#' @param by_occ Logical. If \code{TRUE}, returns summaries stratified by OCC.
-#' Cannot be used together with \code{occ}.
-#' @param poor_threshold Numeric threshold defining poor fit based on
-#' absolute IPE. Default is 50.
-#' @param top_n Number of poorly fitted IDs to return. Default is 10.
-#' @param ... Additional arguments (not used).
-#' @rdname exeval_ppk
 #'
-#' @return An object of class \code{summary.EvalPPK}.
+#' @param occ Optional numeric occasion to summarize.
+#' If \code{NULL} (default), all available occasions are included.
+#'
+#' @param by_occ Logical. If \code{TRUE}, summaries are stratified by
+#' occasion (\code{OCC}). Cannot be used together with \code{occ}.
+#'
+#' @param poor_threshold Numeric threshold defining poor fit based on
+#' absolute individual prediction error (\code{|IPE|}). Default is \code{50}.
+#'
+#' @param top_n Integer. Number of poorly fitted individuals to report.
+#' Default is \code{10}.
+#'
+#' @param ... Additional arguments passed to or from other methods.
+#'
+#' @return An object of class \code{summary.EvalPPK} containing:
+#' \describe{
+#'   \item{metadata}{Evaluation metadata inherited from the original
+#'   \code{EvalPPK} object.}
+#'
+#'   \item{global_metrics}{Summary performance metrics across all observations
+#'   or stratified by occasion.}
+#'
+#'   \item{fit_distribution}{Distribution of fit quality categories based on
+#'   absolute prediction error.}
+#'
+#'   \item{poor_fit_ids}{Table of individuals exceeding the selected poor-fit
+#'   threshold.}
+#' }
+#'
+#' @rdname exeval_ppk
 #' @export
 
 summary.EvalPPK <- function(object,
