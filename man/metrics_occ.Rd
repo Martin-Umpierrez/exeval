@@ -2,7 +2,7 @@
 % Please edit documentation in R/metrics_occ.R
 \name{metrics_occ}
 \alias{metrics_occ}
-\title{Compute pharmacokinetic evaluation metrics by occasion (MAPbayr)}
+\title{Compute external evaluation performance metrics}
 \usage{
 metrics_occ(
   simulations,
@@ -12,36 +12,96 @@ metrics_occ(
 )
 }
 \arguments{
-\item{simulations}{An object of class \code{"mapbayr"} returned by
-\code{\link{run_pk_simulations}}.}
+\item{simulations}{Named list returned by \code{\link[=run_pk_simulations]{run_pk_simulations()}}
+containing simulation outputs and treatment/event data.}
 
-\item{assessment}{Character string specifying the type of prediction.
-One of \code{"a_priori"}, \code{"Bayesian_forecasting"}, or
-\code{"Complete"}.}
+\item{assessment}{Character string specifying the prediction strategy
+used to generate the simulations.
+Available options are:
+\itemize{
+\item \code{"a_priori"}: evaluates predictions generated from the
+population model.
 
-\item{tool}{Character string specifying the estimation tool.
-Currently only \code{"mapbayr"} is supported.}
+\item \code{"Bayesian_forecasting"}: evaluates predictions generated
+from individualized posterior models.
 
-\item{...}{Additional arguments (not used).}
+\item \code{"Complete"}: evaluates both a priori and Bayesian forecasting
+predictions.
+}}
+
+\item{tool}{Character string specifying the simulation backend.
+Currently only \code{"mapbayr"} is supported}
+
+\item{...}{Additional arguments (currently unused).}
 }
 \value{
-An object of class \code{EvalMetricsPPK} containing:
-\itemize{
-\item \code{metrics}: Individual-level prediction errors by ID and OCC.
-\item \code{metrics_means}: Summary metrics by OCC.
+A named list containing:
+\describe{
+\item{metrics}{Data frame containing individual prediction errors and
+fit classifications for each subject, occasion, and observation time.}
+
+\item{metrics_means}{Data frame containing summary performance metrics
+aggregated by occasion.}
 }
 }
 \description{
-Computes prediction error metrics by occasion (OCC) for individual
-simulations generated using MAP Bayesian estimation with \pkg{mapbayr}.
+Computes predictive performance metrics from simulation outputs generated
+during external model evaluation.
 }
 \details{
-This method extracts individual predictions and observed concentrations
-from simulation outputs, merges them by ID, OCC and time, and computes
-relative bias (rBIAS), relative RMSE (rRMSE), mean absolute individual
-prediction error (MAIPE), and the percentages of predictions within
-20\\% and 30\\% of the observations (IF20 and IF30).
+This function compares simulated predictions with observed concentrations
+and calculates individual- and occasion-level prediction error metrics.
+
+Individual predictions are matched with observed concentrations using
+subject identifier (\code{ID}), occasion (\code{OCC}), and observation
+time (\code{TIME}).
+
+The following metrics are calculated:
+\itemize{
+\item \code{IPE}: individual prediction error (\%)
+\item \code{APE}: absolute prediction error (\%)
+\item \code{rRMSE}: relative root mean squared error (\%)
+\item \code{rBIAS}: relative bias (\%)
+\item \code{MAIPE}: mean absolute individual prediction error (\%)
+\item \code{IF20}: percentage of predictions within 20\\% of observations
+\item \code{IF30}: percentage of predictions within 30\\% of observations
+}
+
+Individual observations are additionally classified into fit quality
+categories (\code{Excellent}, \code{Acceptable}, \code{Poor},
+\code{Very Poor}) based on absolute prediction error.
+}
+\examples{
+\dontrun{
+data("exeval_models", package = "exeval")
+data("tacrolimus_pk1_kidney", package = "exeval")
+
+dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
+
+fit <- run_MAP_estimations(
+  model = exeval_models$Model_code[[2]],
+  model_name = "TAC_Zuo2013",
+  data = dd,
+  evaluation_type = "sequential_updating"
+)
+
+post <- update_map_models(
+  map_results = fit,
+  evaluation_type = "sequential_updating"
+)
+
+sim <- run_pk_simulations(
+  individual_model = post,
+  map_results = fit,
+  assessment = "Complete"
+)
+
+mm <- metrics_occ(
+  simulations = sim,
+  assessment = "Complete"
+)
+}
 }
 \seealso{
-\code{\link{metrics_occ}}, \code{\link{run_pk_simulations}}
+\code{\link[=run_pk_simulations]{run_pk_simulations()}}, \code{\link[=plot.EvalPPK]{plot.EvalPPK()}}, \code{\link[=summary.EvalPPK]{summary.EvalPPK()}}
 }
