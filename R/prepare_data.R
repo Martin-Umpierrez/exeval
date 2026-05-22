@@ -1,26 +1,58 @@
 #' Prepare input data for exeval
 #'
-#' Standardizes user-defined column names to the internal naming
-#' convention used in exeval.
+#' Renames user-defined dataset columns to the standardized naming
+#' convention used internally by \pkg{exeval}.
+#'
+#' This helper function allows external datasets with arbitrary column
+#' names to be reformatted for compatibility with the external evaluation
+#' workflow.
 #'
 #' @param data A data frame containing the input dataset.
+#' 
 #' @param name_id Character. Name of the column containing subject IDs.
-#' @param name_time Character. Name of the column containing sampling or event times.
+#' 
+#' @param name_time Character string. Name of the sampling or event time
+#' column.
+#' 
 #' @param name_occ Optional character. Name of the occasion column.
+#' 
 #' @param name_date Optional character. Name of the date column.
+#' 
 #' @param name_cmt Optional character. Name of the compartment column.
-#' @param name_dv Optional character. Name of the dependent variable column.
-#' @param name_mdv Optional character. Name of the missing dependent variable indicator column.
+#' 
+#' @param name_dv Optional character string. Name of the dependent variable
+#' (observed concentration/response) column.
+#' 
+#' @param name_mdv Optional character string. Name of the missing dependent
+#' variable indicator column.
+#' 
 #' @param name_amt Optional character. Name of the dose amount column.
+#' 
 #' @param name_evid Optional character. Name of the event ID column.
-#' @param name_ss Optional character. Name of the steady-state indicator column.
-#' @param name_dur Optional character. Name of the infusion duration column.
-#' @param name_lag Optional character. Name of the lag time column.
-#' @param name_rate Optional character. Name of the infusion rate column.
-#' @param name_ii Optional character. Name of the interdose interval column.
-#' @param name_addl Optional character. Name of the additional doses column.
+#' @param name_ss Optional character string. Name of the steady-state indicator
+#' column.
+#' 
+#' @param name_dur Optional character string. Name of the infusion duration
+#' column.' 
+#' @param name_lag Optional character string. Name of the lag time column.
+#' 
+#' @param name_rate Optional character string. Name of the infusion rate
+#' column.
+#' 
+#' @param name_ii Optional character string. Name of the interdose interval
+#' column. 
+#' 
+#' @param name_addl Optional character string. Name of the additional doses
+#' column.
+#' 
+#' @details
+#' At minimum, \code{ID} and \code{TIME} mappings must be provided.
 #'
-#' @return A data frame with standardized column names.
+#' Additional columns can be optionally mapped depending on the analysis
+#' workflow and model requirements.
+#'
+#' @return A data frame with standardized column names compatible with
+#' \pkg{exeval}.
 #'
 #' @examples
 #' df <- data.frame(
@@ -40,6 +72,7 @@
 #'
 #' head(df_std)
 #'
+#' @seealso [exeval_ppk()]
 #' @export
 
 prepare_data <- function (data,
@@ -91,6 +124,11 @@ prepare_data <- function (data,
   )
   # Remove NULL Values
   rename_map <- rename_map[!is.na(rename_map)]
+  
+  if (any(duplicated(rename_map))) {
+    stop("Input column mappings must be unique.")
+  }
+  
   missing_cols <- rename_map[!rename_map %in% names(data)]
 
   if (length(missing_cols) > 0) {

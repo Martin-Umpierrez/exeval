@@ -28,7 +28,8 @@ prepare_data(
 
 \item{name_id}{Character. Name of the column containing subject IDs.}
 
-\item{name_time}{Character. Name of the column containing sampling or event times.}
+\item{name_time}{Character string. Name of the sampling or event time
+column.}
 
 \item{name_occ}{Optional character. Name of the occasion column.}
 
@@ -36,32 +37,50 @@ prepare_data(
 
 \item{name_cmt}{Optional character. Name of the compartment column.}
 
-\item{name_dv}{Optional character. Name of the dependent variable column.}
+\item{name_dv}{Optional character string. Name of the dependent variable
+(observed concentration/response) column.}
 
-\item{name_mdv}{Optional character. Name of the missing dependent variable indicator column.}
+\item{name_mdv}{Optional character string. Name of the missing dependent
+variable indicator column.}
 
 \item{name_amt}{Optional character. Name of the dose amount column.}
 
 \item{name_evid}{Optional character. Name of the event ID column.}
 
-\item{name_ss}{Optional character. Name of the steady-state indicator column.}
+\item{name_ss}{Optional character string. Name of the steady-state indicator
+column.}
 
-\item{name_dur}{Optional character. Name of the infusion duration column.}
+\item{name_dur}{Optional character string. Name of the infusion duration
+column.'}
 
-\item{name_lag}{Optional character. Name of the lag time column.}
+\item{name_lag}{Optional character string. Name of the lag time column.}
 
-\item{name_rate}{Optional character. Name of the infusion rate column.}
+\item{name_rate}{Optional character string. Name of the infusion rate
+column.}
 
-\item{name_ii}{Optional character. Name of the interdose interval column.}
+\item{name_ii}{Optional character string. Name of the interdose interval
+column.}
 
-\item{name_addl}{Optional character. Name of the additional doses column.}
+\item{name_addl}{Optional character string. Name of the additional doses
+column.}
 }
 \value{
-A data frame with standardized column names.
+A data frame with standardized column names compatible with
+\pkg{exeval}.
 }
 \description{
-Standardizes user-defined column names to the internal naming
-convention used in exeval.
+Renames user-defined dataset columns to the standardized naming
+convention used internally by \pkg{exeval}.
+}
+\details{
+This helper function allows external datasets with arbitrary column
+names to be reformatted for compatibility with the external evaluation
+workflow.
+
+At minimum, \code{ID} and \code{TIME} mappings must be provided.
+
+Additional columns can be optionally mapped depending on the analysis
+workflow and model requirements.
 }
 \examples{
 df <- data.frame(
@@ -81,4 +100,7 @@ df_std <- prepare_data(
 
 head(df_std)
 
+}
+\seealso{
+\code{\link[=exeval_ppk]{exeval_ppk()}}
 }
