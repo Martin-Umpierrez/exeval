@@ -1,20 +1,41 @@
-#' Plot Combined Metrics
+#' Plot combined model performance metrics
 #'
-#' This function generates different types of metrics plots based on the combined metrics from multiple models.
+#' Generates comparative visualizations of evaluation metrics across multiple
+#' externally evaluated models combined with [combine_metrics()].
 #'
-#' @param cmetrics A dataframe obtained from `combine_metrics()`, containing the combined metrics data.
-#' @param type A character string specifying the type of plot to generate. Options are:
-#'   \itemize{
-#'     \item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
-#'     \item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
-#'     \item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35%.
-#'     \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
-#'   }
+#' This function is intended for model comparison workflows, allowing visual
+#' inspection of predictive performance across evaluation occasions..
 #'
-#' @return A `ggplot2` object representing the selected plot.
-#' @export
+#' @param cmetrics Named list returned by [combine_metrics()], containing
+#' combined model performance metrics. 
+#' 
+#' @param type Character string specifying the plot type to generate.
+#' Available options are:
+#' \itemize{
+#'   \item \code{"bias_barplot"}: bar plot of relative bias
+#'   (\code{rBIAS}) with confidence intervals.
+#'
+#'   \item \code{"MAIPE_barplot"}: bar plot of mean absolute individual
+#'   prediction error (\code{MAIPE}).
+#'
+#'   \item \code{"IF20_plot"}: bar plot of \code{IF20} values with
+#'   reference threshold.
+#'
+#'   \item \code{"IF30_plot"}: bar plot of \code{IF30} values with
+#'   reference threshold.
+#' }
+#' 
+#' @details
+#' Metrics are displayed separately for each evaluation occasion
+#' (\code{OCC}) using faceted plots, enabling direct visual comparison
+#' between candidate models.
+#'
+#' @return A \code{ggplot2} object.
+#' 
+#' @seealso [combine_metrics()], [plot.EvalPPK()]
 #'
 #' @examples
+#' \dontrun{
 #' #' set.seed(123)  # Para reproducibilidad
 #' generate_fake_metrics <- function(n_occasions = 3) {
 #' data.frame(
@@ -38,6 +59,9 @@
 #'combined_results <- combine_metrics(models_list)
 #' combined_results <- combine_metrics(models_list)
 #' combine_metric_plot(combined_results, type = 'bias_barplot')
+#' }
+#' 
+#' @export
 
 combine_metric_plot <-function(cmetrics,
                                type = c('bias_barplot',

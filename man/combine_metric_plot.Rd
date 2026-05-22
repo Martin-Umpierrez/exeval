@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_metric_plot.R
 \name{combine_metric_plot}
 \alias{combine_metric_plot}
-\title{Plot Combined Metrics}
+\title{Plot combined model performance metrics}
 \usage{
 combine_metric_plot(
   cmetrics,
@@ -10,23 +10,42 @@ combine_metric_plot(
 )
 }
 \arguments{
-\item{cmetrics}{A dataframe obtained from \code{combine_metrics()}, containing the combined metrics data.}
+\item{cmetrics}{Named list returned by \code{\link[=combine_metrics]{combine_metrics()}}, containing
+combined model performance metrics.}
 
-\item{type}{A character string specifying the type of plot to generate. Options are:
+\item{type}{Character string specifying the plot type to generate.
+Available options are:
 \itemize{
-\item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
-\item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
-\item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35\%.
-\item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50\%.
+\item \code{"bias_barplot"}: bar plot of relative bias
+(\code{rBIAS}) with confidence intervals.
+
+\item \code{"MAIPE_barplot"}: bar plot of mean absolute individual
+prediction error (\code{MAIPE}).
+
+\item \code{"IF20_plot"}: bar plot of \code{IF20} values with
+reference threshold.
+
+\item \code{"IF30_plot"}: bar plot of \code{IF30} values with
+reference threshold.
 }}
 }
 \value{
-A \code{ggplot2} object representing the selected plot.
+A \code{ggplot2} object.
 }
 \description{
-This function generates different types of metrics plots based on the combined metrics from multiple models.
+Generates comparative visualizations of evaluation metrics across multiple
+externally evaluated models combined with \code{\link[=combine_metrics]{combine_metrics()}}.
+}
+\details{
+This function is intended for model comparison workflows, allowing visual
+inspection of predictive performance across evaluation occasions..
+
+Metrics are displayed separately for each evaluation occasion
+(\code{OCC}) using faceted plots, enabling direct visual comparison
+between candidate models.
 }
 \examples{
+\dontrun{
 #' set.seed(123)  # Para reproducibilidad
 generate_fake_metrics <- function(n_occasions = 3) {
 data.frame(
@@ -50,4 +69,9 @@ list(model_name = "Test_Model2", metrics_list = simulation2)
 combined_results <- combine_metrics(models_list)
 combined_results <- combine_metrics(models_list)
 combine_metric_plot(combined_results, type = 'bias_barplot')
+}
+
+}
+\seealso{
+\code{\link[=combine_metrics]{combine_metrics()}}, \code{\link[=plot.EvalPPK]{plot.EvalPPK()}}
 }
