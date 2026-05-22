@@ -1,48 +1,113 @@
-#' Run MAP Estimations
+#' Run MAP Bayesian Estimation for External Model Evaluation
 #'
-#' Performs Maximum A Posteriori (MAP) estimations for pharmacokinetic models
-#' using either `mapbayr` or `lixoftConnectors`.
+#' Performs Maximum A Posteriori (MAP) Bayesian estimation using
+#' \pkg{mapbayr} for external evaluation of pharmacokinetic models across
+#' multiple dosing occasions.
 #'
 #' @details
-#' The function accepts pharmacokinetic models either as raw \code{mrgsolve}
-#' model code or as a pre-loaded \code{mrgmod} object. When a character string
-#' is supplied, the model is compiled internally using \code{mrgsolve::mcode()}.
-#' If a \code{mrgmod} object is provided, it is used directly for MAP estimation.
-#'
-#' @param model Either:
+#' The population model can be provided either as:
+#' \itemize{
+#'   \item a compiled \code{mrgsolve::mrgmod} object, or
+#'   \item a character string containing \pkg{mrgsolve} model code.
+#' }
+#' 
+#' When model code is supplied as a character string, the model is compiled
+#' internally using \code{mrgsolve::mcode()}. In this case, a model name
+#' must be provided via \code{model_name}.
+#' 
+#' The evaluation strategy defines which observations are used to inform
+#' each MAP estimation:
+#' \itemize{
+#'   \item \code{"sequential_updating"}: cumulative observations up to each
+#'         occasion (e.g., OCC1, OCC1+2, OCC1+2+3).
+#'   \item \code{"stepwise_updating"}: observations from each occasion treated
+#'         independently.
+#'   \item \code{"sequential_reference_updating"}: cumulative observations up to
+#'         the reference occasion \code{occ_ref}.
+#'   \item \code{"backward_reference_updating"}: sequential backward updating
+#'         from \code{occ_ref}.
+#' }
+#' 
+#' @param model Population PK model, provided either as:
 #' \itemize{
 #'   \item A character string containing the pharmacokinetic model code written
 #'         in \code{mrgsolve} format.
 #'   \item A pre-compiled \code{mrgmod} object (S3 class from \code{mrgsolve}).
 #' }
 #' If a character string is provided, \code{model_name} must also be specified.
-#' @param model_name Character string. Name of the model.
-#' Required only if \code{model} is provided as character model code.#'
-#' @param tool Character string. Specifies the tool to use for estimation. Currently using "mapbayr".
-#' @param check_compile Logical. If `TRUE`, checks if the model compiles correctly in `mapbayr`.
-#' @param data Data frame. Contains the input data for the estimations, including columns like ID, TIME, and OCC.
-#' @param num_occ Integer. Number of occasions (OCC) to include in the analysis. If `NULL`, all unique occasions in `data` are used.
-#' @param num_ids Integer. Number of unique IDs to include in the analysis. If `NULL`, all IDs are included.
-#' @param sampling Logical. If `TRUE`, randomly samples the specified number of IDs from the data.
-#' @param occ_ref Integer. Reference occasion for evaluation types that require a reference. Must be consistent with `evaluation_type`.
-#' @param evaluation_type Character string. Specifies the evaluation type. Options are:
-#'   \itemize{
-#'     \item "sequential_updating": Uses all data up to each occasion.
-#'     \item "stepwise_updating": Uses only the most recent occasion.
-#'     \item "sequential_reference_updating": Uses all data up to a reference occasion.
-#'     \item "backward_reference_updating": Uses the most recent occasion relative to a reference.
-#'   }
-#' @param method Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".
-#'
-#' @return A list containing:
-#' \describe{
-#'   \item{data_by_occ}{Filtered datasets by occasion.}
-#'   \item{treatments_by_occ}{List of treatments grouped by occasion.}
-#'   \item{treatments_apriori}{List of "a priori" treatments }
-#'   \item{map_estimations}{MAP estimation results for each subset of the data.}
-#'   \item{eval_type}{The evaluation type used.}
-#'   \item{pop_model}{The population PK or PKPD model}
+#' 
+#' @param model_name Character string. Name used when compiling the model
+#' with \code{mrgsolve::mcode()}. Required only when \code{model} is
+#' provided as character model code.
+#' 
+#' @param tool Character string. Estimation engine to use.
+#' Currently only \code{"mapbayr"} is supported.
+#' 
+#' @param check_compile Logical. If \code{TRUE}, validates model compatibility
+#' with \pkg{mapbayr} before estimation.
+#' 
+#' @param data Data frame containing external evaluation data.
+#' Must include at least \code{ID}, \code{OCC}, and \code{CMT}.
+#' See [prepare_data()] for expected formatting and preprocessing.
+#' 
+#' @param num_occ Integer. Maximum number of occasions to include in the analysis.
+#' If \code{NULL}, all available occasions in the data are used.
+#' 
+#' 
+#' @param num_ids Integer. Number of subjects to include.
+#' If \code{NULL}, all unique subjects are used.
+#' 
+#' @param sampling Logical. If \code{TRUE}, subjects are randomly sampled
+#' when \code{num_ids} is specified. Otherwise, the first \code{num_ids}
+#' subjects are selected.
+#' 
+#' @param occ_ref Integer. Reference occasion used for reference-based
+#' evaluation strategies. Required when \code{evaluation_type} is
+#' \code{"sequential_reference_updating"} or
+#' \code{"backward_reference_updating"}, where MAP estimation is performed
+#' relative to this occasion.
+#' 
+#' @param evaluation_type Character string specifying the evaluation strategy.
+#' Available options are:
+#' \itemize{
+#'   \item \code{"sequential_updating"}: performs MAP estimation using all
+#'         observations accumulated up to each occasion.
+#'   \item \code{"stepwise_updating"}: performs MAP estimation using
+#'         observations from each occasion independently.
+#'   \item \code{"sequential_reference_updating"}: performs MAP estimation
+#'         using cumulative observations up to the reference occasion
+#'         defined by \code{occ_ref}.
+#'   \item \code{"backward_reference_updating"}: performs MAP estimation
+#'         by sequentially moving backward from the reference occasion
+#'         defined by \code{occ_ref}.
 #' }
+#' @param method Character string specifying the optimization algorithm
+#' passed to \code{mapbayr::mapbayest()} for MAP estimation.
+#' Supported options are \code{"L-BFGS-B"} and \code{"newuoa"}.
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{data_by_occ}{List of input datasets partitioned according to the
+#'   selected evaluation strategy, where each element contains the observations
+#'   used for a specific MAP estimation.}
+#'
+#'   \item{treatments_by_occ}{List of treatment/event datasets grouped by
+#'   occasion and subject, used for posterior predictive simulations.}
+#'
+#'   \item{apriori_treatments}{List of treatment/event datasets used for
+#'   a priori predictive simulations.}
+#'
+#'   \item{map_estimations}{List of MAP estimation objects returned by
+#'   \code{mapbayr::mapbayest()} for each evaluation subset.}
+#'
+#'   \item{eval_type}{Character string indicating the selected evaluation
+#'   strategy.}
+#'
+#'   \item{pop_model}{Compiled population model (\code{mrgmod}) used for
+#'   estimation.}
+#' }
+#' @seealso [mapbayr::mapbayest()], [mrgsolve::mcode()]
+#' 
 #' @export
 #'
 #' @examples

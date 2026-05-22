@@ -27,8 +27,8 @@ Currently only \code{"mapbayr"} is supported.}
 \value{
 An object of class \code{EvalMetricsPPK} containing:
 \itemize{
-  \item \code{metrics}: Individual-level prediction errors by ID and OCC.
-  \item \code{metrics_means}: Summary metrics by OCC.
+\item \code{metrics}: Individual-level prediction errors by ID and OCC.
+\item \code{metrics_means}: Summary metrics by OCC.
 }
 }
 \description{
@@ -40,7 +40,7 @@ This method extracts individual predictions and observed concentrations
 from simulation outputs, merges them by ID, OCC and time, and computes
 relative bias (rBIAS), relative RMSE (rRMSE), mean absolute individual
 prediction error (MAIPE), and the percentages of predictions within
-20\% and 30\% of the observations (IF20 and IF30).
+20\\% and 30\\% of the observations (IF20 and IF30).
 }
 \seealso{
 \code{\link{metrics_occ}}, \code{\link{run_pk_simulations}}

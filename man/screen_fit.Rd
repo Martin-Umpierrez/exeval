@@ -14,10 +14,10 @@ screen_fit(
 \arguments{
 \item{x}{Either:
 \itemize{
-  \item An object of class \code{EvalPPK}
-  \item An object of class \code{EvalMetricsPPK}
-  \item A data frame containing at least \code{ID}, \code{OCC},
-  \code{TIME}, and \code{IPE}
+\item An object of class \code{EvalPPK}
+\item An object of class \code{EvalMetricsPPK}
+\item A data frame containing at least \code{ID}, \code{OCC},
+\code{TIME}, and \code{IPE}
 }}
 
 \item{occ}{Optional numeric occasion to filter.
@@ -41,10 +41,10 @@ quality categories.
 \details{
 Fit categories are defined as:
 \itemize{
-  \item Excellent: absolute IPE <= 15%
-  \item Acceptable: absolute IPE > 15% and <= 30%
-  \item Poor: absolute IPE > 30% and <= 50%
-  \item Very Poor: absolute IPE > 50%
+\item Excellent: absolute IPE <= 15\%
+\item Acceptable: absolute IPE > 15\% and <= 30\%
+\item Poor: absolute IPE > 30\% and <= 50\%
+\item Very Poor: absolute IPE > 50\%
 }
 
 This function operates at the observation level (ID/OCC/TIME), making it
@@ -52,9 +52,9 @@ useful for identifying specific poorly or well-fitted samples.
 
 Supported inputs include:
 \itemize{
-  \item Objects of class \code{EvalPPK}, typically returned by [exeval_ppk()]
-  \item Objects of class \code{EvalMetricsPPK}, typically returned by [metrics_occ()]
-  \item Compatible data frames containing observation-level metrics
+\item Objects of class \code{EvalPPK}, typically returned by \code{\link[=exeval_ppk]{exeval_ppk()}}
+\item Objects of class \code{EvalMetricsPPK}, typically returned by \code{\link[=metrics_occ]{metrics_occ()}}
+\item Compatible data frames containing observation-level metrics
 }
 }
 \examples{

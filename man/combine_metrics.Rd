@@ -14,22 +14,26 @@ combine_metrics(
 }
 \arguments{
 \item{models}{A list of lists, where each inner list contains:
-- `model_name`: A string representing the model's name. It will then be used
-- `metrics_list`: A list containing the `metrics_means` data frame from [metrics_occ()].}
+\itemize{
+\item \code{model_name}: A string representing the model's name. It will then be used
+\item \code{metrics_list}: A list containing the \code{metrics_means} data frame from \code{\link[=metrics_occ]{metrics_occ()}}.
+}}
 
 \item{metric}{A character string specifying the metric to use for ranking.}
 
 \item{top_n}{An integer specifying the number of top models to select per OCC.}
 
-\item{occ_eval}{A numeric or character value specifying the `OCC` to filter the models by. Default is `NULL`, which means no filtering by `OCC`.}
+\item{occ_eval}{A numeric or character value specifying the \code{OCC} to filter the models by. Default is \code{NULL}, which means no filtering by \code{OCC}.}
 
 \item{rank_criteria}{A character string specifying how to rank the models:
-- `'min'`: Select models with the lowest metric values (e.g., MAIPE).
-- `'max'`: Select models whose metric values are higher (e.g., IF30).
-- `'abs'`: Selects models with the smallest absolute metric values (eg rBIAS)}
+\itemize{
+\item \code{'min'}: Select models with the lowest metric values (e.g., MAIPE).
+\item \code{'max'}: Select models whose metric values are higher (e.g., IF30).
+\item \code{'abs'}: Selects models with the smallest absolute metric values (eg rBIAS)
+}}
 }
 \value{
-A list containing the combined metrics for all models, with an additional `Model` column.
+A list containing the combined metrics for all models, with an additional \code{Model} column.
 }
 \description{
 Combine Model Metrics for a given list of models previously evaluated Metrics for Individual Predictions by Occasion

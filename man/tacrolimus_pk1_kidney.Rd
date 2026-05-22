@@ -7,36 +7,36 @@
 \format{
 A data.frame with 739 rows and 30 variables:
 \describe{
-  \item{ID}{Patient identifier}
-  \item{OCC}{Number of the occasion}
-  \item{DD}{Tacrolimus Daily Dose}
-  \item{AMT}{Dose amount (mg) }
-  \item{TIME}{Sequential Time (hours)}
-  \item{POD}{Post operative days}
-  \item{DV}{Tacrolimus concentration (ng/mL)}
-  \item{EVID}{Event ID}
-  \item{CMT}{Compartment}
-  \item{MDV}{Missing dependant variable}
-  \item{II}{Dosing Intreval}
-  \item{SS}{Steady State}
-  \item{Creatine}{Creatinine (mg/dL)}
-  \item{SCR}{Serum Creatinine(umol/L)}
-  \item{eGFR}{estimated Glomerular Filtration Rate(mL/min/1.73 m^2)}
-  \item{ClCrea}{Creatinine Clerance (mL/min) Cockcroft-Gault}
-  \item{AGE}{Age (years)}
-  \item{SEX}{Sex}
-  \item{WT}{Weight (kg)}
-  \item{HCT}{Hematocrit()}
-  \item{CYP3A5}{CYP3A5 Polymorphism}
-  \item{EXPRESSION}{CYP3A5 Expression}
-  \item{PDN_DOSE}{Prednisone dose(mg)}
-  \item{PDNXWT}{Prednisone Dose x WT (mg/kg)}
-  \item{Height}{Height(cm) }
-  \item{Height..m.}{Height(m) }
-  \item{BSA}{Body Surface Area (m^2)}
-  \item{BMIcalc}{Body mass index (kg/m^2)}
-  \item{LBW}{Lean Body Wright (kg)}
-  \item{DMELITU}{Diabetes}
+\item{ID}{Patient identifier}
+\item{OCC}{Number of the occasion}
+\item{DD}{Tacrolimus Daily Dose}
+\item{AMT}{Dose amount (mg) }
+\item{TIME}{Sequential Time (hours)}
+\item{POD}{Post operative days}
+\item{DV}{Tacrolimus concentration (ng/mL)}
+\item{EVID}{Event ID}
+\item{CMT}{Compartment}
+\item{MDV}{Missing dependant variable}
+\item{II}{Dosing Intreval}
+\item{SS}{Steady State}
+\item{Creatine}{Creatinine (mg/dL)}
+\item{SCR}{Serum Creatinine(umol/L)}
+\item{eGFR}{estimated Glomerular Filtration Rate(mL/min/1.73 m^2)}
+\item{ClCrea}{Creatinine Clerance (mL/min) Cockcroft-Gault}
+\item{AGE}{Age (years)}
+\item{SEX}{Sex}
+\item{WT}{Weight (kg)}
+\item{HCT}{Hematocrit()}
+\item{CYP3A5}{CYP3A5 Polymorphism}
+\item{EXPRESSION}{CYP3A5 Expression}
+\item{PDN_DOSE}{Prednisone dose(mg)}
+\item{PDNXWT}{Prednisone Dose x WT (mg/kg)}
+\item{Height}{Height(cm) }
+\item{Height..m.}{Height(m) }
+\item{BSA}{Body Surface Area (m^2)}
+\item{BMIcalc}{Body mass index (kg/m^2)}
+\item{LBW}{Lean Body Wright (kg)}
+\item{DMELITU}{Diabetes}
 }
 }
 \source{

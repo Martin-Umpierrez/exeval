@@ -10,18 +10,18 @@ combine_metric_plot(
 )
 }
 \arguments{
-\item{cmetrics}{A dataframe obtained from `combine_metrics()`, containing the combined metrics data.}
+\item{cmetrics}{A dataframe obtained from \code{combine_metrics()}, containing the combined metrics data.}
 
 \item{type}{A character string specifying the type of plot to generate. Options are:
 \itemize{
-  \item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
-  \item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
-  \item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35%.
-  \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
+\item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
+\item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
+\item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35\%.
+\item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50\%.
 }}
 }
 \value{
-A `ggplot2` object representing the selected plot.
+A \code{ggplot2} object representing the selected plot.
 }
 \description{
 This function generates different types of metrics plots based on the combined metrics from multiple models.

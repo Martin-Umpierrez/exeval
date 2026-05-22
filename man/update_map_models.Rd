@@ -11,41 +11,43 @@ update_map_models(
 )
 }
 \arguments{
-\item{map_results}{A list object containing the MAP estimations obtained in `run_MAP_estimations`
-Must include an element named `map_estimations` which stores the posterior estimations
+\item{map_results}{A list object containing the MAP estimations obtained in \code{run_MAP_estimations}
+Must include an element named \code{map_estimations} which stores the posterior estimations
 for each occasion.}
 
 \item{evaluation_type}{A character vector specifying the evaluation type to use for updating.
 Options include:
-- `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
-- `"stepwise_updating"`: Use only the most recent posterior for updating.
-- `"sequential_reference_updating"`: Use a chronological reference for posterior updates.
-- `"backward_reference_updating"`: Use the most recent chronological reference for updates.
-Defaults to `"sequential_updating"`.}
+\itemize{
+\item \code{"sequential_updating"}: Use posterior results sequential_updatingly across all previous occasions.
+\item \code{"stepwise_updating"}: Use only the most recent posterior for updating.
+\item \code{"sequential_reference_updating"}: Use a chronological reference for posterior updates.
+\item \code{"backward_reference_updating"}: Use the most recent chronological reference for updates.
+Defaults to \code{"sequential_updating"}.
+}}
 }
 \value{
 A list containing:
 \describe{
-  \item{ind_model}{A list of updated individual posterior models for each
-  occasion and ID, ready for simulation.}
-  \item{eval_type}{The evaluation strategy used.}
+\item{ind_model}{A list of updated individual posterior models for each
+occasion and ID, ready for simulation.}
+\item{eval_type}{The evaluation strategy used.}
 }
 }
 \description{
-The `update_map_models` function updates population pharmacokinetic models using MAP posterior estimations
+The \code{update_map_models} function updates population pharmacokinetic models using MAP posterior estimations
 across occasions based on a selected evaluation type. Depending on the selected evaluation
 strategy, posterior information is propagated across occasions to generate
 individual models ready for simulation. The function returns individual models updated with posterior parameter estimates for each ID at each occasion.
 }
 \details{
 This function evaluates posterior estimations iteratively based on the specified
-`evaluation_type`. It ensures compatibility with the evaluation type used during
-the creation of the input `map_results`.
+\code{evaluation_type}. It ensures compatibility with the evaluation type used during
+the creation of the input \code{map_results}.
 
 The function dynamically names the posterior estimation results, following the pattern
-`a.posteriori_occX_Y`, where `X` and `Y` represent the occasions used in the estimation.
+\code{a.posteriori_occX_Y}, where \code{X} and \code{Y} represent the occasions used in the estimation.
 
-The output is intended to be used with [run_pk_simulations()]
+The output is intended to be used with \code{\link[=run_pk_simulations]{run_pk_simulations()}}
 }
 \examples{
 \dontrun{

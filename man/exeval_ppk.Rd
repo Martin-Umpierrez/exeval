@@ -52,9 +52,9 @@ exeval_ppk(
 \arguments{
 \item{model}{Either:
 \itemize{
-  \item A character string containing the pharmacokinetic model code written
-        in \code{mrgsolve} format.
-  \item A pre-compiled \code{mrgmod} object (S3 class from \code{mrgsolve}).
+\item A character string containing the pharmacokinetic model code written
+in \code{mrgsolve} format.
+\item A pre-compiled \code{mrgmod} object (S3 class from \code{mrgsolve}).
 }
 If a character string is provided, \code{model_name} must also be specified.}
 
@@ -67,44 +67,44 @@ Required only if \code{model} is provided as character model code.#'}
 
 \item{tool}{Character string. Specifies the tool to use for estimation. Currently "mapbayr" is the only option.}
 
-\item{check_compile}{Logical. If `TRUE`, checks if the model compiles correctly in `mapbayr`.}
+\item{check_compile}{Logical. If \code{TRUE}, checks if the model compiles correctly in \code{mapbayr}.}
 
-\item{num_occ}{Integer. Number of occasions (OCC) to include in the analysis. If `NULL`, all unique occasions in `data` are used.}
+\item{num_occ}{Integer. Number of occasions (OCC) to include in the analysis. If \code{NULL}, all unique occasions in \code{data} are used.}
 
-\item{num_ids}{Integer. Number of unique IDs to include in the analysis. If `NULL`, all IDs are included.}
+\item{num_ids}{Integer. Number of unique IDs to include in the analysis. If \code{NULL}, all IDs are included.}
 
-\item{sampling}{Logical. If `TRUE`, randomly samples the specified number of IDs from the data.}
+\item{sampling}{Logical. If \code{TRUE}, randomly samples the specified number of IDs from the data.}
 
-\item{occ_ref}{Integer. Reference occasion for evaluation types that require a reference. Must be consistent with `evaluation_type`.}
+\item{occ_ref}{Integer. Reference occasion for evaluation types that require a reference. Must be consistent with \code{evaluation_type}.}
 
 \item{evaluation_type}{Character string. Specifies the evaluation type. Options are:
 \itemize{
-  \item "sequential_updating": Uses all data up to each occasion.
-  \item "stepwise_updating": Uses only the most recent occasion.
-  \item "sequential_reference_updating": Uses all data up to a reference occasion.
-  \item "backward_reference_updating": Uses the most recent occasion relative to a reference.
+\item "sequential_updating": Uses all data up to each occasion.
+\item "stepwise_updating": Uses only the most recent occasion.
+\item "sequential_reference_updating": Uses all data up to a reference occasion.
+\item "backward_reference_updating": Uses the most recent occasion relative to a reference.
 }}
 
-\item{method}{Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".}
+\item{method}{Character vector. Specifies optimization methods for \code{mapbayr}. Options are "L-BFGS-B" or "newuoa".}
 
 \item{assessment}{Character string. Specifies the type of prediction to perform. Options are:
 \itemize{
-  \item "a_priori": Simulates concentrations using the population model without individual data.
-  \item "Bayesian_Forecasting": Simulates concentrations using individual parameter estimates (posterior mode).
-  \item "Complete": Performs both a priori and Bayesian forecasting simulations.
+\item "a_priori": Simulates concentrations using the population model without individual data.
+\item "Bayesian_Forecasting": Simulates concentrations using individual parameter estimates (posterior mode).
+\item "Complete": Performs both a priori and Bayesian forecasting simulations.
 }}
 
 \item{verbose}{Logical. If TRUE, messages are printed during execution.
-If FALSE (default), errors are stored as warnings accessible with `warnings()`}
+If FALSE (default), errors are stored as warnings accessible with \code{warnings()}}
 
-\item{x}{A list containing data frames with the required  metrics. Typically, `mm[[1]]` and `mm[[2]]` contain relevant data. Values comes from results from [metrics_occ()] function}
+\item{x}{A list containing data frames with the required  metrics. Typically, \code{mm[[1]]} and \code{mm[[2]]} contain relevant data. Values comes from results from \code{\link[=metrics_occ]{metrics_occ()}} function}
 
 \item{...}{Additional arguments}
 
 \item{object}{An object of class \code{EvalPPK}.}
 
 \item{occ}{Optional numeric occasion to filter.
-If `NULL` (default), all occasions are included.}
+If \code{NULL} (default), all occasions are included.}
 
 \item{by_occ}{Logical. If \code{TRUE}, returns summaries stratified by OCC.
 Cannot be used together with \code{occ}.}
@@ -116,32 +116,32 @@ absolute IPE. Default is 50.}
 
 \item{type}{A character string specifying the type of plot to generate. Options are:
 \itemize{
-  \item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
-  \item \code{"bias_pointrange"}: pointrange for rBIAS.
-  \item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
-  \item \code{"bias_boxplot"}: Box plot of IPE values.
-  \item \code{"bias_dotplot"}: Dotplot of rBIAS values. Variability on individual bias
-  \item \code{"bias_density"}: Density Plot for rBias throughout occasions .
-  \item \code{"bias_violin"}: Violin plot of IPE values.
-  \item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35%.
-  \item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50%.
-  \item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
-  \item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
-  \item \code{"fit_class"}: bar plot showing observations within fit quality categories.
-  \item \code{"histogram"}: histogram of individual prediction error values.
+\item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
+\item \code{"bias_pointrange"}: pointrange for rBIAS.
+\item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
+\item \code{"bias_boxplot"}: Box plot of IPE values.
+\item \code{"bias_dotplot"}: Dotplot of rBIAS values. Variability on individual bias
+\item \code{"bias_density"}: Density Plot for rBias throughout occasions .
+\item \code{"bias_violin"}: Violin plot of IPE values.
+\item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35\%.
+\item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50\%.
+\item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
+\item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
+\item \code{"fit_class"}: bar plot showing observations within fit quality categories.
+\item \code{"histogram"}: histogram of individual prediction error values.
 }}
 
-\item{signed}{Logical. Only used when `type = "histogram"`.
-If `TRUE`, the histogram is generated using signed IPE values.
-If `FALSE` (default), absolute IPE values are used.}
+\item{signed}{Logical. Only used when \code{type = "histogram"}.
+If \code{TRUE}, the histogram is generated using signed IPE values.
+If \code{FALSE} (default), absolute IPE values are used.}
 }
 \value{
 A list containing:
 \describe{
-  \item{metrics}{Evaluation metrics}
-  \item{estimations}{MAP estimation results for each subset of the data.}
-  \item{simulation}{A list of simulation results for each occasion and individual.}
-  \item{updates}{A list containing posterior estimations (`a.posteriori`) for each occasion.}
+\item{metrics}{Evaluation metrics}
+\item{estimations}{MAP estimation results for each subset of the data.}
+\item{simulation}{A list of simulation results for each occasion and individual.}
+\item{updates}{A list containing posterior estimations (\code{a.posteriori}) for each occasion.}
 }
 
 An object of class \code{summary.EvalPPK}.
@@ -161,8 +161,7 @@ Generate Different Type of Metrics Plots
 \details{
 This function creates various types of metrics plots for evaluating popPK Models , such as rBias, MAIPE, and IF20/IF30 values.
 
-
-The function utilizes ggplot2 for visualization and `scale_fill_brewer(palette = "Dark2")` for consistent color schemes.
+The function utilizes ggplot2 for visualization and \code{scale_fill_brewer(palette = "Dark2")} for consistent color schemes.
 }
 \examples{
 \dontrun{
