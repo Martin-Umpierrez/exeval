@@ -1,55 +1,76 @@
-#' Update MAP estimations across occasions for each IDs
+#' Update MAP estimation objects with posterior individual parameters
 #'
-#' The `update_map_models` function updates population pharmacokinetic models using MAP posterior estimations
-#' across occasions based on a selected evaluation type. Depending on the selected evaluation
-#' strategy, posterior information is propagated across occasions to generate
-#' individual models ready for simulation. The function returns individual models updated with posterior parameter estimates for each ID at each occasion.
+#' Converts MAP estimation results obtained with [run_MAP_estimations()]
+#' into individualized posterior models using \pkg{mapbayr}. Depending on the
+#' selected evaluation strategy, posterior information is propagated across
+#' occasions to support posterior predictive simulations.
+#' 
+#' This function applies [mapbayr::use_posterior()] to each MAP estimation
+#' object and returns a list of updated individual models that can be used
+#' for posterior predictive simulations.
+#' 
+#' The evaluation strategy must match the one originally used in
+#' [run_MAP_estimations()].
+#' 
+#' @param map_results Named list returned by [run_MAP_estimations()].
+#' Must contain at least the elements \code{map_estimations} and
+#' \code{eval_type}.
 #'
-#' @param map_results A list object containing the MAP estimations obtained in `run_MAP_estimations`
-#'   Must include an element named `map_estimations` which stores the posterior estimations
-#'   for each occasion.
+#' @param evaluation_type Character string specifying the evaluation strategy.
+#' Must match the strategy used when generating \code{map_results}.
+#' Available options are:
+#' \itemize{
+#'   \item \code{"sequential_updating"}
+#'   \item \code{"stepwise_updating"}
+#'   \item \code{"sequential_reference_updating"}
+#'   \item \code{"backward_reference_updating"}
+#' }
+#'   
 #'
-#' @param evaluation_type A character vector specifying the evaluation type to use for updating.
-#'   Options include:
-#'   - `"sequential_updating"`: Use posterior results sequential_updatingly across all previous occasions.
-#'   - `"stepwise_updating"`: Use only the most recent posterior for updating.
-#'   - `"sequential_reference_updating"`: Use a chronological reference for posterior updates.
-#'   - `"backward_reference_updating"`: Use the most recent chronological reference for updates.
-#'   Defaults to `"sequential_updating"`.
-#'
-#' @return A list containing:
+#' @return A named list containing:
 #' \describe{
-#'   \item{ind_model}{A list of updated individual posterior models for each
-#'   occasion and ID, ready for simulation.}
-#'   \item{eval_type}{The evaluation strategy used.}
+#'   \item{ind_model}{List of posterior individualized model objects created
+#'   using \code{mapbayr::use_posterior()}.}
+#'
+#'   \item{eval_type}{Character string indicating the evaluation strategy
+#'   used.}
 #' }
 #'
-#'
 #' @details
-#' This function evaluates posterior estimations iteratively based on the specified
-#' `evaluation_type`. It ensures compatibility with the evaluation type used during
-#' the creation of the input `map_results`.
+#' This function applies \code{mapbayr::use_posterior()} to each MAP
+#' estimation object contained in \code{map_results}, generating individualized
+#' posterior models for subsequent simulation.
 #'
-#' The function dynamically names the posterior estimation results, following the pattern
-#' `a.posteriori_occX_Y`, where `X` and `Y` represent the occasions used in the estimation.
+#' Posterior information is propagated across occasions according to the
+#' selected \code{evaluation_type}, which must match the strategy originally
+#' used in [run_MAP_estimations()].
 #'
-#' The output is intended to be used with [run_pk_simulations()]
+#' Posterior model objects are dynamically named following the pattern
+#' \code{a.posteriori_occX_Y}, where \code{X} and \code{Y} indicate the
+#' occasions linked by the posterior update.
+#'
+#' The resulting objects are intended for use with [run_pk_simulations()].
 #'
 #' @examples
 #' \dontrun{
-#' # Example input data
-#' map_results <- list(
-#'   eval_type = "sequential_updating",
-#'   map_estimations = list(
-#'     "map.estimation.occ_0_1" = NULL,
-#'     "map.estimation.occ_0_1_2" = list() # Replace with real MAP estimation object
-#'   )
+#' data("exeval_models", package = "exeval")
+#' data("tacrolimus_pk1_kidney", package = "exeval")
+#'
+#' dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
+#'
+#' fit <- run_MAP_estimations(
+#'   model = exeval_models$Model_code[[2]],
+#'   model_name = "TAC_Zuo2013",
+#'   data = dd,
+#'   evaluation_type = "sequential_updating"
 #' )
 #'
-#' # Run the function
-#' result <- update_map_models(map_results, evaluation_type = "sequential_updating")
-#' print(result) 
+#' post <- update_map_models(
+#'   map_results = fit,
+#'   evaluation_type = "sequential_updating"
+#' )
 #' }
+#'
 #' @importFrom mapbayr use_posterior
 #' @export
 

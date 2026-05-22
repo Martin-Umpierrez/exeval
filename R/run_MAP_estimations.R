@@ -112,16 +112,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Example using mapbayr
-#' run_MAP_estimations(
-#'   model_name = "example_model",
-#'   model_code = "example_code",
-#'   tool = "mapbayr",
-#'   data = example_data,
+#' data("exeval_models", package = "exeval")
+#' data("tacrolimus_pk1_kidney", package = "exeval")
+#'
+#' dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
+#'
+#' fit <- run_MAP_estimations(
+#'   model = exeval_models$Model_code[[2]],
+#'   model_name = "TAC_Zuo2013",
+#'   data = dd,
 #'   evaluation_type = "sequential_updating"
 #' )
 #' }
-
 run_MAP_estimations <-
 function(model, model_name= NULL,
                                 tool = "mapbayr",

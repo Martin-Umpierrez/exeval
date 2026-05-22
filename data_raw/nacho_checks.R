@@ -3,6 +3,7 @@
 
 # como quedaron los modelos ? 
 data("exeval_models")
+exeval_models$
 exeval_models |> str()
 
 # cargamos datos usando la label de modelos internos
