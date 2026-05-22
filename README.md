@@ -9,33 +9,8 @@
 
 `exeval` provides a reproducible workflow for *external evaluation* of
 population pharmacokinetic (popPK) and pharmacokinetic-pharmacodynamic
-(PKPD) models.
-
-`exeval` package provedas a reporducible worflow for *external
-evaluation* of a population pharmacokinetic (popPK) andpopPKPD model.
-The external evaluation is done using an independent dataset from which
-the original popPKPD model was developed. Currently, model fit is based
-on [mapbayr](https://github.com/FelicienLL/mapbayr) package.
-
-External evaluation for a single model from can be done with:
-
-- a population PKPD model
-  ([mrgsolve](https://github.com/metrumresearchgroup/mrgsolve) format),
-- a data set with concentrations (NONMEM format)
-
-## Installation
-
-You can install the development version of exeval from
-[GitHub](https://github.com/) with:
-
-``` r
-install.packages("devtools")
-devtools::install_github("Martin-Umpierrez/exeval")
-```
-
-`exeval` provides a reproducible workflow for *external evaluation* of
-population pharmacokinetic (popPK) and pharmacokinetic-pharmacodynamic
-(PKPD) models.
+(PKPD) models using independent validation datasets. MAP estimation is
+currently powered by [mapbayr](https://github.com/FelicienLL/mapbayr).
 
 The package supports model-informed evaluation workflows based on:
 
@@ -49,6 +24,7 @@ The package supports model-informed evaluation workflows based on:
 Models can be supplied as:
 
 - `mrgsolve` model code
+  ([mrgsolve](https://github.com/metrumresearchgroup/mrgsolve)
 - compiled `mrgmod` objects
 - built-in curated models included in `exeval`
 
@@ -58,59 +34,10 @@ functions available for data preparation.
 
 ## Installation
 
-Install the development version from GitHub:
+You can install the development version of exeval from
+[GitHub](https://github.com/) with:
 
 ``` r
-install.packages("remotes")
-remotes::install_github("Martin-Umpierrez/exeval")
+install.packages("devtools")
+devtools::install_github("Martin-Umpierrez/exeval")
 ```
-
-## Quick start
-
-``` r
-library(exeval)
-
-data("tacrolimus_pk1_kidney")
-data("exeval_models")
-
-dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
-
-res <- exeval_ppk(
-  model = "TAC_Zuo2013",
-  data = dd,
-  evaluation_type = "sequential_updating",
-  assessment = "Complete"
-)
-
-print(res)
-plot(res, type = "IF_plot")
-summary(res)
-```
-
-## Workflow
-
-The main external evaluation workflow is:
-
-``` r
-run_MAP_estimations()
-→ update_map_models()
-→ run_pk_simulations()
-→ metrics_occ()
-```
-
-or, more simply:
-
-``` r
-exeval_ppk(...)
-```
-
-## Included datasets
-
-`exeval` includes:
-
-- `exeval_models`: curated built-in PK/PKPD models
-- `tacrolimus_pk1_kidney`: external evaluation dataset example
-
-## License
-
-MIT

@@ -609,25 +609,8 @@ padding-top: 0px;
 An R-package for External Evaluation of popPKPD Models.</h1>
 <p><code>exeval</code> provides a reproducible workflow for <em>external
 evaluation</em> of population pharmacokinetic (popPK) and
-pharmacokinetic-pharmacodynamic (PKPD) models.</p>
-<p><code>exeval</code> package provedas a reporducible worflow for
-<em>external evaluation</em> of a population pharmacokinetic (popPK)
-andpopPKPD model. The external evaluation is done using an independent
-dataset from which the original popPKPD model was developed. Currently,
-model fit is based on <a href="https://github.com/FelicienLL/mapbayr">mapbayr</a> package.</p>
-<p>External evaluation for a single model from can be done with:</p>
-<ul>
-<li>a population PKPD model (<a href="https://github.com/metrumresearchgroup/mrgsolve">mrgsolve</a>
-format),</li>
-<li>a data set with concentrations (NONMEM format)</li>
-</ul>
-<h2 id="installation">Installation</h2>
-<p>You can install the development version of exeval from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Martin-Umpierrez/exeval&quot;</span>)</span></code></pre></div>
-<p><code>exeval</code> provides a reproducible workflow for <em>external
-evaluation</em> of population pharmacokinetic (popPK) and
-pharmacokinetic-pharmacodynamic (PKPD) models.</p>
+pharmacokinetic-pharmacodynamic (PKPD) models using independent
+validation datasets. MAP estimation is currently powered by <a href="https://github.com/FelicienLL/mapbayr">mapbayr</a>.</p>
 <p>The package supports model-informed evaluation workflows based
 on:</p>
 <ul>
@@ -640,52 +623,17 @@ on:</p>
 </ul>
 <p>Models can be supplied as:</p>
 <ul>
-<li><code>mrgsolve</code> model code</li>
+<li><code>mrgsolve</code> model code (<a href="https://github.com/metrumresearchgroup/mrgsolve">mrgsolve</a></li>
 <li>compiled <code>mrgmod</code> objects</li>
 <li>built-in curated models included in <code>exeval</code></li>
 </ul>
 <p>Input datasets should follow standard pharmacometric event-table
 structure (e.g. ID, TIME, DV, AMT, EVID, CMT, OCC), with helper
 functions available for data preparation.</p>
-<h2 id="installation-1">Installation</h2>
-<p>Install the development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Martin-Umpierrez/exeval&quot;</span>)</span></code></pre></div>
-<h2 id="quick-start">Quick start</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(exeval)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;tacrolimus_pk1_kidney&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;exeval_models&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>dd <span class="ot">&lt;-</span> tacrolimus_pk1_kidney <span class="sc">|&gt;</span> <span class="fu">subset</span>(ID <span class="sc">&lt;</span> <span class="dv">6</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">exeval_ppk</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;TAC_Zuo2013&quot;</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">data =</span> dd,</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">evaluation_type =</span> <span class="st">&quot;sequential_updating&quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">assessment =</span> <span class="st">&quot;Complete&quot;</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>)</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="fu">print</span>(res)</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">type =</span> <span class="st">&quot;IF_plot&quot;</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="fu">summary</span>(res)</span></code></pre></div>
-<h2 id="workflow">Workflow</h2>
-<p>The main external evaluation workflow is:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">run_MAP_estimations</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>→ <span class="fu">update_map_models</span>()</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>→ <span class="fu">run_pk_simulations</span>()</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>→ <span class="fu">metrics_occ</span>()</span></code></pre></div>
-<p>or, more simply:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">exeval_ppk</span>(...)</span></code></pre></div>
-<h2 id="included-datasets">Included datasets</h2>
-<p><code>exeval</code> includes:</p>
-<ul>
-<li><code>exeval_models</code>: curated built-in PK/PKPD models</li>
-<li><code>tacrolimus_pk1_kidney</code>: external evaluation dataset
-example</li>
-</ul>
-<h2 id="license">License</h2>
-<p>MIT</p>
+<h2 id="installation">Installation</h2>
+<p>You can install the development version of exeval from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Martin-Umpierrez/exeval&quot;</span>)</span></code></pre></div>
 
 </body>
 </html>
