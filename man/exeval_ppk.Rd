@@ -120,14 +120,14 @@ simulations.
 \item{verbose}{Logical. If \code{TRUE}, progress messages are printed during
 execution.}
 
-\item{x}{A list containing data frames with the required  metrics. Typically, \code{mm[[1]]} and \code{mm[[2]]} contain relevant data. Values comes from results from \code{\link[=metrics_occ]{metrics_occ()}} function}
+\item{x}{An object of class \code{EvalPPK}.}
 
-\item{...}{Additional arguments}
+\item{...}{Additional arguments passed to or from other methods.}
 
 \item{object}{An object of class \code{EvalPPK}.}
 
-\item{occ}{Optional numeric occasion to filter.
-If \code{NULL} (default), all occasions are included.}
+\item{occ}{Optional numeric occasion (\code{OCC}) to filter the plot.
+If \code{NULL} (default), all available occasions are included.}
 
 \item{by_occ}{Logical. If \code{TRUE}, summaries are stratified by
 occasion (\code{OCC}). Cannot be used together with \code{occ}.}
@@ -138,26 +138,53 @@ absolute individual prediction error (\code{|IPE|}). Default is \code{50}.}
 \item{top_n}{Integer. Number of poorly fitted individuals to report.
 Default is \code{10}.}
 
-\item{type}{A character string specifying the type of plot to generate. Options are:
+\item{type}{Character string specifying the type of plot to generate.
+Available options are:
 \itemize{
-\item \code{"bias_barplot"}: Bar plot of relative bias (\code{rBIAS}) with error bars.
-\item \code{"bias_pointrange"}: pointrange for rBIAS.
-\item \code{"MAIPE_barplot"}: Bar plot of MAIPE values.
-\item \code{"bias_boxplot"}: Box plot of IPE values.
-\item \code{"bias_dotplot"}: Dotplot of rBIAS values. Variability on individual bias
-\item \code{"bias_density"}: Density Plot for rBias throughout occasions .
-\item \code{"bias_violin"}: Violin plot of IPE values.
-\item \code{"IF20_plot"}: Bar plot of IF20 values with reference line at 35\%.
-\item \code{"IF30_plot"}: Bar plot of IF30 values with reference line at 50\%.
-\item \code{"IF_plot"}: Combine both IF20 and IF30 plots.
-\item \code{"error_plot"}: Stacked bar plot showing the proportion of prediction errors within predefined IPE bands.
-\item \code{"fit_class"}: bar plot showing observations within fit quality categories.
-\item \code{"histogram"}: histogram of individual prediction error values.
+\item \code{"bias_barplot"}: bar plot of relative bias
+(\code{rBIAS}) with confidence intervals.
+
+\item \code{"bias_pointrange"}: point-range plot of
+relative bias (\code{rBIAS}) with confidence intervals.
+
+\item \code{"MAIPE_barplot"}: bar plot of mean absolute individual
+prediction error (\code{MAIPE}) by occasion.
+
+\item \code{"bias_boxplot"}: boxplot of individual prediction errors
+(\code{IPE}) by occasion.
+
+\item \code{"bias_violin"}: violin plot of individual prediction
+errors (\code{IPE}) by occasion.
+
+\item \code{"bias_dotplot"}: jittered dot plot of individual prediction
+errors (\code{IPE}) by occasion.
+
+\item \code{"bias_density"}: density plot of individual prediction
+errors across occasions.
+
+\item \code{"IF20_plot"}: bar plot of \code{IF20} values with
+reference threshold.
+
+\item \code{"IF30_plot"}: bar plot of \code{IF30} values with
+reference threshold.
+
+\item \code{"IF_plot"}: combined visualization of both
+\code{IF20} and \code{IF30}.
+
+\item \code{"error_plot"}: stacked bar plot showing the proportion
+of observations within predefined prediction error categories.
+
+\item \code{"fit_class"}: bar plot showing the distribution of fit
+quality categories.
+
+\item \code{"fit_histogram"}: histogram of individual prediction
+error values.
 }}
 
-\item{signed}{Logical. Only used when \code{type = "histogram"}.
-If \code{TRUE}, the histogram is generated using signed IPE values.
-If \code{FALSE} (default), absolute IPE values are used.}
+\item{signed}{Logical. Only used when
+\code{type = "fit_histogram"}.
+If \code{TRUE}, signed individual prediction errors are plotted.
+If \code{FALSE} (default), absolute individual prediction errors are used.}
 }
 \value{
 An object of class \code{EvalPPK} containing:
@@ -191,7 +218,8 @@ absolute prediction error.}
 threshold.}
 }
 
-A ggplot object corresponding to the selected plot type.
+A \code{ggplot2} object, except for \code{"IF_plot"}, which
+returns a combined plot object generated with \pkg{ggpubr}.
 }
 \description{
 Runs the complete external evaluation workflow for population
@@ -211,7 +239,9 @@ Generates a structured summary of an \code{EvalPPK} object, including
 global performance metrics, fit quality classification, and identification
 of poorly fitted individuals.
 
-Generate Different Type of Metrics Plots
+Generates visualization plots for external evaluation results stored in an
+\code{EvalPPK} object, including prediction error metrics, fit quality
+distributions, and forecasting performance summaries.
 }
 \details{
 This function serves as the main high-level interface for the
@@ -231,9 +261,9 @@ results and summary metadata.
 Summary outputs can be generated across all occasions, for a specific
 occasion, or stratified by occasion.
 
-This function creates various types of metrics plots for evaluating popPK Models , such as rBias, MAIPE, and IF20/IF30 values.
-
-The function utilizes ggplot2 for visualization and \code{scale_fill_brewer(palette = "Dark2")} for consistent color schemes.
+This method provides visualization tools for assessing predictive
+performance of external model evaluations, including bias, precision,
+forecasting success, and fit quality classification.
 }
 \examples{
 \dontrun{
