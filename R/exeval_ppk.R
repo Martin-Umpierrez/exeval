@@ -1,50 +1,114 @@
-#' External evaluation for Population Pharmacokinetic (popPK) Models
+#' External evaluation workflow for population PK, PKPD models
 #'
-#' Performs external evaluation of popPK models by conducting MAP estimations and individual simulations
-#' for each occasion using different evaluation strategies (see evaluation_type)
+#' Runs the complete external evaluation workflow for population
+#' pharmacokinetic (popPK) or pharmacokinetic-pharmacodynamic (PKPD) models,
+#' including MAP estimation, posterior model updating, simulation, and
+#' prediction error metric calculation.
+#' 
+#' This function serves as the main high-level interface for the
+#' \pkg{exeval} workflow. 
 #'
-#' @param model Either:
+#' @param model Population PK model provided as one of the following:
 #' \itemize{
-#'   \item A character string containing the pharmacokinetic model code written
-#'         in \code{mrgsolve} format.
-#'   \item A pre-compiled \code{mrgmod} object (S3 class from \code{mrgsolve}).
+#'   \item a character string containing \pkg{mrgsolve} model code,
+#'   \item a compiled \code{mrgsolve::mrgmod} object,
+#'   \item or a model label matching an entry in the internal
+#'   \code{exeval_models} database.
 #' }
-#' If a character string is provided, \code{model_name} must also be specified.
-#' @param model_name Character string. Name of the model.
-#' Required only if \code{model} is provided as character model code.#'
-#' @param drug_name Character string. Used only for reporting purposes.
+#' 
+#' If model code is supplied as a character string, \code{model_name} must
+#' also be provided.
+#' 
+#' @param data Data frame containing the external evaluation dataset.
+#' Must include at least \code{ID}, \code{OCC}, and \code{CMT}.
+#' See [prepare_data()] for expected input formatting.
+#' 
+#' @param model_name Character string. Name used when compiling the model
+#' with \code{mrgsolve::mcode()}. Required only when \code{model} is
+#' provided as character code.
+#' 
+#' @param drug_name Character string used for reporting purposes only.
+#' 
 #' @param tool Character string. Specifies the tool to use for estimation. Currently "mapbayr" is the only option.
-#' @param check_compile Logical. If `TRUE`, checks if the model compiles correctly in `mapbayr`.
-#' @param data Data frame. Contains the input data for the estimations, including columns like ID, TIME, and OCC.
-#' @param num_occ Integer. Number of occasions (OCC) to include in the analysis. If `NULL`, all unique occasions in `data` are used.
-#' @param num_ids Integer. Number of unique IDs to include in the analysis. If `NULL`, all IDs are included.
-#' @param sampling Logical. If `TRUE`, randomly samples the specified number of IDs from the data.
-#' @param occ_ref Integer. Reference occasion for evaluation types that require a reference. Must be consistent with `evaluation_type`.
-#' @param evaluation_type Character string. Specifies the evaluation type. Options are:
-#'   \itemize{
-#'     \item "sequential_updating": Uses all data up to each occasion.
-#'     \item "stepwise_updating": Uses only the most recent occasion.
-#'     \item "sequential_reference_updating": Uses all data up to a reference occasion.
-#'     \item "backward_reference_updating": Uses the most recent occasion relative to a reference.
-#'   }
-#' @param method Character vector. Specifies optimization methods for `mapbayr`. Options are "L-BFGS-B" or "newuoa".
-#' @param assessment Character string. Specifies the type of prediction to perform. Options are:
-#'   \itemize{
-#'     \item "a_priori": Simulates concentrations using the population model without individual data.
-#'     \item "Bayesian_Forecasting": Simulates concentrations using individual parameter estimates (posterior mode).
-#'     \item "Complete": Performs both a priori and Bayesian forecasting simulations.
-#'   }
-#' @param verbose Logical. If TRUE, messages are printed during execution.
-#'   If FALSE (default), errors are stored as warnings accessible with `warnings()`
+#' 
+#' @param tool Character string specifying the estimation backend.
+#' Currently only \code{"mapbayr"} is supported.
 #'
-#' @return A list containing:
-#' \describe{
-#'   \item{metrics}{Evaluation metrics}
-#'   \item{estimations}{MAP estimation results for each subset of the data.}
-#'   \item{simulation}{A list of simulation results for each occasion and individual.}
-#'   \item{updates}{A list containing posterior estimations (`a.posteriori`) for each occasion.}
+#' @param check_compile Logical. If \code{TRUE}, checks model compatibility
+#' with \pkg{mapbayr} before estimation.
+#' 
+#' @param num_occ Integer. Maximum number of occasions to include in the
+#' evaluation. If \code{NULL}, all available occasions are used.
+#'
+#' @param num_ids Integer. Number of subjects to include.
+#' If \code{NULL}, all unique subjects are used.
+#'
+#' @param sampling Logical. If \code{TRUE}, subjects are randomly sampled
+#' when \code{num_ids} is specified. Otherwise, the first subjects are used.
+#' 
+#' @param occ_ref Integer. Reference occasion used for
+#' \code{"sequential_reference_updating"} and
+#' \code{"backward_reference_updating"} evaluation strategies.
+#' 
+#' @param evaluation_type Character string specifying the evaluation strategy:
+#' \itemize{
+#'   \item \code{"sequential_updating"}: cumulative MAP updating across occasions.
+#'   \item \code{"stepwise_updating"}: independent MAP estimation per occasion.
+#'   \item \code{"sequential_reference_updating"}: cumulative MAP updating up to
+#'   a reference occasion.
+#'   \item \code{"backward_reference_updating"}: backward updating from a
+#'   reference occasion.
 #' }
-#' @export
+#' 
+#' @param method Character string specifying the optimization algorithm passed
+#' to \code{mapbayr::mapbayest()}. Supported options are
+#' \code{"L-BFGS-B"} and \code{"newuoa"}.
+#' 
+#' @param assessment Character string specifying the simulation strategy.
+#' Available options are:
+#' \itemize{
+#'   \item \code{"a_priori"}: simulates predictions using the population model
+#'   without individual posterior information.
+#'
+#'   \item \code{"Bayesian_forecasting"}: simulates predictions using
+#'   individualized posterior parameter estimates obtained from MAP estimation.
+#'
+#'   \item \code{"Complete"}: performs both a priori and Bayesian forecasting
+#'   simulations.
+#' }
+#' @param verbose Logical. If \code{TRUE}, progress messages are printed during
+#' execution.
+#' 
+#' @details
+#' This function executes the complete external evaluation workflow:
+#' \enumerate{
+#'   \item MAP estimation via [run_MAP_estimations()]
+#'   \item posterior model updating via [update_map_models()]
+#'   \item PK simulations via [run_pk_simulations()]
+#'   \item prediction error metric calculation via [metrics_occ()]
+#' }
+#'
+#' The returned object is an \code{EvalPPK} object containing all intermediate
+#' results and summary metadata.
+#'
+#' @return An object of class \code{EvalPPK} containing:
+#' \describe{
+#'   \item{metrics}{Prediction error metrics returned by [metrics_occ()].}
+#'
+#'   \item{estimates}{MAP estimation results returned by
+#'   [run_MAP_estimations()].}
+#'
+#'   \item{updates}{Posterior individualized models returned by
+#'   [update_map_models()].}
+#'
+#'   \item{simulations}{Simulation outputs returned by
+#'   [run_pk_simulations()].}
+#' }
+#'
+#' Additional workflow metadata are stored as object attributes.
+#'
+#' @seealso [run_MAP_estimations()], [update_map_models()],
+#' [run_pk_simulations()], [metrics_occ()]
 #'
 #' @examples
 #' \dontrun{
@@ -60,8 +124,9 @@
 #'                  evaluation_type= "sequential_updating",
 #'                  assessment='Bayesian_forecasting' )
 #'
-#' res # Print the results
+#' print(res) # Print the results
 #' }
+#' @export
 
 exeval_ppk <-  function(model,
                         data,

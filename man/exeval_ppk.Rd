@@ -6,7 +6,7 @@
 \alias{print.summary.EvalPPK}
 \alias{summary.EvalPPK}
 \alias{plot.EvalPPK}
-\title{External evaluation for Population Pharmacokinetic (popPK) Models}
+\title{External evaluation workflow for population PK, PKPD models}
 \usage{
 exeval_ppk(
   model,
@@ -50,52 +50,75 @@ exeval_ppk(
 )
 }
 \arguments{
-\item{model}{Either:
+\item{model}{Population PK model provided as one of the following:
 \itemize{
-\item A character string containing the pharmacokinetic model code written
-in \code{mrgsolve} format.
-\item A pre-compiled \code{mrgmod} object (S3 class from \code{mrgsolve}).
+\item a character string containing \pkg{mrgsolve} model code,
+\item a compiled \code{mrgsolve::mrgmod} object,
+\item or a model label matching an entry in the internal
+\code{exeval_models} database.
 }
-If a character string is provided, \code{model_name} must also be specified.}
 
-\item{data}{Data frame. Contains the input data for the estimations, including columns like ID, TIME, and OCC.}
+If model code is supplied as a character string, \code{model_name} must
+also be provided.}
 
-\item{model_name}{Character string. Name of the model.
-Required only if \code{model} is provided as character model code.#'}
+\item{data}{Data frame containing the external evaluation dataset.
+Must include at least \code{ID}, \code{OCC}, and \code{CMT}.
+See \code{\link[=prepare_data]{prepare_data()}} for expected input formatting.}
 
-\item{drug_name}{Character string. Used only for reporting purposes.}
+\item{model_name}{Character string. Name used when compiling the model
+with \code{mrgsolve::mcode()}. Required only when \code{model} is
+provided as character code.}
 
-\item{tool}{Character string. Specifies the tool to use for estimation. Currently "mapbayr" is the only option.}
+\item{drug_name}{Character string used for reporting purposes only.}
 
-\item{check_compile}{Logical. If \code{TRUE}, checks if the model compiles correctly in \code{mapbayr}.}
+\item{tool}{Character string specifying the estimation backend.
+Currently only \code{"mapbayr"} is supported.}
 
-\item{num_occ}{Integer. Number of occasions (OCC) to include in the analysis. If \code{NULL}, all unique occasions in \code{data} are used.}
+\item{check_compile}{Logical. If \code{TRUE}, checks model compatibility
+with \pkg{mapbayr} before estimation.}
 
-\item{num_ids}{Integer. Number of unique IDs to include in the analysis. If \code{NULL}, all IDs are included.}
+\item{num_occ}{Integer. Maximum number of occasions to include in the
+evaluation. If \code{NULL}, all available occasions are used.}
 
-\item{sampling}{Logical. If \code{TRUE}, randomly samples the specified number of IDs from the data.}
+\item{num_ids}{Integer. Number of subjects to include.
+If \code{NULL}, all unique subjects are used.}
 
-\item{occ_ref}{Integer. Reference occasion for evaluation types that require a reference. Must be consistent with \code{evaluation_type}.}
+\item{sampling}{Logical. If \code{TRUE}, subjects are randomly sampled
+when \code{num_ids} is specified. Otherwise, the first subjects are used.}
 
-\item{evaluation_type}{Character string. Specifies the evaluation type. Options are:
+\item{occ_ref}{Integer. Reference occasion used for
+\code{"sequential_reference_updating"} and
+\code{"backward_reference_updating"} evaluation strategies.}
+
+\item{evaluation_type}{Character string specifying the evaluation strategy:
 \itemize{
-\item "sequential_updating": Uses all data up to each occasion.
-\item "stepwise_updating": Uses only the most recent occasion.
-\item "sequential_reference_updating": Uses all data up to a reference occasion.
-\item "backward_reference_updating": Uses the most recent occasion relative to a reference.
+\item \code{"sequential_updating"}: cumulative MAP updating across occasions.
+\item \code{"stepwise_updating"}: independent MAP estimation per occasion.
+\item \code{"sequential_reference_updating"}: cumulative MAP updating up to
+a reference occasion.
+\item \code{"backward_reference_updating"}: backward updating from a
+reference occasion.
 }}
 
-\item{method}{Character vector. Specifies optimization methods for \code{mapbayr}. Options are "L-BFGS-B" or "newuoa".}
+\item{method}{Character string specifying the optimization algorithm passed
+to \code{mapbayr::mapbayest()}. Supported options are
+\code{"L-BFGS-B"} and \code{"newuoa"}.}
 
-\item{assessment}{Character string. Specifies the type of prediction to perform. Options are:
+\item{assessment}{Character string specifying the simulation strategy.
+Available options are:
 \itemize{
-\item "a_priori": Simulates concentrations using the population model without individual data.
-\item "Bayesian_Forecasting": Simulates concentrations using individual parameter estimates (posterior mode).
-\item "Complete": Performs both a priori and Bayesian forecasting simulations.
+\item \code{"a_priori"}: simulates predictions using the population model
+without individual posterior information.
+
+\item \code{"Bayesian_forecasting"}: simulates predictions using
+individualized posterior parameter estimates obtained from MAP estimation.
+
+\item \code{"Complete"}: performs both a priori and Bayesian forecasting
+simulations.
 }}
 
-\item{verbose}{Logical. If TRUE, messages are printed during execution.
-If FALSE (default), errors are stored as warnings accessible with \code{warnings()}}
+\item{verbose}{Logical. If \code{TRUE}, progress messages are printed during
+execution.}
 
 \item{x}{A list containing data frames with the required  metrics. Typically, \code{mm[[1]]} and \code{mm[[2]]} contain relevant data. Values comes from results from \code{\link[=metrics_occ]{metrics_occ()}} function}
 
@@ -136,21 +159,31 @@ If \code{TRUE}, the histogram is generated using signed IPE values.
 If \code{FALSE} (default), absolute IPE values are used.}
 }
 \value{
-A list containing:
+An object of class \code{EvalPPK} containing:
 \describe{
-\item{metrics}{Evaluation metrics}
-\item{estimations}{MAP estimation results for each subset of the data.}
-\item{simulation}{A list of simulation results for each occasion and individual.}
-\item{updates}{A list containing posterior estimations (\code{a.posteriori}) for each occasion.}
+\item{metrics}{Prediction error metrics returned by \code{\link[=metrics_occ]{metrics_occ()}}.}
+
+\item{estimates}{MAP estimation results returned by
+\code{\link[=run_MAP_estimations]{run_MAP_estimations()}}.}
+
+\item{updates}{Posterior individualized models returned by
+\code{\link[=update_map_models]{update_map_models()}}.}
+
+\item{simulations}{Simulation outputs returned by
+\code{\link[=run_pk_simulations]{run_pk_simulations()}}.}
 }
+
+Additional workflow metadata are stored as object attributes.
 
 An object of class \code{summary.EvalPPK}.
 
 A ggplot object corresponding to the selected plot type.
 }
 \description{
-Performs external evaluation of popPK models by conducting MAP estimations and individual simulations
-for each occasion using different evaluation strategies (see evaluation_type)
+Runs the complete external evaluation workflow for population
+pharmacokinetic (popPK) or pharmacokinetic-pharmacodynamic (PKPD) models,
+including MAP estimation, posterior model updating, simulation, and
+prediction error metric calculation.
 
 Generates a structured summary of an \code{EvalPPK} object, including
 metadata, global performance metrics, fit quality distribution,
@@ -159,6 +192,20 @@ and poorly fitted IDs.
 Generate Different Type of Metrics Plots
 }
 \details{
+This function serves as the main high-level interface for the
+\pkg{exeval} workflow.
+
+This function executes the complete external evaluation workflow:
+\enumerate{
+\item MAP estimation via \code{\link[=run_MAP_estimations]{run_MAP_estimations()}}
+\item posterior model updating via \code{\link[=update_map_models]{update_map_models()}}
+\item PK simulations via \code{\link[=run_pk_simulations]{run_pk_simulations()}}
+\item prediction error metric calculation via \code{\link[=metrics_occ]{metrics_occ()}}
+}
+
+The returned object is an \code{EvalPPK} object containing all intermediate
+results and summary metadata.
+
 This function creates various types of metrics plots for evaluating popPK Models , such as rBias, MAIPE, and IF20/IF30 values.
 
 The function utilizes ggplot2 for visualization and \code{scale_fill_brewer(palette = "Dark2")} for consistent color schemes.
@@ -177,6 +224,6 @@ res <- exeval_ppk(model_name = "tacrolimus_HAN2011",
                  evaluation_type= "sequential_updating",
                  assessment='Bayesian_forecasting' )
 
-res # Print the results
+print(res) # Print the results
 }
 }
