@@ -24,7 +24,7 @@ The package supports model-informed evaluation workflows based on:
 Models can be supplied as:
 
 - `mrgsolve` model code
-  ([mrgsolve](https://github.com/metrumresearchgroup/mrgsolve)
+  ([mrgsolve](https://github.com/metrumresearchgroup/mrgsolve))
 - compiled `mrgmod` objects
 - built-in curated models included in `exeval`
 
