@@ -9,3 +9,4 @@
 ^README_cache$
 ^check$
 ^.*\.Rcheck$
+^cran-comments\.md$
