@@ -78,4 +78,21 @@ combine_metric_plot(combined_results, type = 'MAIPE_barplot')
 combine_metric_plot(combined_results, type = 'IF20_plot')
 combine_metric_plot(combined_results, type = 'IF30_plot')
 
+# ===================
+
+devtools::document()
+devtools::install()
+devtools::check()
+
+
+# HAcer el release: 
+devtools::release()
+
+devtools::spell_check()     # Spell check (needs spelling package)
+
+devtools::check()
+
+# pide los remotos de github 
+
+devtools::check_win_devel()
 

@@ -10,3 +10,4 @@
 ^check$
 ^.*\.Rcheck$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
