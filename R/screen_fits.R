@@ -47,7 +47,7 @@
 #' @seealso [exeval_ppk()], [summary.EvalPPK()]
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Screen full evaluation object
 #' res <- exeval_ppk(...)
 #' screen_fit(res)

@@ -111,7 +111,7 @@
 #' [run_pk_simulations()], [metrics_occ()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("tacrolimus_pk1_kidney", package = "exeval")
 #' data("model_tacHAN2011", package = "exeval")
 #'

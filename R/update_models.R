@@ -52,7 +52,7 @@
 #' The resulting objects are intended for use with [run_pk_simulations()].
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("exeval_models", package = "exeval")
 #' data("tacrolimus_pk1_kidney", package = "exeval")
 #'

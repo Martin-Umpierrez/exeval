@@ -1,6 +1,6 @@
 Package: exeval
 Type: Package
-Title: External Evaluation of popPKPD Models
+Title: External Evaluation of Population Pharmacokinetic-Pharmacodynamic (popPKPD) Models
 Version: 0.0.1
 Authors@R: c(
              person(given = "Manuel",
