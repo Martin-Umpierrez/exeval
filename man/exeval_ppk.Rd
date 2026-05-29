@@ -266,15 +266,13 @@ performance of external model evaluations, including bias, precision,
 forecasting success, and fit quality classification.
 }
 \examples{
-\dontrun{
+\donttest{
 data("tacrolimus_pk1_kidney", package = "exeval")
 data("model_tacHAN2011", package = "exeval")
 
 dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
-mm <- get_model_code('Han_etal_2011')
 
-res <- exeval_ppk(model_name = "tacrolimus_HAN2011",
-                 model = mm,
+res <- exeval_ppk(model="TAC_Han2011",
                  data = dd,
                  evaluation_type= "sequential_updating",
                  assessment='Bayesian_forecasting' )

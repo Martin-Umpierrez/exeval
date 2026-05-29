@@ -226,10 +226,6 @@ get_model_code <- function(name) {
   env$model
 }
 
-
-
-
-
 select_best_models <-
   function(data, metric, top_n = 3, occ_eval=NULL , rank_criteria = 'min') {
     if (is.null(occ_eval)){
@@ -260,10 +256,101 @@ select_best_models <-
   }
 
 
+screen_fit <- function(x,
+                       occ = NULL,
+                       fit_classes = c(
+                         "Excellent",
+                         "Acceptable",
+                         "Poor",
+                         "Very Poor"
+                       ),
+                       ids_only = FALSE) {
+  
+  # --------------------------------
+  # Input dispatch
+  # --------------------------------
+  if (inherits(x, "EvalPPK")) {
+    
+    df <- x$metrics$metrics
+    
+  } else if (is.data.frame(x)) {
+    
+    df <- x
+    
+  } else {
+    stop(
+      "'x' must be an EvalPPK object or a data.frame containing IPE."
+    )
+  }
+  
+  # --------------------------------
+  # Required columns
+  # --------------------------------
+  required_cols <- c("ID", "OCC", "TIME", "IPE")
+  
+  if (!all(required_cols %in% names(df))) {
+    stop(
+      "Input data must contain: ",
+      paste(required_cols, collapse = ", ")
+    )
+  }
+  # --------------------------------
+  # Validate fit classes
+  # --------------------------------
+  valid_classes <- c(
+    "Excellent",
+    "Acceptable",
+    "Poor",
+    "Very Poor"
+  )
+  
+  if (!all(fit_classes %in% valid_classes)) {
+    stop(
+      "'fit_classes' must contain only: ",
+      paste(valid_classes, collapse = ", ")
+    )
+  }
+  # --------------------------------
+  # OCC filter
+  # --------------------------------
+  if (!is.null(occ)) {
+    df <- df |>
+      dplyr::filter(OCC == occ)
+  }
+  
+  if (nrow(df) == 0) {
+    stop("No observations found for selected filters.")
+  }
+  # --------------------------------
+  # Fit classification
+  # --------------------------------
+  df <- df |>
+    dplyr::mutate(
+      Abs_IPE = abs(IPE),
+      Fit_Class = dplyr::case_when(
+        Abs_IPE <= 15 ~ "Excellent",
+        Abs_IPE <= 30 ~ "Acceptable",
+        Abs_IPE <= 50 ~ "Poor",
+        Abs_IPE > 50 ~ "Very Poor"
+      )
+    ) |>
+    dplyr::filter(Fit_Class %in% fit_classes) |>
+    dplyr::arrange(ID, OCC, TIME)
+  # --------------------------------
+  # Empty result
+  # --------------------------------
+  if (nrow(df) == 0) {
+    message("No matching observations found.")
+    return(dplyr::tibble())
+  }
+  # --------------------------------
+  # IDs only
+  # --------------------------------
+  if (ids_only) {
+    return(unique(df$ID))
+  }
+  
+  return(df)
+}
 
 
-#exeval_models
-#exeval_models$Model_code <- trimws(exeval_models$Model_code)
-#exeval_models$Model_code <- sub('^"', "", exeval_models$Model_code)
-#exeval_models$Model_code <- sub('"$', "", exeval_models$Model_code)
-#save(exeval_models, file = "data/exeval_models.rda")

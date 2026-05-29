@@ -74,7 +74,7 @@ evaluation workflow following \code{\link[=run_MAP_estimations]{run_MAP_estimati
 predictions are required, \code{\link[=update_map_models]{update_map_models()}}.
 }
 \examples{
-\dontrun{
+\donttest{
 data("exeval_models", package = "exeval")
 data("tacrolimus_pk1_kidney", package = "exeval")
 

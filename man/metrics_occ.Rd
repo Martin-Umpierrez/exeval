@@ -72,7 +72,7 @@ categories (\code{Excellent}, \code{Acceptable}, \code{Poor},
 \code{Very Poor}) based on absolute prediction error.
 }
 \examples{
-\dontrun{
+\donttest{
 data("exeval_models", package = "exeval")
 data("tacrolimus_pk1_kidney", package = "exeval")
 

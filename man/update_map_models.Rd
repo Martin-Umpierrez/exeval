@@ -64,7 +64,7 @@ occasions linked by the posterior update.
 The resulting objects are intended for use with \code{\link[=run_pk_simulations]{run_pk_simulations()}}.
 }
 \examples{
-\dontrun{
+\donttest{
 data("exeval_models", package = "exeval")
 data("tacrolimus_pk1_kidney", package = "exeval")
 

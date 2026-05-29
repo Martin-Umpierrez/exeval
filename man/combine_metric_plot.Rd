@@ -45,20 +45,20 @@ Metrics are displayed separately for each evaluation occasion
 between candidate models.
 }
 \examples{
-\dontrun{
-#' set.seed(123)  # Para reproducibilidad
+
+# Fake  metrics
 generate_fake_metrics <- function(n_occasions = 3) {
 data.frame(
-OCC = rep(1:n_occasions),  # Simula varias ocasiones
-rBIAS = rnorm(n_occasions, mean = 0, sd = 10),
-rBIAS_lower = rnorm(n_occasions, mean = -5, sd = 5),
-rBIAS_upper = rnorm(n_occasions, mean = 5, sd = 5),
-MAIPE = runif(n_occasions, min = 10, max = 50),
-IF20 = runif(n_occasions, min = 20, max = 80),
-IF30 = runif(n_occasions, min = 30, max = 90)
+ OCC = rep(1:n_occasions),  # Simula varias ocasiones
+ rBIAS = stats::rnorm(n_occasions, mean = 0, sd = 10),
+ rBIAS_lower = stats::rnorm(n_occasions, mean = -5, sd = 5),
+ rBIAS_upper = stats::rnorm(n_occasions, mean = 5, sd = 5),
+ MAIPE = stats::runif(n_occasions, min = 10, max = 50),
+ IF20 = stats::runif(n_occasions, min = 20, max = 80),
+ IF30 = stats::runif(n_occasions, min = 30, max = 90)
 )
 }
-# Save Results of metrics
+
 simulation1 <- list(metrics_means = generate_fake_metrics())
 simulation2 <- list(metrics_means = generate_fake_metrics())
 # List of models
@@ -67,9 +67,9 @@ list(model_name = "Test_Model1", metrics_list = simulation1),
 list(model_name = "Test_Model2", metrics_list = simulation2)
 )
 combined_results <- combine_metrics(models_list)
-combined_results <- combine_metrics(models_list)
+
+# plot results
 combine_metric_plot(combined_results, type = 'bias_barplot')
-}
 
 }
 \seealso{

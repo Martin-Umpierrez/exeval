@@ -35,9 +35,20 @@
 #' @seealso [combine_metrics()], [plot.EvalPPK()]
 #'
 #' @examples
-#' \dontrun{
-
+#' 
 #' # Fake  metrics
+#' generate_fake_metrics <- function(n_occasions = 3) {
+#'data.frame(
+#'  OCC = rep(1:n_occasions),  # Simula varias ocasiones
+#'  rBIAS = stats::rnorm(n_occasions, mean = 0, sd = 10),
+#'  rBIAS_lower = stats::rnorm(n_occasions, mean = -5, sd = 5),
+#'  rBIAS_upper = stats::rnorm(n_occasions, mean = 5, sd = 5),
+#'  MAIPE = stats::runif(n_occasions, min = 10, max = 50),
+#'  IF20 = stats::runif(n_occasions, min = 20, max = 80),
+#'  IF30 = stats::runif(n_occasions, min = 30, max = 90)
+#')
+#'}
+#' 
 #' simulation1 <- list(metrics_means = generate_fake_metrics())
 #' simulation2 <- list(metrics_means = generate_fake_metrics())
 #' # List of models
@@ -51,7 +62,6 @@
 #' combine_metric_plot(combined_results, type = 'bias_barplot')
 #' 
 #' @export
-
 combine_metric_plot <-function(cmetrics,
                                type = c('bias_barplot',
                                       'MAIPE_barplot',

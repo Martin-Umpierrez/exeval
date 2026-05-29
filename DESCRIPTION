@@ -12,20 +12,20 @@ Authors@R: c(
                     email ="mumpierrez@fq.edu.uy"),
               person(given = "Ignacio",
                     family = "Alvarez Castro",
-                    role = c("aut")),
+                    role = c("aut"), 
+                    comment = c( url = "https://nachalca.github.io/nacho-pagina") ),
               person(given = "Nicolas", 
                     family = "Schmidt", 
                     role = c("aut"),
                     comment = c(ORCID = "0000-0001-5083-5792")))
-Maintainer: Martin Umpierrez <mumpierrez@fq.edu.uy> 
 Description: Provides tools to automate external pharmacokinetic model evaluation workflows, including Bayesian forecasting, predictive performance metrics, diagnostic plotting, and automated reporting.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    mapbayr,
     R (>= 4.1)
 Imports: 
+    mapbayr,
     dplyr,
     ggplot2,
     ggpubr,
@@ -37,8 +37,6 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse
-Config/roxygen2/version: 8.0.0
 URL: https://github.com/Martin-Umpierrez/exeval
 BugReports: https://github.com/Martin-Umpierrez/exeval/issues
 RoxygenNote: 7.3.3

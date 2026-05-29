@@ -130,7 +130,7 @@ from \code{occ_ref}.
 }
 }
 \examples{
-\dontrun{
+\donttest{
 data("exeval_models", package = "exeval")
 data("tacrolimus_pk1_kidney", package = "exeval")
 
