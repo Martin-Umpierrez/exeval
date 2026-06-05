@@ -725,7 +725,7 @@ plot.EvalPPK <- function(x,
       geom_col( aes(fill=OCC) )+
       geom_hline( aes(yintercept= 50), linetype = "dashed", colour= 'firebrick') +
       scale_fill_brewer(palette = "Dark2")+
-      labs(title="IF30- Bayesian Forecasting",y="IF20(%)")+
+      labs(title="IF30- Bayesian Forecasting",y="IF30(%)")+
       theme(plot.title = element_text(size = rel(1), colour = "black")) +
       theme(plot.title = element_text(size = 10, face = "bold"))
   }

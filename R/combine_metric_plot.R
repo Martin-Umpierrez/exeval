@@ -140,7 +140,7 @@ combine_metric_plot <-function(cmetrics,
       n_occs <- length(unique(cmetrics$OCC))
       pplot <- cmetrics |>  #  IF20_plot
         mutate(OCC = factor(OCC) ) |>
-        ggplot(aes(x=Model, y=IF30))+
+        ggplot(aes(x=Model, y=IF20))+
         geom_col( aes(fill=Model) )+
         geom_hline( aes(yintercept= 35), linetype = "dashed", colour= 'firebrick') +
         scale_fill_brewer(palette = "Dark2")+
