@@ -42,23 +42,6 @@ function(posterior_model,
   return(sim_result)
 }
 
-#####metrics_occasion <-
-##function(simresults) {
-  ##simresults$ID_mapping |>
-    #dplyr::mutate(ID = as.numeric(ID), original_id_output = as.numeric(original_id_output)) |>
-    #dplyr::right_join( simresults$res$Cc, by = join_by(ID == id)) |>
-    #dplyr::select(-ID) |>
-    # cbind(simresults$data) |>
-    #dplyr::inner_join( simresults$data, by = join_by(original_id_output == ID, time) ) |>
-    #dplyr::rename( ID = original_id_output ) |>
-    #dplyr::select(ID, time, Cc, DV, OCC) |>
-    #dplyr::mutate(DV = as.numeric(DV)) |>   # compute metrics
-    #dplyr::mutate(
-      #IPE = ((Cc- DV)/DV) *100,
-      #APE= abs(((Cc- DV)/DV))*100,
-      #RMSE = (((Cc-DV)^2)/((DV)^2))
-    #)
-#######}
 check_OCC_capture <- function(modelo) {
   # get model_code
   if (inherits(modelo, "mrgmod")) {
