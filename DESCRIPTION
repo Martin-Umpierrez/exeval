@@ -1,5 +1,6 @@
 Package: exeval
 Type: Package
+Language: en-US
 Title: External Evaluation of Population Pharmacokinetic-Pharmacodynamic (popPKPD) Models
 Version: 0.0.1
 Authors@R: c(
@@ -13,7 +14,7 @@ Authors@R: c(
               person(given = "Ignacio",
                     family = "Alvarez Castro",
                     role = c("aut"), 
-                    comment = c( url = "https://nachalca.github.io/nacho-pagina") ),
+                    comment = c(ORCID = "0000-0003-1633-2432") ),
               person(given = "Nicolas", 
                     family = "Schmidt", 
                     role = c("aut"),
