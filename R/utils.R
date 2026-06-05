@@ -107,7 +107,7 @@ pop_sim <-
            ss_n = NULL,
            tad = FALSE) {
 
-    population_model <- posterior_model |>
+    population_model <- population_model |>
       mrgsolve::data_set(treatment) |>
       mrgsolve::update(start = start, end = end)
 

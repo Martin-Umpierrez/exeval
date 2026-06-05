@@ -8,6 +8,7 @@ run_pk_simulations(
   individual_model,
   map_results,
   assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
+  seed = NULL,
   verbose = FALSE
 )
 }
@@ -30,6 +31,10 @@ using individualized posterior models.
 \item \code{"Complete"}: performs both a priori and Bayesian forecasting
 simulations.
 }}
+
+\item{seed}{Optional integer used to set the random number generator seed
+for reproducible a priori simulations. If \code{NULL} (default), the
+current random number generator state is used.}
 
 \item{verbose}{Logical. If \code{TRUE}, progress messages are printed during
 execution. If \code{FALSE}, simulation errors are returned as warnings..}
@@ -72,6 +77,9 @@ Depending on the selected \code{assessment}, simulations are performed using:
 This function represents the final simulation step in the external
 evaluation workflow following \code{\link[=run_MAP_estimations]{run_MAP_estimations()}} and, when posterior
 predictions are required, \code{\link[=update_map_models]{update_map_models()}}.
+
+Reproducibility of stochastic a priori simulations can be controlled using
+the \code{seed} argument.
 }
 \examples{
 \donttest{
@@ -95,7 +103,8 @@ post <- update_map_models(
 sim <- run_pk_simulations(
   individual_model = post,
   map_results = fit,
-  assessment = "Complete"
+  assessment = "Complete",
+  seed = 123
 )
 }
 

@@ -23,7 +23,11 @@
 #'   \item \code{"Complete"}: performs both a priori and Bayesian forecasting
 #'   simulations.
 #' }
-#'
+#' @param seed Optional integer used to set the random number generator seed
+#' for reproducible a priori simulations. If \code{NULL} (default), the
+#' current random number generator state is used.
+#' 
+#' 
 #' @param verbose Logical. If \code{TRUE}, progress messages are printed during
 #' execution. If \code{FALSE}, simulation errors are returned as warnings..
 #'
@@ -58,7 +62,10 @@
 #' This function represents the final simulation step in the external
 #' evaluation workflow following [run_MAP_estimations()] and, when posterior
 #' predictions are required, [update_map_models()].
-#'
+#' 
+#' Reproducibility of stochastic a priori simulations can be controlled using
+#' the \code{seed} argument.
+#' 
 #' @examples
 #' \donttest{
 #' data("exeval_models", package = "exeval")
@@ -81,7 +88,8 @@
 #' sim <- run_pk_simulations(
 #'   individual_model = post,
 #'   map_results = fit,
-#'   assessment = "Complete"
+#'   assessment = "Complete",
+#'   seed = 123
 #' )
 #' }
 #'
@@ -91,7 +99,8 @@
 run_pk_simulations <- function(individual_model,
                                 map_results,
                                 assessment = c("a_priori","Bayesian_forecasting","Complete"),
-                                verbose= FALSE) {
+                                seed = NULL,
+                                verbose = FALSE) {
 
   assessment <- match.arg(assessment)
   evaluation_type <-map_results$eval_type
@@ -122,6 +131,11 @@ run_pk_simulations <- function(individual_model,
       id_number <- sub(".*ID", "", id_name)
 
       tryCatch({
+        
+        if (!is.null(seed)) {
+          set.seed(seed)
+        }
+        
         treatment <- tto_apriori[["apriori_occ_1"]][[paste0("ev.tto.occ1_ID", id_number)]]
         start <- min(treatment$TIME)
         end <- max(treatment$TIME)
