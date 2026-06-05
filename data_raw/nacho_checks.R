@@ -3,7 +3,7 @@
 
 # como quedaron los modelos ? 
 data("exeval_models")
-exeval_models$
+#exeval_models$
 exeval_models |> str()
 
 # cargamos datos usando la label de modelos internos
@@ -13,7 +13,7 @@ dd <- tacrolimus_pk1_kidney |> subset(ID < 6)
 # "TAC_Han2011" is the label in exeval_models dataset, 
 # which is used to specify the model in exeval_ppk function.
 
-res.2 <- exeval_ppk(model="TAC_Han2011",
+res <- exeval_ppk(model="TAC_Han2011",
                   data = dd,
                   evaluation_type= "sequential_updating",
                   assessment='Bayesian_forecasting' )
@@ -21,7 +21,7 @@ res.2 <- exeval_ppk(model="TAC_Han2011",
 
 # testing methods
 res 
-summary(res) # tira warnings... format_tbl(), creo que son de screen_fit
+summary(res) 
 
 res$metrics$metrics
 
@@ -37,12 +37,12 @@ plot(res, type="IF20_plot")
 plot(res, type="IF30_plot")
 plot(res, type="IF_plot")
 plot(res, type="error_plot")
-plot(res, type="fit_class", occ=4)
+plot(res, type="fit_class", occ=3)
 plot(res, type="fit_histogram")
 
 
 
-screen_fit(res, fit_classes= "Poor", occ=4)
+# screen_fit(res, fit_classes= "Poor", occ=4)
 
 
 
@@ -85,7 +85,7 @@ devtools::install()
 devtools::check()
 
 
-# HAcer el release: 
+# Hacer el release: 
 devtools::release()
 
 devtools::spell_check()     # Spell check (needs spelling package)
