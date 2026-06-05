@@ -132,10 +132,10 @@ exeval_ppk <-  function(model,
                         drug_name=NULL,
                         tool = "mapbayr",
                         check_compile = TRUE,
-                        num_occ = NULL, ### Para lixoft definimos solo occ
+                        num_occ = NULL, 
                         num_ids= NULL,
                         sampling = TRUE,
-                        occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
+                        occ_ref = NULL , 
                         evaluation_type = c("sequential_updating", "stepwise_updating","sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
                         method = c("L-BFGS-B", "newuoa"),
                         assessment = c("a_priori","Bayesian_forecasting", "Complete"),

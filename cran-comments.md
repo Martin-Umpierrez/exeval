@@ -8,7 +8,6 @@ This is a resubmission. In this version we have:
 * Removed the `Maintainer` field (redundant with `Authors@R`).
 * Moved `mapbayr` from `Depends` to `Imports`.
 * Replaced `tidyverse` in `Suggests` with specific packages.
-* Removed `LazyData: true` as the package has no datasets.
 * Removed `Config/roxygen2/version` from DESCRIPTION.
 
 
