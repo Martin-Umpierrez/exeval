@@ -285,16 +285,16 @@ function(model, model_name= NULL,
           vector_ttos <- paste0("tto_", n)
           list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC <= n)
 
-          # Generar los eventos para cada tratamiento y cada ID
+          # Generate treatment/event datasets for each individual
           num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
           lista_ttos_occ <- list()
           for (ids in 1:num_ids_ttos) {
             vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
             lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-              filter(ID == ids)  ##### REMOVE OF EVID==1 to get all times for simulation
+              filter(ID == ids)  # Keep all records to preserve simulation time points
           }
 
-          # Guardar los tratamientos por OCC
+          # Save treatments by OCC
           list_ttos[[paste0("tto_occ_", n)]] <- lista_ttos_occ
         }
       }
@@ -302,16 +302,16 @@ function(model, model_name= NULL,
         vector_ttos <- paste0("tto_", occ_ref)
         list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == occ_ref)
 
-        # Generar los eventos para cada tratamiento y cada ID
+        # Generate treatment/event datasets for each individual
         num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
         lista_ttos_occ <- list()
         for (ids in 1:num_ids_ttos) {
           vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
           lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-            filter(ID == ids) ##### REMOVE OF EVID==1 to get all times for simulation
+            filter(ID == ids) # Keep all records to preserve simulation time points
         }
 
-        # Guardar los tratamientos por OCC
+        # Save treatments by OCC
         list_ttos[[paste0("tto_occ_", occ_ref)]] <- lista_ttos_occ
       }
 
