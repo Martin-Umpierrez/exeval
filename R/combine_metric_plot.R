@@ -82,14 +82,14 @@ combine_metric_plot <-function(cmetrics,
         theme(axis.text.y = element_text(size = 13)) +
         guides(fill = guide_legend(title.position = "top", nrow = 8, ncol = 3)) +
         labs(y = "rBIAS(%)") +
-        theme(legend.key.size = unit(0.25, "cm"), # alto de cuadrados de referencia
-              legend.key.width = unit(0.4, "cm"), # ancho de cuadrados de referencia
-              legend.position = "right", # ubicacion de leyenda
-              legend.direction = "horizontal", # dirección de la leyenda
-              legend.title = element_text(size = 13, face = "bold"), # tamaño de titulo de leyenda
-              legend.text = element_text(size = 12), # tamaño de texto de leyenda
+        theme(legend.key.size = unit(0.25, "cm"), 
+              legend.key.width = unit(0.4, "cm"), 
+              legend.position = "right", 
+              legend.direction = "horizontal", 
+              legend.title = element_text(size = 13, face = "bold"), 
+              legend.text = element_text(size = 12), 
               axis.title.y = element_text(size = 13),
-              strip.text = element_text(size = 13, face = "bold")) + # tamaño y estilo del texto del encabezado
+              strip.text = element_text(size = 13, face = "bold")) + 
         facet_wrap(~OCC, ncol = n_occs, labeller = labeller(OCC = function(x) paste0("OCC ", x)))
     } else if (type == 'MAIPE_barplot') {
       n_occs <- length(unique(cmetrics$OCC))
@@ -103,14 +103,14 @@ combine_metric_plot <-function(cmetrics,
         theme(axis.text.y = element_text(size = 13)) +
         guides(fill = guide_legend(title.position = "top", nrow = 8, ncol = 3)) +
         labs(y = "MAIPE(%)") +
-        theme(legend.key.size = unit(0.25, "cm"), # alto de cuadrados de referencia
-              legend.key.width = unit(0.4, "cm"), # ancho de cuadrados de referencia
-              legend.position = "right", # ubicacion de leyenda
-              legend.direction = "horizontal", # dirección de la leyenda
-              legend.title = element_text(size = 13, face = "bold"), # tamaño de titulo de leyenda
-              legend.text = element_text(size = 12), # tamaño de texto de leyenda
+        theme(legend.key.size = unit(0.25, "cm"), 
+              legend.key.width = unit(0.4, "cm"), 
+              legend.position = "right", 
+              legend.direction = "horizontal", 
+              legend.title = element_text(size = 13, face = "bold"), 
+              legend.text = element_text(size = 12), 
               axis.title.y = element_text(size = 13),
-              strip.text = element_text(size = 13, face = "bold")) + # tamaño y estilo del texto del encabezado
+              strip.text = element_text(size = 13, face = "bold")) + 
         facet_wrap(~OCC, ncol = n_occs, labeller = labeller(OCC = function(x) paste0("OCC ", x)))
     }
     else if (type ==  'IF30_plot') {
@@ -125,14 +125,14 @@ combine_metric_plot <-function(cmetrics,
         theme(axis.text.y = element_text(size = 13)) +
         guides(fill = guide_legend(title.position = "top", nrow = 8, ncol = 3)) +
         labs(title="IF30- Bayesian Forecasting", y="IF30(%)")+
-        theme(legend.key.size = unit(0.25, "cm"), # alto de cuadrados de referencia
-              legend.key.width = unit(0.4, "cm"), # ancho de cuadrados de referencia
-              legend.position = "right", # ubicacion de leyenda
-              legend.direction = "horizontal", # dirección de la leyenda
-              legend.title = element_text(size = 13, face = "bold"), # tamaño de titulo de leyenda
-              legend.text = element_text(size = 12), # tamaño de texto de leyenda
+        theme(legend.key.size = unit(0.25, "cm"), 
+              legend.key.width = unit(0.4, "cm"), 
+              legend.position = "right", 
+              legend.direction = "horizontal", 
+              legend.title = element_text(size = 13, face = "bold"), 
+              legend.text = element_text(size = 12), 
               axis.title.y = element_text(size = 13),
-              strip.text = element_text(size = 13, face = "bold")) + # tamaño y estilo del texto del encabezado
+              strip.text = element_text(size = 13, face = "bold")) + 
         facet_wrap(~OCC, ncol=n_occs, labeller = labeller(OCC = function(x) paste0("OCC ", x)))
     }
 
@@ -148,14 +148,14 @@ combine_metric_plot <-function(cmetrics,
         theme(axis.text.y = element_text(size = 13)) +
         guides(fill = guide_legend(title.position = "top", nrow = 8, ncol = 3)) +
         labs(title="IF20- Bayesian Forecasting",y="IF20(%)")+
-        theme(legend.key.size = unit(0.25, "cm"), # alto de cuadrados de referencia
-              legend.key.width = unit(0.4, "cm"), # ancho de cuadrados de referencia
-              legend.position = "right", # ubicacion de leyenda
-              legend.direction = "horizontal", # dirección de la leyenda
-              legend.title = element_text(size = 13, face = "bold"), # tamaño de titulo de leyenda
-              legend.text = element_text(size = 12), # tamaño de texto de leyenda
+        theme(legend.key.size = unit(0.25, "cm"), 
+              legend.key.width = unit(0.4, "cm"), 
+              legend.position = "right", 
+              legend.direction = "horizontal", 
+              legend.title = element_text(size = 13, face = "bold"), 
+              legend.text = element_text(size = 12), 
               axis.title.y = element_text(size = 13),
-              strip.text = element_text(size = 13, face = "bold")) + # tamaño y estilo del texto del encabezado
+              strip.text = element_text(size = 13, face = "bold")) + 
         facet_wrap(~OCC, ncol = n_occs, labeller = labeller(OCC = function(x) paste0("OCC ", x)))
     }
 
