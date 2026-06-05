@@ -104,13 +104,13 @@ run_pk_simulations <- function(individual_model,
 
   assessment <- match.arg(assessment)
   evaluation_type <-map_results$eval_type
-  # Listas vacías para acumular resultados
+  # Initialize empty lists to store simulation outputs
   simulation_results <- list()
   event.tto <- list()
   treatment.occ.list <- list()
 
 
-  ## 1. Simulaciones a priori
+  # 1. A priori simulations
   if (assessment %in% c("a_priori", "Complete")) {
 
     population_model <- map_results$pop_model
@@ -158,7 +158,7 @@ run_pk_simulations <- function(individual_model,
     event.tto[["OCC_1"]] <- event.tto.byocc
   }
 
-  ## 2. simulations
+  # 2. Bayesian forecasting simulations
   if (assessment %in% c("Bayesian_forecasting", "Complete")) {
 
     posterior_estimations <- individual_model$ind_model
@@ -201,7 +201,7 @@ run_pk_simulations <- function(individual_model,
   }
 
 
-  ## Return unified output
+  # Return unified output structure
   out <-list(
     simulation_results = simulation_results,
     ttoocc = treatment.occ.list,

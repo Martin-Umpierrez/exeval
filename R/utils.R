@@ -52,7 +52,7 @@ check_OCC_capture <- function(modelo) {
     stop("modelo must be either character model code or a mrgmod object.")
   }
 
-  # normalizar a vector de líneas
+  # Convert model code to a character vector of lines
   if (length(codigo) == 1) {
     lineas <- strsplit(codigo, "\n")[[1]]
   } else {
