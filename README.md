@@ -1,7 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version-last-release/exeval)](https://CRAN.R-project.org/package=exeval)
 [![R-CMD-check](https://github.com/Martin-Umpierrez/exeval/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Martin-Umpierrez/exeval/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 # <img align="right" src = "man/figures/exeval_logohex.png" width="135px">
 
