@@ -67,13 +67,23 @@
 #' \code{"backward_reference_updating"}, where MAP estimation is performed
 #' relative to this occasion.
 #' 
+#' @param history_occ Integer. Number of previous occasions used to inform
+#' MAP estimation when \code{evaluation_type = "stepwise_updating"}.
+#' The default value (\code{1}) reproduces the original stepwise strategy,
+#' where only the immediately preceding occasion is used.
+#' Larger values create a moving window of previous occasions. If
+#' \code{history_occ} exceeds the number of available previous occasions,
+#' all available observations are used.
+#' 
 #' @param evaluation_type Character string specifying the evaluation strategy.
 #' Available options are:
 #' \itemize{
 #'   \item \code{"sequential_updating"}: performs MAP estimation using all
 #'         observations accumulated up to each occasion.
-#'   \item \code{"stepwise_updating"}: performs MAP estimation using
-#'         observations from each occasion independently.
+#'   \item \code{"stepwise_updating"}: performs MAP estimation using a moving
+#'         window of the previous \code{history_occ} occasion(s). The default
+#'         (\code{history_occ = 1}) uses only the immediately preceding
+#'         occasion.
 #'   \item \code{"sequential_reference_updating"}: performs MAP estimation
 #'         using cumulative observations up to the reference occasion
 #'         defined by \code{occ_ref}.
@@ -111,7 +121,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' data("exeval_models", package = "exeval")
 #' data("tacrolimus_pk1_kidney", package = "exeval")
 #'
@@ -125,207 +135,216 @@
 #' )
 #' }
 run_MAP_estimations <-
-function(model, model_name= NULL,
-                                tool = "mapbayr",
-                                check_compile = TRUE,
-                                data, num_occ = NULL, ### Para lixoft definimos solo occ
-                                num_ids= NULL,
-                                sampling = TRUE,
-                                occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
-                                evaluation_type = c("sequential_updating", "stepwise_updating",
-                                                    "sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
-                                method = c("L-BFGS-B", "newuoa")) {
-
-  # check data has the required columns
-  if (!is.null(occ_ref) && !is.null(num_occ) && occ_ref != num_occ) {
-    stop("occ_ref and num_occ must have the same value if both are specified.")
-  }
-
-  if (!is.null(occ_ref) && !is.null(num_occ) && occ_ref != num_occ) {
-    stop("occ_ref and num_occ must have the same value if both are specified.")
-  }
-
-  if (!is.null(occ_ref) && (evaluation_type =="sequential_updating" || evaluation_type ==
-                            "stepwise_updating")) {
-    stop("occ_ref must be used wwith evaluation type sequential_reference_updating or backward_reference_updating")
-  }
-
-  if (tool == "mapbayr") {
-    # check mrgsolve format
-    if (inherits(model, "mrgmod")) {
-
-      my_model <- model
-
-    } else if (is.character(model)) {
-
-      if (is.null(model_name)) {
-        stop("model_name must be provided when model is character code.")
-      }
-
-      my_model <- mrgsolve::mcode(model_name, model)
-
-    } else {
-      stop("model must be either a mrgmod object or character model code.")
+  function(model, model_name= NULL,
+           tool = "mapbayr",
+           check_compile = TRUE,
+           data, num_occ = NULL, ### Para lixoft definimos solo occ
+           num_ids= NULL,
+           sampling = TRUE,
+           occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
+           history_occ = 1 , 
+           evaluation_type = c("sequential_updating", "stepwise_updating",
+                               "sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
+           method = c("L-BFGS-B", "newuoa")) {
+    
+    # check data has the required columns
+    if (!is.null(occ_ref) && !is.null(num_occ) && occ_ref != num_occ) {
+      stop("occ_ref and num_occ must have the same value if both are specified.")
     }
-    if (check_compile) {
-      check_model <- mapbayr::check_mapbayr_model(my_model, check_compile = TRUE)
-      message("Model is ok for estimation")
-      if (is.null(check_model)) {
-        message("Check mrg model")
-      }
+    
+    if (!is.null(occ_ref) && !is.null(num_occ) && occ_ref != num_occ) {
+      stop("occ_ref and num_occ must have the same value if both are specified.")
     }
-    # more checks
-    check_OCC_capture(model)
-
-    # check OCC and CMT exist in the external dataset
-    if (!"OCC" %in% names(data)) {
-      stop(" 'OCC' column is mandatory in the base data.")
+    
+    if (!is.null(occ_ref) && (evaluation_type =="sequential_updating" || evaluation_type ==
+                              "stepwise_updating")) {
+      stop("occ_ref must be used wwith evaluation type sequential_reference_updating or backward_reference_updating")
     }
-
-    if (!"CMT" %in% names(data)) {
-      stop(" 'CMT' column is mandatory in the base data.")
-    }
-    # number of OCC
-    if (is.null(num_occ)) {
-      num_occ <- length(unique(data$OCC))
-    } else {
-      num_occ <- min(num_occ, length(unique(data$OCC)))
-    }
-
-    # number of IDs
-    if (is.null(num_ids)) {
-      num_ids <- length(unique(data$ID))
-    } else {
-      if (sampling) {
-        # Random sampling without replace
-        selected_ids <- sample(unique(data$ID), size = min(num_ids,
-                                                           length(unique(data$ID))), replace = FALSE)
-        data <- data|>dplyr::filter(ID %in% selected_ids)
-      } else {
-        num_ids <- min(num_ids, length(unique(data$ID)))
-        selected_ids <- unique(data$ID)[1:num_ids]
-        data <- data|> dplyr::filter(ID %in% selected_ids)
-      }
-    }
-
-    # Get data until current OCC
-    filtered_data <- data|>dplyr::filter(OCC <= num_occ)
-
-    # construct data list to get the MAPs
-    list_df_basedata <- list()
-    if(evaluation_type=="sequential_updating")
-    {
-      for (i in 1:num_occ) {
-        nombre_vector <- paste0("dfOCC", i)
-        list_df_basedata[[nombre_vector]] <- filtered_data|>dplyr::filter(OCC <= i)
-      }
-    }
-    else if (evaluation_type=="stepwise_updating")
-    {
-      for (i in 1:num_occ) {
-        nombre_vector <- paste0("dfOCC", i)
-        list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC == i)
-      }
-    }
-    else if (evaluation_type=="sequential_reference_updating")
-    {
-      for (i in 1:occ_ref) {
-        nombre_vector <- paste0("dfOCC", i)
-        list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC <= i)
-      }
-
-    }
-    else if (evaluation_type== "backward_reference_updating")
-      for (i in occ_ref:1) {
-        nombre_vector <- paste0("dfOCC", i)
-        list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC <= i)
-      }
-    # construct list of treatments by OCC
-    list_ttos <- list()
-    # add an if else sentece if data has ss or not , then how to compute ev tables
-    if("SS" %in% names(data)|| "ss" %in% names(data)) {
-    if (is.null(occ_ref)) {
-      for (n in 2:num_occ) {
-        vector_ttos <- paste0("tto_", n)
-        list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == n)
-
-        # contruct events per tto and ID
-        num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
-        lista_ttos_occ <- list()
-        for (ids in 1:num_ids_ttos) {
-          vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
-          lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-            filter(ID == ids)
+    
+    if (tool == "mapbayr") {
+      # check mrgsolve format
+      if (inherits(model, "mrgmod")) {
+        
+        my_model <- model
+        
+      } else if (is.character(model)) {
+        
+        if (is.null(model_name)) {
+          stop("model_name must be provided when model is character code.")
         }
-
-        # save tto list
-        list_ttos[[paste0("tto_occ_", n)]] <- lista_ttos_occ
+        
+        my_model <- mrgsolve::mcode(model_name, model)
+        
+      } else {
+        stop("model must be either a mrgmod object or character model code.")
       }
-    }
-    else {
-      vector_ttos <- paste0("tto_", occ_ref)
-      list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == occ_ref)
-
-      # contruct events per tto and ID
-      num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
-      lista_ttos_occ <- list()
-      for (ids in 1:num_ids_ttos) {
-        vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
-        lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-          filter(ID == ids)
+      if (check_compile) {
+        check_model <- mapbayr::check_mapbayr_model(my_model, check_compile = TRUE)
+        message("Model is ok for estimation")
+        if (is.null(check_model)) {
+          message("Check mrg model")
+        }
       }
-
-      # save tto
-      list_ttos[[paste0("tto_occ_", occ_ref)]] <- lista_ttos_occ
-    }
-    }
-    else {
-      if (is.null(occ_ref)) {
-        for (n in 2:num_occ) {
-          vector_ttos <- paste0("tto_", n)
-          list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC <= n)
-
-          # Generate treatment/event datasets for each individual
+      # more checks
+      check_OCC_capture(model)
+      
+      # check OCC and CMT exist in the external dataset
+      if (!"OCC" %in% names(data)) {
+        stop(" 'OCC' column is mandatory in the base data.")
+      }
+      
+      if (!"CMT" %in% names(data)) {
+        stop(" 'CMT' column is mandatory in the base data.")
+      }
+      # number of OCC
+      if (is.null(num_occ)) {
+        num_occ <- length(unique(data$OCC))
+      } else {
+        num_occ <- min(num_occ, length(unique(data$OCC)))
+      }
+      
+      # number of IDs
+      if (is.null(num_ids)) {
+        num_ids <- length(unique(data$ID))
+      } else {
+        if (sampling) {
+          # Random sampling without replace
+          selected_ids <- sample(unique(data$ID), size = min(num_ids,
+                                                             length(unique(data$ID))), replace = FALSE)
+          data <- data|>dplyr::filter(ID %in% selected_ids)
+        } else {
+          num_ids <- min(num_ids, length(unique(data$ID)))
+          selected_ids <- unique(data$ID)[1:num_ids]
+          data <- data|> dplyr::filter(ID %in% selected_ids)
+        }
+      }
+      
+      # Get data until current OCC
+      filtered_data <- data|>dplyr::filter(OCC <= num_occ)
+      
+      # construct data list to get the MAPs
+      list_df_basedata <- list()
+      if(evaluation_type=="sequential_updating")
+      {
+        for (i in 1:num_occ) {
+          nombre_vector <- paste0("dfOCC", i)
+          list_df_basedata[[nombre_vector]] <- filtered_data|>dplyr::filter(OCC <= i)
+        }
+      }
+      else if (evaluation_type=="stepwise_updating")
+      {
+        for (i in 1:(num_occ-1)) {
+          
+          first_occ <- max(1, i-history_occ+1)
+          last_occ  <- i
+          
+          nombre_vector <- paste0("dfOCC", i)
+          
+          list_df_basedata[[nombre_vector]] <-
+            filtered_data |>
+            filter(OCC >= first_occ,
+                   OCC <= last_occ)
+        }
+      }
+      else if (evaluation_type=="sequential_reference_updating")
+      {
+        for (i in 1:occ_ref) {
+          nombre_vector <- paste0("dfOCC", i)
+          list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC <= i)
+        }
+        
+      }
+      else if (evaluation_type== "backward_reference_updating")
+        for (i in occ_ref:1) {
+          nombre_vector <- paste0("dfOCC", i)
+          list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC <= i)
+        }
+      # construct list of treatments by OCC
+      list_ttos <- list()
+      # add an if else sentece if data has ss or not , then how to compute ev tables
+      if("SS" %in% names(data)|| "ss" %in% names(data)) {
+        if (is.null(occ_ref)) {
+          for (n in 2:num_occ) {
+            vector_ttos <- paste0("tto_", n)
+            list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == n)
+            
+            # contruct events per tto and ID
+            num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
+            lista_ttos_occ <- list()
+            for (ids in 1:num_ids_ttos) {
+              vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
+              lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
+                filter(ID == ids)
+            }
+            
+            # save tto list
+            list_ttos[[paste0("tto_occ_", n)]] <- lista_ttos_occ
+          }
+        }
+        else {
+          vector_ttos <- paste0("tto_", occ_ref)
+          list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == occ_ref)
+          
+          # contruct events per tto and ID
           num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
           lista_ttos_occ <- list()
           for (ids in 1:num_ids_ttos) {
-            vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
+            vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
             lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-              filter(ID == ids)  # Keep all records to preserve simulation time points
+              filter(ID == ids)
           }
-
-          # Save treatments by OCC
-          list_ttos[[paste0("tto_occ_", n)]] <- lista_ttos_occ
+          
+          # save tto
+          list_ttos[[paste0("tto_occ_", occ_ref)]] <- lista_ttos_occ
         }
       }
       else {
-        vector_ttos <- paste0("tto_", occ_ref)
-        list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == occ_ref)
-
-        # Generate treatment/event datasets for each individual
-        num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
-        lista_ttos_occ <- list()
-        for (ids in 1:num_ids_ttos) {
-          vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
-          lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
-            filter(ID == ids) # Keep all records to preserve simulation time points
+        if (is.null(occ_ref)) {
+          for (n in 2:num_occ) {
+            vector_ttos <- paste0("tto_", n)
+            list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC <= n)
+            
+            # Generar los eventos para cada tratamiento y cada ID
+            num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
+            lista_ttos_occ <- list()
+            for (ids in 1:num_ids_ttos) {
+              vector_eventos <- paste0("ev.tto.occ", n, "_ID", ids)
+              lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
+                filter(ID == ids)  ##### REMOVE OF EVID==1 to get all times for simulation
+            }
+            
+            # Guardar los tratamientos por OCC
+            list_ttos[[paste0("tto_occ_", n)]] <- lista_ttos_occ
+          }
         }
-
-        # Save treatments by OCC
-        list_ttos[[paste0("tto_occ_", occ_ref)]] <- lista_ttos_occ
+        else {
+          vector_ttos <- paste0("tto_", occ_ref)
+          list_ttos[[vector_ttos]] <- filtered_data|>filter(OCC == occ_ref)
+          
+          # Generar los eventos para cada tratamiento y cada ID
+          num_ids_ttos <- length(unique(list_ttos[[vector_ttos]]$ID))
+          lista_ttos_occ <- list()
+          for (ids in 1:num_ids_ttos) {
+            vector_eventos <- paste0("ev.tto.occ", occ_ref, "_ID", ids)
+            lista_ttos_occ[[vector_eventos]] <- list_ttos[[vector_ttos]] |>
+              filter(ID == ids) ##### REMOVE OF EVID==1 to get all times for simulation
+          }
+          
+          # Guardar los tratamientos por OCC
+          list_ttos[[paste0("tto_occ_", occ_ref)]] <- lista_ttos_occ
+        }
+        
       }
-
-    }
-
-    # tto for OCC=1 o OCC=ref
-
-    list_apriori <- list()
-
+      
+      # tto for OCC=1 o OCC=ref
+      
+      list_apriori <- list()
+      
       occ_apriori<- ifelse(is.null(occ_ref),1,occ_ref)
       vector_ttos <- paste0("tto_", occ_apriori)
       apriori_data <- filtered_data|>filter(OCC== occ_apriori)
       list_apriori[[vector_ttos]] <- apriori_data
-
+      
       # construct events per tto and id
       num_ids_apriori <- length(unique(list_apriori[[vector_ttos]]$ID))
       lista_ttos_apriori_occ <- list()
@@ -334,57 +353,57 @@ function(model, model_name= NULL,
         lista_ttos_apriori_occ[[vector_eventos]] <- apriori_data |>
           filter(ID == ids)
       }
-
+      
       # save tto
       list_apriori[[paste0("apriori_occ_", occ_apriori)]] <- lista_ttos_apriori_occ
-
-    # get map estimates for each data set
-    list_map <- list()
-
-    if(evaluation_type=="sequential_updating") {
-      for (j in 1:(num_occ - 1)) {
-        previous_numbers <- paste0(1:j, collapse = "_")
-        map.result <- paste0("map.estimation.occ_0_",previous_numbers)
-        list_map[[map.result]] <- mapbayr::mapbayest(my_model,
-                                                     data = list_df_basedata[[paste0("dfOCC", j)]],
-                                                     method = method)
+      
+      # get map estimates for each data set
+      list_map <- list()
+      
+      if(evaluation_type=="sequential_updating") {
+        for (j in 1:(num_occ - 1)) {
+          previous_numbers <- paste0(1:j, collapse = "_")
+          map.result <- paste0("map.estimation.occ_0_",previous_numbers)
+          list_map[[map.result]] <- mapbayr::mapbayest(my_model,
+                                                       data = list_df_basedata[[paste0("dfOCC", j)]],
+                                                       method = method)
+        }
       }
-    }
-
-    else if (evaluation_type== "stepwise_updating")  {
-      for (j in 1:(num_occ - 1)) {
-        map.result <- paste0("map.estimation.occ_", j)
-        list_map[[map.result]] <- mapbayr::mapbayest(my_model,
-                                                     data = list_df_basedata[[paste0("dfOCC", j)]],
-                                                     method = method)
+      
+      else if (evaluation_type== "stepwise_updating")  {
+        for (j in 1:(num_occ - 1)) {
+          map.result <- paste0("map.estimation.occ_", j)
+          list_map[[map.result]] <- mapbayr::mapbayest(my_model,
+                                                       data = list_df_basedata[[paste0("dfOCC", j)]],
+                                                       method = method)
+        }
       }
-    }
-    else if (evaluation_type== "sequential_reference_updating")  {
-      for (j in 1:(occ_ref - 1)) {
-        previous_numbers <- paste0(1:j, collapse = "_")
-        map.result <- paste0("map.estimation.occ_0_",previous_numbers)
-        list_map[[map.result]] <- mapbayr::mapbayest(my_model,
-                                                     data = list_df_basedata[[paste0("dfOCC", j)]],
-                                                     method = method)
+      else if (evaluation_type== "sequential_reference_updating")  {
+        for (j in 1:(occ_ref - 1)) {
+          previous_numbers <- paste0(1:j, collapse = "_")
+          map.result <- paste0("map.estimation.occ_0_",previous_numbers)
+          list_map[[map.result]] <- mapbayr::mapbayest(my_model,
+                                                       data = list_df_basedata[[paste0("dfOCC", j)]],
+                                                       method = method)
+        }
       }
-    }
-    else if (evaluation_type== "backward_reference_updating")  {
-      for (j in (occ_ref - 1):1) {
-        previous_numbers <- paste0((occ_ref-1):j, collapse = "_")
-        map.result <- paste0("map.estimation.occ_",previous_numbers)
-        list_map[[map.result]] <- mapbayr::mapbayest(my_model,
-                                                     data = list_df_basedata[[paste0("dfOCC", j)]],
-                                                     method = method)
+      else if (evaluation_type== "backward_reference_updating")  {
+        for (j in (occ_ref - 1):1) {
+          previous_numbers <- paste0((occ_ref-1):j, collapse = "_")
+          map.result <- paste0("map.estimation.occ_",previous_numbers)
+          list_map[[map.result]] <- mapbayr::mapbayest(my_model,
+                                                       data = list_df_basedata[[paste0("dfOCC", j)]],
+                                                       method = method)
+        }
       }
+      
+      return(list(
+        data_by_occ = list_df_basedata,
+        treatments_by_occ = list_ttos,
+        apriori_treatments = list_apriori,
+        map_estimations = list_map,
+        eval_type = evaluation_type,
+        pop_model = my_model
+      ))
     }
-
-    return(list(
-      data_by_occ = list_df_basedata,
-      treatments_by_occ = list_ttos,
-      apriori_treatments = list_apriori,
-      map_estimations = list_map,
-      eval_type = evaluation_type,
-      pop_model = my_model
-    ))
   }
-}
