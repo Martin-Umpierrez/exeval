@@ -14,7 +14,6 @@ run_MAP_estimations(
   num_ids = NULL,
   sampling = TRUE,
   occ_ref = NULL,
-  history_occ = 1,
   evaluation_type = c("sequential_updating", "stepwise_updating",
     "sequential_reference_updating", "backward_reference_updating"),
   method = c("L-BFGS-B", "newuoa")
@@ -59,23 +58,13 @@ evaluation strategies. Required when \code{evaluation_type} is
 \code{"backward_reference_updating"}, where MAP estimation is performed
 relative to this occasion.}
 
-\item{history_occ}{Integer. Number of previous occasions used to inform
-MAP estimation when \code{evaluation_type = "stepwise_updating"}.
-The default value (\code{1}) reproduces the original stepwise strategy,
-where only the immediately preceding occasion is used.
-Larger values create a moving window of previous occasions. If
-\code{history_occ} exceeds the number of available previous occasions,
-all available observations are used.}
-
 \item{evaluation_type}{Character string specifying the evaluation strategy.
 Available options are:
 \itemize{
 \item \code{"sequential_updating"}: performs MAP estimation using all
 observations accumulated up to each occasion.
-\item \code{"stepwise_updating"}: performs MAP estimation using a moving
-window of the previous \code{history_occ} occasion(s). The default
-(\code{history_occ = 1}) uses only the immediately preceding
-occasion.
+\item \code{"stepwise_updating"}: performs MAP estimation using
+observations from each occasion independently.
 \item \code{"sequential_reference_updating"}: performs MAP estimation
 using cumulative observations up to the reference occasion
 defined by \code{occ_ref}.
@@ -141,7 +130,7 @@ from \code{occ_ref}.
 }
 }
 \examples{
-\dontrun{
+\donttest{
 data("exeval_models", package = "exeval")
 data("tacrolimus_pk1_kidney", package = "exeval")
 
