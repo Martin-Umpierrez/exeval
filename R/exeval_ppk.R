@@ -50,6 +50,14 @@
 #' \code{"sequential_reference_updating"} and
 #' \code{"backward_reference_updating"} evaluation strategies.
 #' 
+#' @param history_occ Integer. Number of previous occasions used to inform
+#' MAP estimation when \code{evaluation_type = "stepwise_updating"}.
+#' The default value (\code{1}) reproduces the original stepwise strategy,
+#' where only the immediately preceding occasion is used.
+#' Larger values create a moving window of previous occasions. If
+#' \code{history_occ} exceeds the number of available previous occasions,
+#' all available observations are used.
+#' 
 #' @param evaluation_type Character string specifying the evaluation strategy:
 #' \itemize{
 #'   \item \code{"sequential_updating"}: cumulative MAP updating across occasions.
@@ -136,6 +144,7 @@ exeval_ppk <-  function(model,
                         num_ids= NULL,
                         sampling = TRUE,
                         occ_ref = NULL , 
+                        history_occ = 1 , 
                         evaluation_type = c("sequential_updating", "stepwise_updating","sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
                         method = c("L-BFGS-B", "newuoa"),
                         assessment = c("a_priori","Bayesian_forecasting", "Complete"),
@@ -148,7 +157,7 @@ exeval_ppk <-  function(model,
 
   ## Run estimation, simulation and predicton erro computation in every OCC
   est <- run_MAP_estimations(model, model_name, tool, check_compile,
-                             data, num_occ, num_ids, sampling, occ_ref, evaluation_type,
+                             data, num_occ, num_ids, sampling, occ_ref, history_occ, evaluation_type,
                              method
                              )
   updt <- update_map_models(est, evaluation_type)

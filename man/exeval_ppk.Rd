@@ -19,6 +19,7 @@ exeval_ppk(
   num_ids = NULL,
   sampling = TRUE,
   occ_ref = NULL,
+  history_occ = 1,
   evaluation_type = c("sequential_updating", "stepwise_updating",
     "sequential_reference_updating", "backward_reference_updating"),
   method = c("L-BFGS-B", "newuoa"),
@@ -89,6 +90,14 @@ when \code{num_ids} is specified. Otherwise, the first subjects are used.}
 \item{occ_ref}{Integer. Reference occasion used for
 \code{"sequential_reference_updating"} and
 \code{"backward_reference_updating"} evaluation strategies.}
+
+\item{history_occ}{Integer. Number of previous occasions used to inform
+MAP estimation when \code{evaluation_type = "stepwise_updating"}.
+The default value (\code{1}) reproduces the original stepwise strategy,
+where only the immediately preceding occasion is used.
+Larger values create a moving window of previous occasions. If
+\code{history_occ} exceeds the number of available previous occasions,
+all available observations are used.}
 
 \item{evaluation_type}{Character string specifying the evaluation strategy:
 \itemize{
