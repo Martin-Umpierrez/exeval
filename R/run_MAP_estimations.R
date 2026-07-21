@@ -67,13 +67,24 @@
 #' \code{"backward_reference_updating"}, where MAP estimation is performed
 #' relative to this occasion.
 #' 
+#' @param history_occ Integer. Number of previous occasions used to inform
+#' MAP estimation when \code{evaluation_type = "stepwise_updating"}.
+#' The default value (\code{1}) reproduces the original stepwise strategy,
+#' where only the immediately preceding occasion is used.
+#' Larger values create a moving window of previous occasions. If
+#' \code{history_occ} exceeds the number of available previous occasions,
+#' all available observations are used.
+#' 
+#' 
 #' @param evaluation_type Character string specifying the evaluation strategy.
 #' Available options are:
 #' \itemize{
 #'   \item \code{"sequential_updating"}: performs MAP estimation using all
 #'         observations accumulated up to each occasion.
-#'   \item \code{"stepwise_updating"}: performs MAP estimation using
-#'         observations from each occasion independently.
+#'   \item \code{"stepwise_updating"}: performs MAP estimation using a moving
+#'         window of the previous \code{history_occ} occasion(s). The default
+#'         (\code{history_occ = 1}) uses only the immediately preceding
+#'         occasion.
 #'   \item \code{"sequential_reference_updating"}: performs MAP estimation
 #'         using cumulative observations up to the reference occasion
 #'         defined by \code{occ_ref}.
@@ -132,8 +143,11 @@ function(model, model_name= NULL,
                                 num_ids= NULL,
                                 sampling = TRUE,
                                 occ_ref = NULL , ### Se usa solo si evaluation_type es basado en una referencia
-                                evaluation_type = c("sequential_updating", "stepwise_updating",
-                                                    "sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
+                                history_occ = 1 ,   
+                                evaluation_type = c("sequential_updating", 
+                                                    "stepwise_updating",
+                                                    "sequential_reference_updating",
+                                                    "backward_reference_updating"), ## Como se va a hacer la eval externa
                                 method = c("L-BFGS-B", "newuoa")) {
 
   # check data has the required columns
@@ -220,13 +234,23 @@ function(model, model_name= NULL,
         list_df_basedata[[nombre_vector]] <- filtered_data|>dplyr::filter(OCC <= i)
       }
     }
+    
     else if (evaluation_type=="stepwise_updating")
     {
-      for (i in 1:num_occ) {
+      for (i in 1:(num_occ-1)) {
+        
+        first_occ <- max(1, i-history_occ+1)
+        last_occ  <- i
+        
         nombre_vector <- paste0("dfOCC", i)
-        list_df_basedata[[nombre_vector]] <- filtered_data|>filter(OCC == i)
+        
+        list_df_basedata[[nombre_vector]] <-
+          filtered_data |>
+          filter(OCC >= first_occ,
+                 OCC <= last_occ)
       }
     }
+
     else if (evaluation_type=="sequential_reference_updating")
     {
       for (i in 1:occ_ref) {
