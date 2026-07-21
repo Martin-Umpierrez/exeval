@@ -168,10 +168,10 @@ exeval_ppk <-  function(model,
   if (progress) {
     
     cat(
-      "────────────────────────────────────────────────────────────\n",
+      "------------------------------------------------------------\n",
       sprintf("%34s\n", paste0("exeval ", utils::packageVersion("exeval"))),
       sprintf("%44s\n", "External Model Evaluation Workflow"),
-      "────────────────────────────────────────────────────────────\n\n",
+      "------------------------------------------------------------\n\n",
       sprintf("%-17s : %s\n", "Population model", model_name),
       sprintf("%-17s : %s\n", "Drug", ifelse(is.null(drug_name), "-", drug_name)),
       sprintf("%-17s : %s\n", "Evaluation", match.arg(evaluation_type)),
@@ -187,7 +187,7 @@ exeval_ppk <-  function(model,
                 max(data$OCC, na.rm = TRUE),
                 num_occ)),
       "\n",
-      "────────────────────────────────────────────────────────────\n\n",
+      "------------------------------------------------------------\n\n",
       "Running MAP Bayesian estimation...\n\n",
       sep = ""
     )
@@ -203,7 +203,7 @@ exeval_ppk <-  function(model,
                              method
                              )
   if(progress)
-    cat("\n✓ MAP estimation completed\n\n")
+    cat("\n Done: MAP estimation completed\n\n")
   
   if(progress)
     cat("Updating Individual Models...\n")
@@ -211,7 +211,7 @@ exeval_ppk <-  function(model,
   updt <- update_map_models(est, evaluation_type)
   
   if(progress)
-    cat("✓ Model updating completed\n\n")
+    cat(" Done: Model updating completed\n\n")
   
   if(progress)
     cat("Running PK/PD simulations...\n")
@@ -220,7 +220,7 @@ exeval_ppk <-  function(model,
 
   # Compute evaluation metrics
   if(progress)
-    cat("✓ Simulations completed\n\n")
+    cat(" Done: Simulations completed\n\n")
   
   if(progress)
     cat("Computing metrics...\n")
@@ -228,7 +228,7 @@ exeval_ppk <-  function(model,
   metrics <- metrics_occ(sims, assessment=assessment,tool=tool )
   
   if(progress)
-    cat("✓ Metrics computed\n")
+    cat(" Done: Metrics computed\n")
   
   elapsed <- difftime(Sys.time(), t0, units = "secs")
   
@@ -236,10 +236,10 @@ exeval_ppk <-  function(model,
     
     cat(
       "\n",
-      "────────────────────────────────────────────────────────────\n",
-      "✓ External evaluation completed successfully\n\n",
+      "------------------------------------------------------------\n",
+      "Done: External evaluation completed successfully\n\n",
       sprintf("Elapsed time : %.1f s\n", as.numeric(elapsed)),
-      "────────────────────────────────────────────────────────────\n",
+      "------------------------------------------------------------\n",
       sep=""
     )
     
