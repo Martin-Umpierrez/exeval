@@ -24,7 +24,8 @@ exeval_ppk(
     "sequential_reference_updating", "backward_reference_updating"),
   method = c("L-BFGS-B", "newuoa"),
   assessment = c("a_priori", "Bayesian_forecasting", "Complete"),
-  verbose = FALSE
+  verbose = FALSE,
+  progress = TRUE
 )
 
 \method{print}{EvalPPK}(x, ...)
@@ -102,7 +103,10 @@ all available observations are used.}
 \item{evaluation_type}{Character string specifying the evaluation strategy:
 \itemize{
 \item \code{"sequential_updating"}: cumulative MAP updating across occasions.
-\item \code{"stepwise_updating"}: independent MAP estimation per occasion.
+\item \code{"stepwise_updating"}:
+performs MAP estimation using a moving window of previous occasions.
+The number of previous occasions is controlled by
+\code{history_occ}.
 \item \code{"sequential_reference_updating"}: cumulative MAP updating up to
 a reference occasion.
 \item \code{"backward_reference_updating"}: backward updating from a
@@ -128,6 +132,10 @@ simulations.
 
 \item{verbose}{Logical. If \code{TRUE}, progress messages are printed during
 execution.}
+
+\item{progress}{Logical.
+If \code{TRUE}, prints a concise workflow summary and progress
+messages during the external evaluation.}
 
 \item{x}{An object of class \code{EvalPPK}.}
 

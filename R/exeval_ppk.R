@@ -61,7 +61,10 @@
 #' @param evaluation_type Character string specifying the evaluation strategy:
 #' \itemize{
 #'   \item \code{"sequential_updating"}: cumulative MAP updating across occasions.
-#'   \item \code{"stepwise_updating"}: independent MAP estimation per occasion.
+#'   \item \code{"stepwise_updating"}:
+#'   performs MAP estimation using a moving window of previous occasions.
+#'   The number of previous occasions is controlled by
+#'   \code{history_occ}.
 #'   \item \code{"sequential_reference_updating"}: cumulative MAP updating up to
 #'   a reference occasion.
 #'   \item \code{"backward_reference_updating"}: backward updating from a
@@ -86,6 +89,10 @@
 #' }
 #' @param verbose Logical. If \code{TRUE}, progress messages are printed during
 #' execution.
+#' 
+#' @param progress Logical.
+#' If \code{TRUE}, prints a concise workflow summary and progress
+#' messages during the external evaluation.
 #' 
 #' @details
 #' This function executes the complete external evaluation workflow:
@@ -148,24 +155,95 @@ exeval_ppk <-  function(model,
                         evaluation_type = c("sequential_updating", "stepwise_updating","sequential_reference_updating","backward_reference_updating"), ## Como se va a hacer la eval externa
                         method = c("L-BFGS-B", "newuoa"),
                         assessment = c("a_priori","Bayesian_forecasting", "Complete"),
-                        verbose=FALSE) {
-
+                        verbose=FALSE,
+                        progress=TRUE) {
+  t0 <- Sys.time()
+  
+  
   if(model %in% exeval_models$Label){
     model_name <- model
     model      <- exeval_models$Model_code[exeval_models$Label == model]
   }
 
+  if (progress) {
+    
+    cat(
+      "────────────────────────────────────────────────────────────\n",
+      sprintf("%34s\n", paste0("exeval ", utils::packageVersion("exeval"))),
+      sprintf("%44s\n", "External Model Evaluation Workflow"),
+      "────────────────────────────────────────────────────────────\n\n",
+      sprintf("%-17s : %s\n", "Population model", model_name),
+      sprintf("%-17s : %s\n", "Drug", ifelse(is.null(drug_name), "-", drug_name)),
+      sprintf("%-17s : %s\n", "Evaluation", match.arg(evaluation_type)),
+      sprintf("%-17s : %s\n", "Assessment", match.arg(assessment)),
+      "\n",
+      sprintf("%-17s : %d subjects\n",
+              "External dataset",
+              dplyr::n_distinct(data$ID)),
+      sprintf("%-17s   %d occasions\n",
+              "",
+              ifelse(
+                is.null(num_occ),
+                max(data$OCC, na.rm = TRUE),
+                num_occ)),
+      "\n",
+      "────────────────────────────────────────────────────────────\n\n",
+      "Running MAP Bayesian estimation...\n\n",
+      sep = ""
+    )
+    
+  }
+  
+  
+  
+  
   ## Run estimation, simulation and predicton erro computation in every OCC
   est <- run_MAP_estimations(model, model_name, tool, check_compile,
                              data, num_occ, num_ids, sampling, occ_ref, history_occ, evaluation_type,
                              method
                              )
+  if(progress)
+    cat("\n✓ MAP estimation completed\n\n")
+  
+  if(progress)
+    cat("Updating Individual Models...\n")
+  
   updt <- update_map_models(est, evaluation_type)
+  
+  if(progress)
+    cat("✓ Model updating completed\n\n")
+  
+  if(progress)
+    cat("Running PK/PD simulations...\n")
+  
   sims <- run_pk_simulations(updt, est, assessment)
 
   # Compute evaluation metrics
+  if(progress)
+    cat("✓ Simulations completed\n\n")
+  
+  if(progress)
+    cat("Computing metrics...\n")
+  
   metrics <- metrics_occ(sims, assessment=assessment,tool=tool )
-
+  
+  if(progress)
+    cat("✓ Metrics computed\n")
+  
+  elapsed <- difftime(Sys.time(), t0, units = "secs")
+  
+  if(progress){
+    
+    cat(
+      "\n",
+      "────────────────────────────────────────────────────────────\n",
+      "✓ External evaluation completed successfully\n\n",
+      sprintf("Elapsed time : %.1f s\n", as.numeric(elapsed)),
+      "────────────────────────────────────────────────────────────\n",
+      sep=""
+    )
+    
+  }
 
   argument = c('Num IDs', 'Num of Observations Evaluated','Max Num Occasion',
                'Num of Ref Occasion','Drug Name', 'Model Name', 'Evaluation', 'Assessment')
